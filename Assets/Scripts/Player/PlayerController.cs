@@ -10,6 +10,7 @@ namespace Player
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 5f;
         private Vector2 moveInput;
+        public Vector2 MoveInput => moveInput;
         private Rigidbody2D rb;
 
         [Header("Aiming & Weapon")]
@@ -65,31 +66,35 @@ namespace Player
 
         private void HandleAiming()
         {
-            if (weaponPivot == null) return;
-            
-            if (Camera.main != null && Mouse.current != null)
-            {
-                mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-                Vector2 lookDir = mousePos - weaponPivot.position;
-                float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
-                weaponPivot.rotation = Quaternion.Euler(0, 0, angle);
-            }
+            if (Camera.main == null || Mouse.current == null) return;
+
+            mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mousePos.z = 0f;
+
+            Transform pivot = weaponPivot != null ? weaponPivot : transform;
+            Vector2 lookDir = (Vector2)(mousePos - pivot.position);
+            float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+            pivot.rotation = Quaternion.Euler(0, 0, angle);
         }
 
         private void HandleActions()
         {
             if (Mouse.current == null) return;
 
-            if (isAttacking)
+            bool leftHeld = Mouse.current.leftButton.isPressed;
+
+            if (leftHeld && Mouse.current.leftButton.wasPressedThisFrame)
             {
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                PlayerLogManager.Instance?.RecordAction();
+            }
+
+            if (leftHeld)
+            {
+                Transform pivot = weaponPivot != null ? weaponPivot : transform;
+                if (currentWeapon != null)
                 {
-                    PlayerLogManager.Instance?.RecordAction();
-                }
-                
-                if (currentWeapon != null && weaponPivot != null)
-                {
-                    Vector2 aimDir = (mousePos - weaponPivot.position).normalized;
+                    Vector2 aimDir = ((Vector2)(mousePos - pivot.position)).normalized;
+                    if (aimDir == Vector2.zero) aimDir = Vector2.right;
                     currentWeapon.Fire(aimDir);
                 }
             }
