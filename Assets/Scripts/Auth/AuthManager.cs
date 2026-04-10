@@ -51,9 +51,14 @@ namespace Auth
             return result;
         }
 
-        public async Task<AuthResult> Signup(string id, string password)
+        public async Task<AuthResult> Signup(string id, string password, string nickname)
         {
-            return await authService.SignupAsync(id, password);
+            return await authService.SignupAsync(id, password, nickname);
+        }
+
+        public async Task<AuthResult> RecoverAccount(string nickname)
+        {
+            return await authService.RecoverAccountAsync(nickname);
         }
 
         public void Logout()

@@ -23,11 +23,28 @@ namespace Auth
             return AuthResult.Succeeded(id, "bypass_token_" + id);
         }
 
-        public async Task<AuthResult> SignupAsync(string id, string password)
+        public async Task<AuthResult> SignupAsync(string id, string password, string nickname)
         {
             await Task.Delay(500);
-            Debug.Log($"[BypassAuth] Signed up as: {id}");
+            Debug.Log($"[BypassAuth] Signed up as ID: {id}, Nickname: {nickname}");
             return AuthResult.Succeeded(id, "bypass_token_" + id);
+        }
+
+        public async Task<AuthResult> RecoverAccountAsync(string nickname)
+        {
+            await Task.Delay(500);
+            if (string.IsNullOrEmpty(nickname))
+            {
+                return AuthResult.Failed("Nickname cannot be empty.");
+            }
+
+            Debug.Log($"[BypassAuth] Account recovery requested for Nickname: {nickname}");
+            
+            // In Bypass mode, we just return a simulated account info
+            string recoveredId = $"user_{nickname}";
+            string recoveredPw = "demo1234";
+            
+            return AuthResult.Succeeded(recoveredId, $"Your ID: {recoveredId}\nPassword: {recoveredPw}");
         }
 
         public void Logout()
