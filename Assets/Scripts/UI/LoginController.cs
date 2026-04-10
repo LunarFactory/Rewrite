@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Auth;
+
 
 namespace UI
 {
@@ -26,46 +28,94 @@ namespace UI
         {
             if (string.IsNullOrEmpty(idInput?.text) || string.IsNullOrEmpty(passwordInput?.text))
             {
-                if (statusText != null) statusText.text = "ID와 Password를 입력하세요.";
+                SetStatus("ID와 Password를 입력하세요.", Color.red);
                 return;
             }
 
-            if (statusText != null) statusText.text = "로그인 중...";
+            SetStatus("로그인 중...", Color.blue);
             loginButton.interactable = false;
             
-            // Mock network call
-            StartCoroutine(MockLoginRoutine());
+            StartCoroutine(PerformLoginRoutine());
         }
 
-        private IEnumerator MockLoginRoutine()
+        private IEnumerator PerformLoginRoutine()
         {
-            yield return new WaitForSeconds(1.0f);
+            var loginTask = AuthManager.Instance.Login(idInput.text, passwordInput.text);
             
-            // Assume success
-            if (statusText != null) statusText.text = "로그인 성공!";
-            Debug.Log($"Logged in with ID: {idInput.text}");
-            
-            // Save mock token
-            PlayerPrefs.SetString("SessionToken", "mock_token_12345");
-            PlayerPrefs.SetString("UserId", idInput.text);
-            PlayerPrefs.Save();
-
-            // Load Lobby
-            if (UIManager.Instance != null)
+            // Wait for Task to finish on current thread
+            while (!loginTask.IsCompleted)
             {
-                UIManager.Instance.LoadScene("LobbyScene");
+                yield return null;
+            }
+
+            var result = loginTask.Result;
+            
+            if (result.Success)
+            {
+                SetStatus("로그인 성공!", Color.green);
+                Debug.Log($"Logged in with ID: {result.UserId}");
+                
+                // Unity-safe delay
+                yield return new WaitForSeconds(0.5f);
+
+                // Load Lobby
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.LoadScene("LobbyScene");
+                }
+                else
+                {
+                    SceneManager.LoadScene("LobbyScene");
+                }
             }
             else
             {
-                SceneManager.LoadScene("LobbyScene");
+                SetStatus($"로그인 실패: {result.Message}", Color.red);
+                loginButton.interactable = true;
             }
         }
 
         private void OnSignupClicked()
         {
-            // Just display a mock message
-            if (statusText != null) statusText.text = "회원가입 요청됨 (진행중...)";
-            Debug.Log("Signup Clicked. Mock flow.");
+            if (string.IsNullOrEmpty(idInput?.text) || string.IsNullOrEmpty(passwordInput?.text))
+            {
+                SetStatus("ID와 Password를 입력하세요.", Color.red);
+                return;
+            }
+            
+            SetStatus("회원가입 요청됨...", Color.blue);
+            StartCoroutine(PerformSignupRoutine());
         }
+
+        private IEnumerator PerformSignupRoutine()
+        {
+            var signupTask = AuthManager.Instance.Signup(idInput.text, passwordInput.text);
+            
+            while (!signupTask.IsCompleted)
+            {
+                yield return null;
+            }
+
+            var result = signupTask.Result;
+            if (result.Success)
+            {
+                SetStatus("회원가입 성공! 이제 로그인하세요.", Color.green);
+            }
+            else
+            {
+                SetStatus($"회원가입 실패: {result.Message}", Color.red);
+            }
+        }
+
+
+        private void SetStatus(string message, Color color)
+        {
+            if (statusText != null)
+            {
+                statusText.text = message;
+                statusText.color = color;
+            }
+        }
+
     }
 }
