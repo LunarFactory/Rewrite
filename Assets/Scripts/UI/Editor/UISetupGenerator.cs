@@ -171,42 +171,62 @@ namespace UI.Editor
 
             // Text elements
             GameObject projText = AddText("ProjText", leftContainer.transform, "PROJECT", 18, lightGray, TextAnchor.MiddleLeft);
-            projText.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, 200);
-            projText.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 40);
+            RectTransform projRt = projText.GetComponent<RectTransform>();
+            projRt.anchorMin = projRt.anchorMax = new Vector2(0, 0.5f);
+            projRt.pivot = new Vector2(0, 0.5f);
+            projRt.anchoredPosition = new Vector2(50, 200);
+            projRt.sizeDelta = new Vector2(600, 40);
 
             GameObject titleText = AddText("TitleText", leftContainer.transform, "RE-WRITE", 100, darkGray, TextAnchor.MiddleLeft);
             titleText.GetComponent<Text>().fontStyle = FontStyle.Bold;
-            titleText.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, 110);
-            titleText.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 120);
+            RectTransform titleRt = titleText.GetComponent<RectTransform>();
+            titleRt.anchorMin = titleRt.anchorMax = new Vector2(0, 0.5f);
+            titleRt.pivot = new Vector2(0, 0.5f);
+            titleRt.anchoredPosition = new Vector2(50, 110);
+            titleRt.sizeDelta = new Vector2(600, 120);
 
             GameObject subText = AddText("SubText", leftContainer.transform, "리 라 이 트", 24, lightGray, TextAnchor.MiddleLeft);
-            subText.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, 20);
-            subText.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 40);
+            RectTransform subRt = subText.GetComponent<RectTransform>();
+            subRt.anchorMin = subRt.anchorMax = new Vector2(0, 0.5f);
+            subRt.pivot = new Vector2(0, 0.5f);
+            subRt.anchoredPosition = new Vector2(50, 20);
+            subRt.sizeDelta = new Vector2(600, 40);
+
+            // --- Items below the title: position relative to title bottom ---
+            // Title center Y = 110, height = 120  ->  title bottom y = 110 - 60 = 50
+            // "리라이트" sub label sits at y=20 (height 40) -> bottom edge y = 0
+            // We align below sub label bottom (y=0) and stack downward.
+            float baseX = 50f;          // same left offset as title
+            float curY  = -16f;         // small gap under sub-label bottom (y=0)
+            float lineGap = 16f;
+            float synopsisHeight = 160f;
 
             // Dividing line
             GameObject line = AddUIElement<Image>("Line", leftContainer.transform);
             line.GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f);
             RectTransform lineRt = line.GetComponent<RectTransform>();
-            lineRt.anchorMin = new Vector2(0, 0.5f);
-            lineRt.anchorMax = new Vector2(0, 0.5f);
-            lineRt.anchoredPosition = new Vector2(350, -20);
+            lineRt.anchorMin = lineRt.anchorMax = new Vector2(0, 0.5f);
+            lineRt.pivot = new Vector2(0, 0.5f);
+            lineRt.anchoredPosition = new Vector2(baseX, curY);
             lineRt.sizeDelta = new Vector2(600, 2);
+            curY -= lineGap;
 
             // Synopsis Box
             GameObject synBox = AddUIElement<Image>("SynopsisBox", leftContainer.transform);
             synBox.GetComponent<Image>().color = boxColor;
             RectTransform synRt = synBox.GetComponent<RectTransform>();
-            synRt.anchorMin = new Vector2(0, 0.5f);
-            synRt.anchorMax = new Vector2(0, 0.5f);
-            synRt.anchoredPosition = new Vector2(350, -130);
-            synRt.sizeDelta = new Vector2(600, 160);
+            synRt.anchorMin = synRt.anchorMax = new Vector2(0, 0.5f);
+            synRt.pivot = new Vector2(0, 0.5f);
+            synRt.anchoredPosition = new Vector2(baseX, curY - synopsisHeight * 0.5f);
+            synRt.sizeDelta = new Vector2(600, synopsisHeight);
+            curY -= synopsisHeight + lineGap;
 
             // Add border outline to box
             Outline outline = synBox.AddComponent<Outline>();
             outline.effectColor = new Color(0.8f, 0.8f, 0.8f);
             outline.effectDistance = new Vector2(1, -1);
 
-            string info = "\"완벽한 진화는 망각에서 시작된다.\"\n\n인류의 생존을 위해 인간을 안드로이드로 강제 개조하는 초지능 AI '오메가'.\n뇌가 데이터화될수록 기억을 잃어가는 주인공은...";
+            string info = "난이도 자동 조정을 지원하는 AI 프레임워크를 위한 샘플 게임입니다.";
             GameObject synText = AddText("SynopsisText", synBox.transform, info, 18, lightGray, TextAnchor.UpperLeft);
             RectTransform sTxtRt = synText.GetComponent<RectTransform>();
             sTxtRt.anchorMin = new Vector2(0, 0);
@@ -214,10 +234,6 @@ namespace UI.Editor
             sTxtRt.offsetMin = new Vector2(20, 20);
             sTxtRt.offsetMax = new Vector2(-20, -20);
 
-            // Run info
-            GameObject runText = AddText("RunInfo", leftContainer.transform, "RUN #001  |  ANDROID RATE: 0%", 16, lightGray, TextAnchor.MiddleLeft);
-            runText.GetComponent<RectTransform>().anchoredPosition = new Vector2(50, -240);
-            runText.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 30);
 
             // --- Bottom Footer section ---
             GameObject footerContainer = new GameObject("FooterContainer");
@@ -235,18 +251,6 @@ namespace UI.Editor
             flRt.anchorMax = new Vector2(1, 1);
             flRt.offsetMin = new Vector2(0, -1);
             flRt.offsetMax = new Vector2(0, 0);
-
-            GameObject fl = AddText("FootL", footerContainer.transform, "NEURAL LINK ESTABLISHED", 14, lightGray, TextAnchor.MiddleLeft);
-            fl.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-            fl.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
-            fl.GetComponent<RectTransform>().offsetMin = new Vector2(20, 0);
-            fl.GetComponent<RectTransform>().sizeDelta = new Vector2(300, 0);
-
-            GameObject fc = AddText("FootC", footerContainer.transform, "MEMORY INTEGRITY: 100%", 14, lightGray, TextAnchor.MiddleCenter);
-            fc.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0);
-            fc.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 1);
-            fc.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-            fc.GetComponent<RectTransform>().sizeDelta = new Vector2(300, 0);
 
             GameObject fr = AddText("FootR", footerContainer.transform, "CORE_SYSTEM_V2.7.4", 14, lightGray, TextAnchor.MiddleRight);
             fr.GetComponent<RectTransform>().anchorMin = new Vector2(1, 0);
