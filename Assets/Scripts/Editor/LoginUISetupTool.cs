@@ -7,6 +7,7 @@ using UI;
 using UnityEditor.Events;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace EditorTools
 {
@@ -23,6 +24,235 @@ namespace EditorTools
             SetupRecoverScene();
             AddScenesToBuildSettings();
             Debug.Log("Signup and Recovery Scenes Setup Completed!");
+        }
+
+        [MenuItem("Tools/Setup/Step 3: Add Panels for Single Scene Flow")]
+        public static void AddSinglePanelFlow()
+        {
+            var scene = EditorSceneManager.OpenScene(TITLE_SCENE);
+
+            GameObject rightContainer = GameObject.Find("RightContainer");
+            if (rightContainer == null)
+            {
+                Debug.LogError("RightContainer not found in TitleScene!");
+                return;
+            }
+
+            // 1. 기존 로그인 요소들을 Panel_Login 그룹으로 묶기
+            Transform panelLoginTrans = rightContainer.transform.Find("Panel_Login");
+            GameObject panelLogin;
+            if (panelLoginTrans == null)
+            {
+                panelLogin = new GameObject("Panel_Login", typeof(RectTransform));
+                panelLogin.transform.SetParent(rightContainer.transform, false);
+                RectTransform rt = panelLogin.GetComponent<RectTransform>();
+                rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+                List<Transform> childrenToMove = new List<Transform>();
+                foreach (Transform child in rightContainer.transform)
+                {
+                    if (child != panelLogin.transform && !child.name.StartsWith("Panel_"))
+                    {
+                        childrenToMove.Add(child);
+                    }
+                }
+                foreach (Transform child in childrenToMove)
+                {
+                    child.SetParent(panelLogin.transform, true);
+                }
+            }
+            else
+            {
+                panelLogin = panelLoginTrans.gameObject;
+            }
+
+            // 2. Panel_Signup 생성 (없을 경우만)
+            Transform panelSignupTrans = rightContainer.transform.Find("Panel_Signup");
+            GameObject panelSignup = panelSignupTrans != null ? panelSignupTrans.gameObject : BuildSignupPanel(rightContainer.transform);
+            panelSignup.SetActive(false);
+
+            // 3. Panel_Recover 생성 (없을 경우만)
+            Transform panelRecoverTrans = rightContainer.transform.Find("Panel_Recover");
+            GameObject panelRecover = panelRecoverTrans != null ? panelRecoverTrans.gameObject : BuildRecoverPanel(rightContainer.transform);
+            panelRecover.SetActive(false);
+
+            // ── StatusText 확인 (없으면 추가) ─────────────────
+            UnityEngine.UI.Text statusText = null;
+            Transform statusTextTrans = rightContainer.transform.Find("StatusText");
+            if (statusTextTrans != null) {
+                statusText = statusTextTrans.GetComponent<UnityEngine.UI.Text>();
+                statusText.transform.SetParent(rightContainer.transform, true); // Panel_Login에 옮겨졌을 최상단으로 꺼냄
+                statusText.transform.SetAsLastSibling();
+            } else {
+                statusText = CreateText(rightContainer.transform, "StatusText", "", new Vector2(0, -210), 15, Color.red);
+            }
+
+            // ── AuthManager 확보 ────────────────────────────
+            EnsureAuthManager();
+
+            // ── 기존 LoginController 제거 ────────────────────────────────
+            var oldController = Object.FindObjectOfType<LoginController>();
+            if (oldController != null) DestroyImmediate(oldController);
+
+            // ── TitleUIController 연결 ────────────────────────────────
+            TitleUIController controller = Object.FindObjectOfType<TitleUIController>();
+            if (controller == null)
+            {
+                GameObject controllerGo = new GameObject("TitleUIController");
+                controller = controllerGo.AddComponent<TitleUIController>();
+            }
+
+            controller.panelLogin   = panelLogin;
+            controller.panelSignup  = panelSignup;
+            controller.panelRecover = panelRecover;
+            controller.statusText   = statusText;
+
+            // Login panel refs (기존 오브젝트 이름 사용)
+            controller.loginIdInput  = FindInputInChildren(panelLogin.transform, "IDField", "ID", "Id");
+            controller.loginPwInput  = FindInputInChildren(panelLogin.transform, "PassField", "PW", "Password");
+            controller.loginBtn      = FindButtonInChildren(panelLogin.transform, "LoginBtn", "Login");
+            controller.toSignupBtn   = FindButtonInChildren(panelLogin.transform, "SignupBtn", "Create", "생성");
+            controller.toRecoverBtn  = FindButtonInChildren(panelLogin.transform, "RecoverButton", "Recover", "찾기");
+
+            // 기존에 버튼들에 에디터로 연동되어있던 고정 이벤트(Persistent Event) 완전 제거 (Missing 오류 및 씬 로드 트리거 방지)
+            ClearButtonPersistentEvents(controller.loginBtn);
+            ClearButtonPersistentEvents(controller.toSignupBtn);
+            ClearButtonPersistentEvents(controller.toRecoverBtn);
+            
+            // 붙어있는 SceneLoadTrigger 스크립트도 에디터에서 깨끗하게 제거
+            RemoveComponent<SceneLoadTrigger>(controller.loginBtn);
+            RemoveComponent<SceneLoadTrigger>(controller.toSignupBtn);
+            RemoveComponent<SceneLoadTrigger>(controller.toRecoverBtn);
+
+            // Signup panel refs
+            controller.signupIdInput       = panelSignup.transform.Find("SignupID_Border/SignupID")?.GetComponent<UnityEngine.UI.InputField>();
+            controller.signupPwInput       = panelSignup.transform.Find("SignupPW_Border/SignupPW")?.GetComponent<UnityEngine.UI.InputField>();
+            controller.signupNicknameInput = panelSignup.transform.Find("SignupNick_Border/SignupNick")?.GetComponent<UnityEngine.UI.InputField>();
+            controller.signupSubmitBtn     = panelSignup.transform.Find("SignupSubmitBtn")?.GetComponent<UnityEngine.UI.Button>();
+            controller.signupBackBtn       = panelSignup.transform.Find("SignupBackBtn")?.GetComponent<UnityEngine.UI.Button>();
+
+            // Recover panel refs
+            controller.recoverNicknameInput = panelRecover.transform.Find("RecoverNick_Border/RecoverNick")?.GetComponent<UnityEngine.UI.InputField>();
+            controller.recoverSubmitBtn     = panelRecover.transform.Find("RecoverSubmitBtn")?.GetComponent<UnityEngine.UI.Button>();
+            controller.recoverBackBtn       = panelRecover.transform.Find("RecoverBackBtn")?.GetComponent<UnityEngine.UI.Button>();
+
+            EditorUtility.SetDirty(controller);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[Step 3] 패널이 추가되었습니다. 기존 TitleScene이 유지되며 단일 씬 흐름이 적용되었습니다.");
+        }
+
+        private static UnityEngine.UI.InputField FindInputInChildren(Transform parent, params string[] names)
+        {
+            var inputs = parent.GetComponentsInChildren<UnityEngine.UI.InputField>(true);
+            foreach (var n in names)
+            {
+                var match = inputs.FirstOrDefault(i => i.name.Contains(n));
+                if (match != null) return match;
+            }
+            return inputs.FirstOrDefault();
+        }
+
+        private static UnityEngine.UI.Button FindButtonInChildren(Transform parent, params string[] names)
+        {
+            var btns = parent.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+            foreach (var n in names)
+            {
+                var match = btns.FirstOrDefault(b => b.name.Contains(n) || (b.GetComponentInChildren<UnityEngine.UI.Text>() != null && b.GetComponentInChildren<UnityEngine.UI.Text>().text.Contains(n)));
+                if (match != null) return match;
+            }
+            return btns.FirstOrDefault();
+        }
+
+        private static void ClearButtonPersistentEvents(UnityEngine.UI.Button btn)
+        {
+            if (btn == null) return;
+            while (btn.onClick.GetPersistentEventCount() > 0)
+            {
+                UnityEditor.Events.UnityEventTools.RemovePersistentListener(btn.onClick, 0);
+            }
+            EditorUtility.SetDirty(btn.gameObject);
+        }
+
+        private static void RemoveComponent<T>(UnityEngine.UI.Button btn) where T : Component
+        {
+            if (btn == null) return;
+            var comp = btn.GetComponent<T>();
+            if (comp != null) DestroyImmediate(comp);
+        }
+
+        private static void EnsureAuthManager()
+        {
+            if (FindObjectOfType<Auth.AuthManager>() == null)
+            {
+                var go = new GameObject("AuthManager");
+                go.AddComponent<Auth.AuthManager>();
+                Debug.Log("Added AuthManager to TitleScene.");
+            }
+        }
+
+        // ── Panel 빌더: Login ─────────────────────────────────────────
+        private static GameObject BuildLoginPanel(Transform parent)
+        {
+            GameObject panel = new GameObject("Panel_Login", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            panel.transform.SetParent(parent, false);
+            RectTransform rect = panel.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            panel.GetComponent<UnityEngine.UI.Image>().color = Color.clear;
+
+            CreateText(panel.transform, "PanelTitle", "로그인", new Vector2(0, 140), 32, new Color(0.1f, 0.1f, 0.1f));
+
+            CreateInputField(panel.transform, "LoginID",  "아이디",   new Vector2(0,  50));
+            CreateInputField(panel.transform, "LoginPW",  "비밀번호", new Vector2(0, -10), true);
+
+            CreateButton(panel.transform, "LoginBtn",    "로그인",          new Vector2(0, -80),  new Vector2(260, 48), new Color(0.13f, 0.13f, 0.16f), Color.white);
+            CreateButton(panel.transform, "ToSignupBtn", "계정 생성",       new Vector2(0, -140), new Vector2(260, 38), Color.clear, new Color(0.4f, 0.4f, 0.4f));
+            CreateButton(panel.transform, "ToRecoverBtn","아이디 / 비밀번호 찾기", new Vector2(0, -183), new Vector2(260, 30), Color.clear, new Color(0.5f, 0.5f, 0.5f));
+
+            return panel;
+        }
+
+        // ── Panel 빌더: Signup ────────────────────────────────────────
+        private static GameObject BuildSignupPanel(Transform parent)
+        {
+            GameObject panel = new GameObject("Panel_Signup", typeof(RectTransform));
+            panel.transform.SetParent(parent, false);
+            RectTransform rect = panel.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            
+            // 기존 씬의 UI 요소 위치를 참고하여 적절한 위치 지정
+            CreateText(panel.transform, "PanelTitle", "계정 생성", new Vector2(0, 150), 32, new Color(0.1f, 0.1f, 0.1f));
+
+            CreateInputField(panel.transform, "SignupID",   "아이디",   new Vector2(0,  50));
+            CreateInputField(panel.transform, "SignupPW",   "비밀번호", new Vector2(0,  -10), true);
+            CreateInputField(panel.transform, "SignupNick", "닉네임",   new Vector2(0, -70));
+
+            CreateButton(panel.transform, "SignupSubmitBtn", "계정 생성하기",   new Vector2(0, -140), new Vector2(260, 48), new Color(0.13f, 0.13f, 0.16f), Color.white);
+            CreateButton(panel.transform, "SignupBackBtn",   "← 로그인 화면으로", new Vector2(0, -200), new Vector2(200, 32), Color.clear, new Color(0.4f, 0.4f, 0.4f));
+
+            return panel;
+        }
+
+        // ── Panel 빌더: Recover ───────────────────────────────────────
+        private static GameObject BuildRecoverPanel(Transform parent)
+        {
+            GameObject panel = new GameObject("Panel_Recover", typeof(RectTransform));
+            panel.transform.SetParent(parent, false);
+            RectTransform rect = panel.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+
+            CreateText(panel.transform, "PanelTitle", "계정 찾기", new Vector2(0, 150), 32, new Color(0.1f, 0.1f, 0.1f));
+            CreateText(panel.transform, "Hint", "가입 시 사용한 닉네임을 입력하세요.", new Vector2(0, 90), 14, new Color(0.5f, 0.5f, 0.5f));
+
+            CreateInputField(panel.transform, "RecoverNick", "닉네임", new Vector2(0, 30));
+
+            CreateButton(panel.transform, "RecoverSubmitBtn", "계정 찾기",       new Vector2(0, -50),  new Vector2(260, 48), new Color(0.13f, 0.13f, 0.16f), Color.white);
+            CreateButton(panel.transform, "RecoverBackBtn",   "← 로그인 화면으로", new Vector2(0, -110), new Vector2(200, 32), Color.clear, new Color(0.4f, 0.4f, 0.4f));
+
+            return panel;
         }
 
         [MenuItem("Tools/Setup/Step 2: Polish Existing TitleScene")]
