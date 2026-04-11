@@ -109,10 +109,10 @@ namespace UI.Editor
             welcome.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 160);
             controller.welcomeText = welcome.GetComponent<Text>();
 
-            controller.startButton = startBtn.GetComponent<Button>();
-            controller.supportPortButton = statsBtn.GetComponent<Button>();
+            controller.startButton    = startBtn.GetComponent<Button>();
+            controller.statsButton    = statsBtn.GetComponent<Button>();
             controller.settingsButton = settingsBtn.GetComponent<Button>();
-            controller.quitButton = quitBtn.GetComponent<Button>();
+            controller.quitButton     = quitBtn.GetComponent<Button>();
 
             EditorSceneManager.SaveScene(scene, path);
         }
