@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Auth;
 
 namespace UI
 {
@@ -11,11 +12,14 @@ namespace UI
         public GameObject loginPanel;   // RightContainer/LoginPanel
         public GameObject signupPanel;  // RightContainer/SignupPanel
 
-        [Header("Login UI Elements")]
-        public InputField idInput;
-        public InputField passwordInput;
-        public Button loginButton;
-        public Button signupButton;     // 회원가입 창으로 전환
+        [Header("Login Fields")]
+        public InputField loginIdInput;
+        public InputField loginPwInput;
+        public Button loginBtn;
+        public Button toSignupBtn;
+        public Button toRecoverBtn;
+
+        [Header("General")]
         public Text statusText;
 
         [Header("Signup UI Elements")]
@@ -28,11 +32,20 @@ namespace UI
 
         private void Start()
         {
-            if (loginButton != null)
-                loginButton.onClick.AddListener(OnLoginClicked);
+            SetupButtonListeners();
+            ShowLoginPanel();
+        }
 
-            if (signupButton != null)
-                signupButton.onClick.AddListener(ShowSignupPanel);
+        private void SetupButtonListeners()
+        {
+            if (loginBtn != null) 
+            {
+                loginBtn.onClick.RemoveAllListeners();
+                loginBtn.onClick.AddListener(OnLoginClicked);
+            }
+
+            if (toSignupBtn != null)
+                toSignupBtn.onClick.AddListener(ShowSignupPanel);
 
             if (submitSignupButton != null)
                 submitSignupButton.onClick.AddListener(OnSubmitSignupClicked);
@@ -50,8 +63,6 @@ namespace UI
                     if (tf != null) confirmPasswordInput = tf.GetComponent<InputField>();
                 }
             }
-
-            ShowLoginPanel();
         }
 
         // ─────────────────────────────────────────
@@ -83,33 +94,32 @@ namespace UI
 
         private void OnLoginClicked()
         {
-            if (string.IsNullOrEmpty(idInput?.text) || string.IsNullOrEmpty(passwordInput?.text))
+            if (string.IsNullOrEmpty(loginIdInput?.text) || string.IsNullOrEmpty(loginPwInput?.text))
             {
-                if (statusText != null) statusText.text = "ID와 Password를 입력하세요.";
+                SetStatus("ID와 Password를 입력하세요.", Color.red);
                 return;
             }
 
-            if (statusText  != null) statusText.text = "로그인 중...";
-            if (loginButton != null) loginButton.interactable = false;
-
-            StartCoroutine(MockLoginRoutine());
+            SetStatus("로그인 중...", Color.blue);
+            StartCoroutine(PerformLoginRoutine());
         }
 
-        private IEnumerator MockLoginRoutine()
+        private IEnumerator PerformLoginRoutine()
         {
-            yield return new WaitForSeconds(1.0f);
+            var loginTask = AuthManager.Instance.Login(loginIdInput.text, loginPwInput.text);
+            while (!loginTask.IsCompleted) yield return null;
 
-            if (statusText != null) statusText.text = "로그인 성공!";
-            Debug.Log($"Logged in with ID: {idInput.text}");
-
-            PlayerPrefs.SetString("SessionToken", "mock_token_12345");
-            PlayerPrefs.SetString("UserId", idInput.text);
-            PlayerPrefs.Save();
-
-            if (UIManager.Instance != null)
-                UIManager.Instance.LoadScene("LobbyScene");
-            else
+            var result = loginTask.Result;
+            if (result.Success)
+            {
+                SetStatus("로그인 성공!", Color.green);
+                yield return new WaitForSeconds(0.5f);
                 SceneManager.LoadScene("LobbyScene");
+            }
+            else
+            {
+                SetStatus($"로그인 실패: {result.Message}", Color.red);
+            }
         }
 
         // ─────────────────────────────────────────
@@ -124,17 +134,17 @@ namespace UI
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(pw))
             {
-                if (signupStatusText != null) signupStatusText.text = "ID와 Password를 입력하세요.";
+                if (signupStatusText != null) { signupStatusText.text = "ID와 Password를 입력하세요."; signupStatusText.color = Color.red; }
                 return;
             }
 
             if (pw != pwConfirm)
             {
-                if (signupStatusText != null) signupStatusText.text = "비밀번호가 일치하지 않습니다.";
+                if (signupStatusText != null) { signupStatusText.text = "비밀번호가 일치하지 않습니다."; signupStatusText.color = Color.red; }
                 return;
             }
 
-            if (signupStatusText    != null) signupStatusText.text = "회원가입 처리 중...";
+            if (signupStatusText    != null) { signupStatusText.text = "회원가입 처리 중..."; signupStatusText.color = Color.blue; }
             if (submitSignupButton  != null) submitSignupButton.interactable = false;
 
             StartCoroutine(MockSignupRoutine());
@@ -144,13 +154,22 @@ namespace UI
         {
             yield return new WaitForSeconds(1.0f);
 
-            if (signupStatusText != null) signupStatusText.text = "회원가입 성공! 로그인 화면으로 이동합니다.";
-            Debug.Log($"Signup successful for ID: {newIdInput.text}");
+            if (signupStatusText != null) { signupStatusText.text = "회원가입 성공! 로그인 화면으로 이동합니다."; signupStatusText.color = Color.green; }
+            Debug.Log($"Signup successful for ID: {newIdInput?.text}");
 
             yield return new WaitForSeconds(1.5f);
 
             if (submitSignupButton != null) submitSignupButton.interactable = true;
             ShowLoginPanel();
+        }
+
+        private void SetStatus(string message, Color color)
+        {
+            if (statusText != null)
+            {
+                statusText.text = message;
+                statusText.color = color;
+            }
         }
     }
 }
