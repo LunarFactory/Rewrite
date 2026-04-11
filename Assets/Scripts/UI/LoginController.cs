@@ -2,70 +2,74 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Auth;
 
 namespace UI
 {
     public class LoginController : MonoBehaviour
     {
-        public InputField idInput;
-        public InputField passwordInput;
-        public Button loginButton;
-        public Button signupButton;
+        [Header("Login Fields")]
+        public InputField loginIdInput;
+        public InputField loginPwInput;
+        public Button loginBtn;
+        public Button toSignupBtn;
+        public Button toRecoverBtn;
+
+        [Header("General")]
         public Text statusText;
 
         private void Start()
         {
-            if (loginButton != null)
-                loginButton.onClick.AddListener(OnLoginClicked);
-                
-            if (signupButton != null)
-                signupButton.onClick.AddListener(OnSignupClicked);
+            SetupButtonListeners();
+        }
+
+        private void SetupButtonListeners()
+        {
+            if (loginBtn != null) 
+            {
+                loginBtn.onClick.RemoveAllListeners();
+                loginBtn.onClick.AddListener(OnLoginClicked);
+            }
+            // Navigation is now handled explicitly via Unity Events (SceneLoadTrigger) in the Inspector
         }
 
         private void OnLoginClicked()
         {
-            if (string.IsNullOrEmpty(idInput?.text) || string.IsNullOrEmpty(passwordInput?.text))
+            if (string.IsNullOrEmpty(loginIdInput?.text) || string.IsNullOrEmpty(loginPwInput?.text))
             {
-                if (statusText != null) statusText.text = "ID와 Password를 입력하세요.";
+                SetStatus("ID와 Password를 입력하세요.", Color.red);
                 return;
             }
 
-            if (statusText != null) statusText.text = "로그인 중...";
-            loginButton.interactable = false;
-            
-            // Mock network call
-            StartCoroutine(MockLoginRoutine());
+            SetStatus("로그인 중...", Color.blue);
+            StartCoroutine(PerformLoginRoutine());
         }
 
-        private IEnumerator MockLoginRoutine()
+        private IEnumerator PerformLoginRoutine()
         {
-            yield return new WaitForSeconds(1.0f);
-            
-            // Assume success
-            if (statusText != null) statusText.text = "로그인 성공!";
-            Debug.Log($"Logged in with ID: {idInput.text}");
-            
-            // Save mock token
-            PlayerPrefs.SetString("SessionToken", "mock_token_12345");
-            PlayerPrefs.SetString("UserId", idInput.text);
-            PlayerPrefs.Save();
+            var loginTask = AuthManager.Instance.Login(loginIdInput.text, loginPwInput.text);
+            while (!loginTask.IsCompleted) yield return null;
 
-            // Load Lobby
-            if (UIManager.Instance != null)
+            var result = loginTask.Result;
+            if (result.Success)
             {
-                UIManager.Instance.LoadScene("LobbyScene");
+                SetStatus("로그인 성공!", Color.green);
+                yield return new WaitForSeconds(0.5f);
+                SceneManager.LoadScene("LobbyScene");
             }
             else
             {
-                SceneManager.LoadScene("LobbyScene");
+                SetStatus($"로그인 실패: {result.Message}", Color.red);
             }
         }
 
-        private void OnSignupClicked()
+        private void SetStatus(string message, Color color)
         {
-            // Just display a mock message
-            if (statusText != null) statusText.text = "회원가입 요청됨 (진행중...)";
-            Debug.Log("Signup Clicked. Mock flow.");
+            if (statusText != null)
+            {
+                statusText.text = message;
+                statusText.color = color;
+            }
         }
     }
 }
