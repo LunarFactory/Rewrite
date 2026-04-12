@@ -125,43 +125,25 @@ namespace Level
             var sr = player.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.color = Color.white; // Ensure it's not blue anymore
-#if UNITY_EDITOR
-                Sprite idle1 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_idle1.png");
-                Sprite idle2 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_idle2.png");
-                Sprite run1 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run1.png");
-                Sprite run2 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run2.png");
-                Sprite run3 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run3.png");
-                Sprite run4 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run4.png");
-                Sprite runU1 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run_upside1.png");
-                Sprite runU2 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run_upside2.png");
-                Sprite runU3 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run_upside3.png");
-                Sprite runU4 = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/player_run_upside4.png");
-
-                if (idle1 != null) sr.sprite = idle1;
-
+                // We let PlayerSpriteAnimator handle the sprites from its internal sheets.
+                // Just ensure color is white and it uses correct sorting.
+                sr.color = Color.white;
+                sr.sortingOrder = 10;
+                
                 var animator = player.GetComponent<Player.PlayerSpriteAnimator>();
                 if (animator == null) animator = player.AddComponent<Player.PlayerSpriteAnimator>();
                 
-                animator.idleSprites = new Sprite[] { idle1, idle2 };
-                animator.runSprites = new Sprite[] { run1, run2, run3, run4 };
-                animator.runUpsideSprites = new Sprite[] { runU1, runU2, runU3, runU4 };
-                animator.fps = 10f;
-#else
-                if (sr.sprite == null)
-                {
-                    sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f, 4f);
-                    sr.color = Color.blue;
-                }
-#endif
+                // If it's a fresh component, we might want default FPS, 
+                // but let's not overwrite the sheets configured in the Inspector or Scene.
+                if (animator.fps <= 0) animator.fps = 10f;
             }
 
             var col = player.GetComponent<BoxCollider2D>();
             if (col == null) 
             {
                 col = player.AddComponent<BoxCollider2D>();
-                col.size = new Vector2(1f, 1f);
             }
+            col.size = new Vector2(0.7f, 0.7f); // Optimized player hitbox
 
             // RB setup
             var rb = player.GetComponent<Rigidbody2D>();
@@ -177,9 +159,10 @@ namespace Level
             Transform weaponPivot = player.transform.Find("WeaponPivot");
             if (weaponPivot != null)
             {
-                if (weaponPivot.GetComponent<WeaponPistol>() == null)
+                var pistol = weaponPivot.GetComponent<WeaponPistol>();
+                if (pistol == null)
                 {
-                    var pistol = weaponPivot.gameObject.AddComponent<WeaponPistol>();
+                    pistol = weaponPivot.gameObject.AddComponent<WeaponPistol>();
                     
                     // Create runtime WeaponData
                     WeaponData data = ScriptableObject.CreateInstance<WeaponData>();
@@ -199,35 +182,57 @@ namespace Level
 
                     var field2 = typeof(WeaponBase).GetField("firePoint", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     if (field2 != null) field2.SetValue(pistol, firePoint.transform);
+                }
 
-                    // Create Projectile Prefab
-                    GameObject bullet = new GameObject("BulletPrefab");
-                    bullet.SetActive(false);
-                    var bSr = bullet.AddComponent<SpriteRenderer>();
+                // Always ensure Projectile Prefab is configured correctly
+                var prefabField = typeof(WeaponBase).GetField("projectilePrefab", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                GameObject bulletPrefab = (GameObject)prefabField?.GetValue(pistol);
 
-                    // Load bullet_normal.png sprite
+                // Use Unity's native null check for destroyed objects
+                if (!bulletPrefab || bulletPrefab.name.Contains("BulletPrefab"))
+                {
+                    if (!bulletPrefab)
+                    {
+                        bulletPrefab = new GameObject("BulletPrefab");
+                        bulletPrefab.SetActive(false);
+                        bulletPrefab.AddComponent<Projectile>();
+                        prefabField?.SetValue(pistol, bulletPrefab);
+                    }
+
+                    var bCol = bulletPrefab.GetComponent<BoxCollider2D>();
+                    if (bCol == null) bCol = bulletPrefab.AddComponent<BoxCollider2D>();
+                    bCol.isTrigger = true;
+                    bCol.size = new Vector2(0.4f, 0.4f); // Significantly shrunken bullet hitbox
+
+                    var bRb = bulletPrefab.GetComponent<Rigidbody2D>();
+                    if (bRb == null) bRb = bulletPrefab.AddComponent<Rigidbody2D>();
+                    bRb.gravityScale = 0;
+                    bRb.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+                    var bSr = bulletPrefab.GetComponent<SpriteRenderer>();
+                    if (bSr == null) bSr = bulletPrefab.AddComponent<SpriteRenderer>();
 #if UNITY_EDITOR
-                    Sprite bulletSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/bullet_normal.png");
+                    string bPath = "Assets/Sprites/bullet/bullet_normal.png";
+                    Sprite bulletSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(bPath);
+                    if (bulletSprite == null)
+                    {
+                        var allAssets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(bPath);
+                        foreach (var asset in allAssets) {
+                            if (asset is Sprite s) {
+                                bulletSprite = s;
+                                break;
+                            }
+                        }
+                    }
+
                     if (bulletSprite != null)
                     {
-                        // Set PPU and Point filter mode at runtime import
-                        UnityEditor.TextureImporter bImporter = UnityEditor.AssetImporter.GetAtPath("Assets/Sprites/bullet_normal.png") as UnityEditor.TextureImporter;
-                        if (bImporter != null)
-                        {
-                            bool bChanged = false;
-                            if (bImporter.spritePixelsPerUnit != 16f) { bImporter.spritePixelsPerUnit = 16f; bChanged = true; }
-                            if (bImporter.filterMode != FilterMode.Point) { bImporter.filterMode = FilterMode.Point; bChanged = true; }
-                            if (bImporter.textureCompression != UnityEditor.TextureImporterCompression.Uncompressed) { bImporter.textureCompression = UnityEditor.TextureImporterCompression.Uncompressed; bChanged = true; }
-                            if (bImporter.spriteImportMode != UnityEditor.SpriteImportMode.Single) { bImporter.spriteImportMode = UnityEditor.SpriteImportMode.Single; bChanged = true; }
-                            UnityEditor.TextureImporterSettings bTexSettings = new UnityEditor.TextureImporterSettings();
-                            bImporter.ReadTextureSettings(bTexSettings);
-                            if (bTexSettings.spriteAlignment != (int)SpriteAlignment.Center) { bTexSettings.spriteAlignment = (int)SpriteAlignment.Center; bChanged = true; }
-                            if (bChanged) { bImporter.SetTextureSettings(bTexSettings); bImporter.SaveAndReimport(); bulletSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/bullet_normal.png"); }
-                        }
                         bSr.sprite = bulletSprite;
+                        bSr.color = Color.white;
                     }
                     else
                     {
+                        Debug.LogError($"[TestSetup] Failed to load bullet sprite from: {bPath}. Falling back to red circle.");
                         bSr.sprite = CreateCircleSprite();
                         bSr.color = Color.red;
                     }
@@ -235,23 +240,14 @@ namespace Level
                     bSr.sprite = CreateCircleSprite();
                     bSr.color = Color.red;
 #endif
-
-                    var bCol = bullet.AddComponent<BoxCollider2D>();
-                    bCol.isTrigger = true;
-                    var bRb = bullet.AddComponent<Rigidbody2D>();
-                    bRb.gravityScale = 0;
-                    bRb.interpolation = RigidbodyInterpolation2D.Interpolate;
-                    bullet.AddComponent<Projectile>();
-
-                    var field3 = typeof(WeaponBase).GetField("projectilePrefab", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    if (field3 != null) field3.SetValue(pistol, bullet);
-                    
-                    // Hook into controller
-                    var ctrl = player.GetComponent<Player.PlayerController>();
+                }
+                
+                // Hook into controller
+                var ctrl = player.GetComponent<Player.PlayerController>();
+                if (ctrl != null)
+                {
                     var field4 = typeof(Player.PlayerController).GetField("currentWeapon", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     if (field4 != null) field4.SetValue(ctrl, pistol);
-
-                    // Assign weaponPivot (public field) so HandleAiming has a pivot reference
                     ctrl.weaponPivot = weaponPivot;
                 }
             }

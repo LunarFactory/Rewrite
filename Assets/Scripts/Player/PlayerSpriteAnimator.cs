@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 namespace Player
 {
@@ -9,7 +10,13 @@ namespace Player
         public PlayerController controller;
         private SpriteRenderer spriteRenderer;
 
-        [Header("Sprites")]
+        [Header("Atlas Settings")]
+        [Tooltip("Assign the sliced sprites from player_idle here.")]
+        public Sprite[] idleSheet;
+        [Tooltip("Assign the sliced sprites from player_run here. Frames 1-4 = Run, 5-8 = Run Upside.")]
+        public Sprite[] runSheet;
+
+        [Header("Animation Arrays (Auto-populated if Atlas used)")]
         public Sprite[] idleSprites;
         public Sprite[] runSprites;
         public Sprite[] runUpsideSprites;
@@ -27,7 +34,43 @@ namespace Player
             spriteRenderer = GetComponent<SpriteRenderer>();
             if (controller == null)
             {
-                controller = GetComponentInParent<PlayerController>();
+                controller = GetComponent<PlayerController>();
+                if (controller == null) controller = GetComponentInParent<PlayerController>();
+            }
+
+            InitializeAnimations();
+        }
+
+        private void InitializeAnimations()
+        {
+            // IDLE: Use full idleSheet if available
+            if (idleSheet != null && idleSheet.Length > 0)
+            {
+                idleSprites = idleSheet;
+            }
+
+            // RUN / RUN UPSIDE: Partition runSheet
+            if (runSheet != null && runSheet.Length > 0)
+            {
+                // Run: frames 1-4 (indices 0-3)
+                int runFrameCount = Mathf.Min(4, runSheet.Length);
+                runSprites = runSheet.Take(runFrameCount).ToArray();
+
+                // Run Upside: frames 5-8 (indices 4-7)
+                if (runSheet.Length >= 5)
+                {
+                    int upsideCount = Mathf.Min(4, runSheet.Length - 4);
+                    runUpsideSprites = runSheet.Skip(4).Take(upsideCount).ToArray();
+                }
+            }
+
+            // Initialize current animation to Idle and show the first frame
+            if (idleSprites != null && idleSprites.Length > 0)
+            {
+                currentAnim = idleSprites;
+                currentFrame = 0;
+                UpdateSprite();
+                // Debug.Log($"[PlayerAnimator] Initialized with {idleSprites.Length} idle frames.");
             }
         }
 
@@ -93,10 +136,21 @@ namespace Player
 
         private void UpdateSprite()
         {
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null) return;
+
             if (currentAnim != null && currentAnim.Length > 0 && currentFrame < currentAnim.Length)
             {
                 spriteRenderer.sprite = currentAnim[currentFrame];
+               // Debug.Log($"[Animator] Sprite set to: {spriteRenderer.sprite.name} on {gameObject.name}");
             }
+        }
+
+        [ContextMenu("Refresh From Sheets")]
+        private void RefreshFromSheets()
+        {
+            InitializeAnimations();
+            Debug.Log($"Animations refreshed from sheets. Run: {runSprites?.Length ?? 0}, Upside: {runUpsideSprites?.Length ?? 0}");
         }
     }
 }

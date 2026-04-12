@@ -1,97 +1,97 @@
 fileFormatVersion: 2
-guid: 4b3fb217a96021342b46ae776c77aa3a
+guid: 6deb8c1f706b17c47bb4453529f26619
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7411243494815320723
-    second: naomi_0
+      213: -110253057803913907
+    second: item_atlas_0
   - first:
-      213: -2322559218184211596
-    second: naomi_1
+      213: 74774517053358310
+    second: item_atlas_1
   - first:
-      213: 3724942184924268640
-    second: naomi_2
+      213: -167672382679502254
+    second: item_atlas_2
   - first:
-      213: -4008190543253089775
-    second: naomi_3
+      213: 8427203471666680303
+    second: item_atlas_3
   - first:
-      213: -4923191638526832186
-    second: naomi_4
+      213: 1595240440125043151
+    second: item_atlas_4
   - first:
-      213: -8359610627307880343
-    second: naomi_5
+      213: 2352905312685420864
+    second: item_atlas_5
   - first:
-      213: -639098918904588842
-    second: naomi_6
+      213: 4309450945795447526
+    second: item_atlas_6
   - first:
-      213: 5930977659318152666
-    second: naomi_7
+      213: -2876290062221220661
+    second: item_atlas_7
   - first:
-      213: -1092572937043891608
-    second: naomi_8
+      213: 2206242427272907791
+    second: item_atlas_8
   - first:
-      213: -8806749550365621360
-    second: naomi_9
+      213: 2407915556575865624
+    second: item_atlas_9
   - first:
-      213: -7276090444688182674
-    second: naomi_10
+      213: 596238918372449588
+    second: item_atlas_10
   - first:
-      213: 7520516291038767489
-    second: naomi_11
+      213: 2643497490704597763
+    second: item_atlas_11
   - first:
-      213: 1025207495334694936
-    second: naomi_12
+      213: -5020702907934583352
+    second: item_atlas_12
   - first:
-      213: 4741245321211457988
-    second: naomi_13
+      213: 2155063617703002175
+    second: item_atlas_13
   - first:
-      213: -7120986786239371728
-    second: naomi_14
+      213: 1979371559903902193
+    second: item_atlas_14
   - first:
-      213: 5809157909049735526
-    second: naomi_15
+      213: -5077066260086759624
+    second: item_atlas_15
   - first:
-      213: 798840579700988487
-    second: naomi_16
+      213: -2203902133515662219
+    second: item_atlas_16
   - first:
-      213: -7556078775896127323
-    second: naomi_17
+      213: 7392216969549802793
+    second: item_atlas_17
   - first:
-      213: -4813821707565152779
-    second: naomi_18
+      213: 185949584093502589
+    second: item_atlas_18
   - first:
-      213: 8632200397143592089
-    second: naomi_19
+      213: 5680651429845044380
+    second: item_atlas_19
   - first:
-      213: -2801764059323636420
-    second: naomi_20
+      213: -3636422283925311074
+    second: item_atlas_20
   - first:
-      213: 7146991252701228979
-    second: naomi_21
+      213: -6355480029324396608
+    second: item_atlas_21
   - first:
-      213: 3867953708312448731
-    second: naomi_22
+      213: -6435044860868182668
+    second: item_atlas_22
   - first:
-      213: -3457408765893023873
-    second: naomi_23
+      213: -6787179531955063524
+    second: item_atlas_23
   - first:
-      213: -2898610367202847197
-    second: naomi_24
+      213: -2939268370764038465
+    second: item_atlas_24
   - first:
-      213: -6578048094489638488
-    second: naomi_25
+      213: 4723048642802968650
+    second: item_atlas_25
   - first:
-      213: -955132905095522274
-    second: naomi_26
+      213: 1373847076197600120
+    second: item_atlas_26
   - first:
-      213: 1716204629706536155
-    second: naomi_27
+      213: -4220707353593549073
+    second: item_atlas_27
   - first:
-      213: -745090136895414590
-    second: naomi_28
+      213: 1624667362681672846
+    second: item_atlas_28
   - first:
-      213: 6598236785510299932
-    second: naomi_29
+      213: -2180824162610654767
+    second: item_atlas_29
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -124,7 +124,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -162,7 +162,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -187,12 +187,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: naomi_0
+      name: item_atlas_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 0
-        width: 14
+        x: 0
+        y: 112
+        width: 17
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -202,20 +202,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 39a446c21b60ad660800000000000000
-      internalID: 7411243494815320723
+      spriteID: d4572369d6d487ef0800000000000000
+      internalID: -110253057803913907
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_1
+      name: item_atlas_1
       rect:
         serializedVersion: 2
-        x: 17
-        y: 0
-        width: 14
-        height: 16
+        x: 0
+        y: 95
+        width: 49
+        height: 18
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,20 +224,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 473325e42bc94cfd0800000000000000
-      internalID: -2322559218184211596
+      spriteID: 6e0873fe607a90100800000000000000
+      internalID: 74774517053358310
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_2
+      name: item_atlas_2
       rect:
         serializedVersion: 2
-        x: 33
-        y: 0
-        width: 14
-        height: 16
+        x: 15
+        y: 111
+        width: 34
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -246,20 +246,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 068474d7e27a1b330800000000000000
-      internalID: 3724942184924268640
+      spriteID: 252beb73bde4cadf0800000000000000
+      internalID: -167672382679502254
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_3
+      name: item_atlas_3
       rect:
         serializedVersion: 2
-        x: 49
-        y: 0
-        width: 14
-        height: 16
+        x: 48
+        y: 113
+        width: 16
+        height: 15
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -268,18 +268,238 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 112d15defeb0068c0800000000000000
-      internalID: -4008190543253089775
+      spriteID: fe191a288e073f470800000000000000
+      internalID: 8427203471666680303
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_4
+      name: item_atlas_4
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 111
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc1bdf47abe632610800000000000000
+      internalID: 1595240440125043151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_5
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 111
+        width: 12
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0417eb86ae237a020800000000000000
+      internalID: 2352905312685420864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_6
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 113
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6eadb118dce3ecb30800000000000000
+      internalID: 4309450945795447526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_7
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 111
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc4615a7d6d5518d0800000000000000
+      internalID: -2876290062221220661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_8
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 97
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0c4ff56cc52e9e10800000000000000
+      internalID: 2206242427272907791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_9
       rect:
         serializedVersion: 2
         x: 65
-        y: 0
+        y: 79
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81b67d6e072aa6120800000000000000
+      internalID: 2407915556575865624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_10
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 79
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43d5ad22324464800800000000000000
+      internalID: 596238918372449588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 303851246f69fa420800000000000000
+      internalID: 2643497490704597763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_12
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 79
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c5d9c95e41e25ab0800000000000000
+      internalID: -5020702907934583352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_13
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 82
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f304e8931f258ed10800000000000000
+      internalID: 2155063617703002175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 80
         width: 14
         height: 16
       alignment: 0
@@ -290,19 +510,173 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6c15f68f94f4dabb0800000000000000
-      internalID: -4923191638526832186
+      spriteID: 1f9359252f3287b10800000000000000
+      internalID: 1979371559903902193
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_5
+      name: item_atlas_15
       rect:
         serializedVersion: 2
-        x: 81
-        y: 0
-        width: 14
+        x: 79
+        y: 81
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83f586ac223aa89b0800000000000000
+      internalID: -5077066260086759624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_16
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 79
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57cc214bfaa2a61e0800000000000000
+      internalID: -2203902133515662219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 63
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92d61ac0b2e669660800000000000000
+      internalID: 7392216969549802793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_18
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 47
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7c560a5920a49200800000000000000
+      internalID: 185949584093502589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_19
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 48
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9c8ab8c06ab5de40800000000000000
+      internalID: 5680651429845044380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_20
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 48
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9131590335d88dc0800000000000000
+      internalID: -3636422283925311074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_21
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 47
+        width: 34
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c7b70b069cccc7a0800000000000000
+      internalID: -6355480029324396608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_22
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 48
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -312,20 +686,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 960cbb2fc62bcfb80800000000000000
-      internalID: -8359610627307880343
+      spriteID: 47dbf3a1bc022b6a0800000000000000
+      internalID: -6435044860868182668
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_6
+      name: item_atlas_23
       rect:
         serializedVersion: 2
-        x: 97
-        y: 0
-        width: 14
-        height: 16
+        x: 0
+        y: 50
+        width: 33
+        height: 12
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -334,20 +708,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d51b5a5be67127f0800000000000000
-      internalID: -639098918904588842
+      spriteID: c15340bfc281fc1a0800000000000000
+      internalID: -6787179531955063524
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_7
+      name: item_atlas_24
       rect:
         serializedVersion: 2
-        x: 113
+        x: 0
         y: 0
-        width: 14
-        height: 16
+        width: 33
+        height: 49
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -356,20 +730,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: addaf6ae1c01f4250800000000000000
-      internalID: 5930977659318152666
+      spriteID: fbe711d5dfe9537d0800000000000000
+      internalID: -2939268370764038465
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_8
+      name: item_atlas_25
       rect:
         serializedVersion: 2
-        x: 129
-        y: 0
-        width: 14
-        height: 16
+        x: 32
+        y: 15
+        width: 33
+        height: 18
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -378,40 +752,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 86a2b44d3b666d0f0800000000000000
-      internalID: -1092572937043891608
+      spriteID: a48692387b3ab8140800000000000000
+      internalID: 4723048642802968650
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_9
+      name: item_atlas_26
       rect:
         serializedVersion: 2
-        x: 145
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 09340a0b1f328c580800000000000000
-      internalID: -8806749550365621360
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_10
-      rect:
-        serializedVersion: 2
-        x: 162
-        y: 0
+        x: 66
+        y: 16
         width: 13
         height: 16
       alignment: 0
@@ -422,19 +774,63 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e623fba7a42260b90800000000000000
-      internalID: -7276090444688182674
+      spriteID: 87b877803a2e01310800000000000000
+      internalID: 1373847076197600120
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: naomi_11
+      name: item_atlas_27
       rect:
         serializedVersion: 2
-        x: 178
-        y: 0
-        width: 13
+        x: 80
+        y: 18
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fee6d2036090d65c0800000000000000
+      internalID: -4220707353593549073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_28
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 15
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e84dfc6cb5afb8610800000000000000
+      internalID: 1624667362681672846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: item_atlas_29
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 16
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -444,404 +840,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 18967e6a8bd3e5860800000000000000
-      internalID: 7520516291038767489
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_12
-      rect:
-        serializedVersion: 2
-        x: 194
-        y: 0
-        width: 13
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8101e7409c44a3e00800000000000000
-      internalID: 1025207495334694936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_13
-      rect:
-        serializedVersion: 2
-        x: 210
-        y: 0
-        width: 13
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4c1bacbdf794cc140800000000000000
-      internalID: 4741245321211457988
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_14
-      rect:
-        serializedVersion: 2
-        x: 225
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 036a3fb1f3c2d2d90800000000000000
-      internalID: -7120986786239371728
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_15
-      rect:
-        serializedVersion: 2
-        x: 241
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6697f0d07564e9050800000000000000
-      internalID: 5809157909049735526
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_16
-      rect:
-        serializedVersion: 2
-        x: 257
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 74a9e39564d061b00800000000000000
-      internalID: 798840579700988487
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_17
-      rect:
-        serializedVersion: 2
-        x: 273
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5a8c7db136a632790800000000000000
-      internalID: -7556078775896127323
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_18
-      rect:
-        serializedVersion: 2
-        x: 289
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5f5c38469aed13db0800000000000000
-      internalID: -4813821707565152779
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_19
-      rect:
-        serializedVersion: 2
-        x: 305
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 99ccabd968cbbc770800000000000000
-      internalID: 8632200397143592089
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_20
-      rect:
-        serializedVersion: 2
-        x: 321
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c35ee83be622e19d0800000000000000
-      internalID: -2801764059323636420
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_21
-      rect:
-        serializedVersion: 2
-        x: 337
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3bfa41e8da63f2360800000000000000
-      internalID: 7146991252701228979
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_22
-      rect:
-        serializedVersion: 2
-        x: 353
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bde4e97876bbda530800000000000000
-      internalID: 3867953708312448731
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_23
-      rect:
-        serializedVersion: 2
-        x: 369
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f77ef99ab01d400d0800000000000000
-      internalID: -3457408765893023873
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_24
-      rect:
-        serializedVersion: 2
-        x: 385
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3261c908a3116c7d0800000000000000
-      internalID: -2898610367202847197
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_25
-      rect:
-        serializedVersion: 2
-        x: 401
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8a9828c2c1416b4a0800000000000000
-      internalID: -6578048094489638488
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_26
-      rect:
-        serializedVersion: 2
-        x: 417
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e189e7eeeafaeb2f0800000000000000
-      internalID: -955132905095522274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_27
-      rect:
-        serializedVersion: 2
-        x: 433
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bd4f983940f21d710800000000000000
-      internalID: 1716204629706536155
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_28
-      rect:
-        serializedVersion: 2
-        x: 449
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2ce93b8d778e8a5f0800000000000000
-      internalID: -745090136895414590
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: naomi_29
-      rect:
-        serializedVersion: 2
-        x: 465
-        y: 0
-        width: 14
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c19b140c565a19b50800000000000000
-      internalID: 6598236785510299932
+      spriteID: 1d1d0068af72cb1e0800000000000000
+      internalID: -2180824162610654767
       vertices: []
       indices: 
       edges: []
@@ -860,36 +860,36 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      naomi_0: 7411243494815320723
-      naomi_1: -2322559218184211596
-      naomi_10: -7276090444688182674
-      naomi_11: 7520516291038767489
-      naomi_12: 1025207495334694936
-      naomi_13: 4741245321211457988
-      naomi_14: -7120986786239371728
-      naomi_15: 5809157909049735526
-      naomi_16: 798840579700988487
-      naomi_17: -7556078775896127323
-      naomi_18: -4813821707565152779
-      naomi_19: 8632200397143592089
-      naomi_2: 3724942184924268640
-      naomi_20: -2801764059323636420
-      naomi_21: 7146991252701228979
-      naomi_22: 3867953708312448731
-      naomi_23: -3457408765893023873
-      naomi_24: -2898610367202847197
-      naomi_25: -6578048094489638488
-      naomi_26: -955132905095522274
-      naomi_27: 1716204629706536155
-      naomi_28: -745090136895414590
-      naomi_29: 6598236785510299932
-      naomi_3: -4008190543253089775
-      naomi_4: -4923191638526832186
-      naomi_5: -8359610627307880343
-      naomi_6: -639098918904588842
-      naomi_7: 5930977659318152666
-      naomi_8: -1092572937043891608
-      naomi_9: -8806749550365621360
+      item_atlas_0: -110253057803913907
+      item_atlas_1: 74774517053358310
+      item_atlas_10: 596238918372449588
+      item_atlas_11: 2643497490704597763
+      item_atlas_12: -5020702907934583352
+      item_atlas_13: 2155063617703002175
+      item_atlas_14: 1979371559903902193
+      item_atlas_15: -5077066260086759624
+      item_atlas_16: -2203902133515662219
+      item_atlas_17: 7392216969549802793
+      item_atlas_18: 185949584093502589
+      item_atlas_19: 5680651429845044380
+      item_atlas_2: -167672382679502254
+      item_atlas_20: -3636422283925311074
+      item_atlas_21: -6355480029324396608
+      item_atlas_22: -6435044860868182668
+      item_atlas_23: -6787179531955063524
+      item_atlas_24: -2939268370764038465
+      item_atlas_25: 4723048642802968650
+      item_atlas_26: 1373847076197600120
+      item_atlas_27: -4220707353593549073
+      item_atlas_28: 1624667362681672846
+      item_atlas_29: -2180824162610654767
+      item_atlas_3: 8427203471666680303
+      item_atlas_4: 1595240440125043151
+      item_atlas_5: 2352905312685420864
+      item_atlas_6: 4309450945795447526
+      item_atlas_7: -2876290062221220661
+      item_atlas_8: 2206242427272907791
+      item_atlas_9: 2407915556575865624
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
