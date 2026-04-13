@@ -18,7 +18,8 @@ namespace Player
 
         public void TakeDamage(float damage)
         {
-            if (stealth != null && stealth.IsDodging) return; // 무적 판정
+            // 스텔스 활성 중 (회피 포함) 모든 피해 면역
+            if (stealth != null && (stealth.IsDodging || stealth.IsStealthActive)) return;
             
             currentHealth -= damage;
             Debug.Log($"<color=red>Player Hit!</color> Took {damage} damage. HP: {currentHealth}");

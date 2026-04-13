@@ -8,8 +8,12 @@ namespace Enemy
         protected float currentHealth;
         public float MoveSpeed = 2f;
         public float AttackDamage = 10f;
+        public float HitStunDuration = 0.15f; // 피격시 경직 시간 (초)
         
         protected Transform playerTarget;
+        protected float stunTimer;
+        
+        public bool IsStunned => stunTimer > 0f;
 
         protected virtual void Start()
         {
@@ -19,9 +23,18 @@ namespace Enemy
             if (player != null) playerTarget = player.transform;
         }
 
+        protected virtual void Update()
+        {
+            if (stunTimer > 0f)
+            {
+                stunTimer -= Time.deltaTime;
+            }
+        }
+
         public virtual void TakeDamage(float damage)
         {
             currentHealth -= damage;
+            stunTimer = HitStunDuration; // 피격시 경직 적용
             Debug.Log($"{gameObject.name} took {damage} damage, health remaining: {currentHealth}");
             if (currentHealth <= 0)
             {

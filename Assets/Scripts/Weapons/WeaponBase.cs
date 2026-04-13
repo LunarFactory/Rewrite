@@ -8,6 +8,11 @@ namespace Weapons
         [SerializeField] protected WeaponData weaponData;
         [SerializeField] protected GameObject projectilePrefab;
         [SerializeField] protected Transform firePoint;
+        public Transform FirePoint => firePoint;
+
+        [Header("Allegiance")]
+        [Tooltip("True if this weapon is wielded by the player.")]
+        public bool isPlayerWeapon = true;
 
         protected float nextFireTime;
 
@@ -17,7 +22,13 @@ namespace Weapons
 
             nextFireTime = Time.time + (1f / weaponData.FireRate);
             
-            PlayerLogManager.Instance?.RecordShotFired();
+            if (isPlayerWeapon)
+            {
+                PlayerLogManager.Instance?.RecordShotFired();
+                // 사격 시 스텔스 해제
+                var stealth = GetComponentInParent<Player.PlayerStealth>();
+                stealth?.CancelStealth();
+            }
 
             SpawnProjectile(direction);
         }
@@ -28,10 +39,16 @@ namespace Weapons
 
             GameObject obj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
             obj.SetActive(true);
-            if (obj.TryGetComponent(out Projectile proj))
+            
+            // If the user forgot to add Projectile.cs to their bullet prefab, add it automatically!
+            if (!obj.TryGetComponent(out Projectile proj))
             {
-                proj.Initialize(direction, weaponData.ProjectileSpeed, weaponData.Damage, weaponData.PierceCount);
+                proj = obj.AddComponent<Projectile>();
             }
+            
+            float spd = weaponData.ProjectileSpeed > 0 ? weaponData.ProjectileSpeed : 20f;
+            float dmg = weaponData.Damage > 0 ? weaponData.Damage : 10f;
+            proj.Initialize(direction, spd, dmg, weaponData.PierceCount, isPlayerWeapon);
         }
     }
 }

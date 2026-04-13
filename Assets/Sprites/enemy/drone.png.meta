@@ -14,18 +14,6 @@ TextureImporter:
   - first:
       213: 2988518329322137845
     second: drone_3
-  - first:
-      213: -624756239524268068
-    second: drone_4
-  - first:
-      213: 6522191244071690637
-    second: drone_5
-  - first:
-      213: -4876431103759583992
-    second: drone_6
-  - first:
-      213: -1817111100859702293
-    second: drone_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -125,11 +113,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 8
-        width: 17
-        height: 8
+        y: 0
+        width: 16
+        height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,11 +135,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 16
-        y: 8
+        y: 0
         width: 16
-        height: 8
+        height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,11 +157,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 7
+        y: 0
         width: 16
-        height: 9
+        height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -191,11 +179,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 48
-        y: 7
+        y: 0
         width: 16
-        height: 9
+        height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -204,94 +192,6 @@ TextureImporter:
       bones: []
       spriteID: 5f86dff2699597920800000000000000
       internalID: 2988518329322137845
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: drone_4
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 17
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cd772ff928b6457f0800000000000000
-      internalID: -624756239524268068
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: drone_5
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d816e04616a738a50800000000000000
-      internalID: 6522191244071690637
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: drone_6
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8057eb06fbf635cb0800000000000000
-      internalID: -4876431103759583992
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: drone_7
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: be3a6dbc41358c6e0800000000000000
-      internalID: -1817111100859702293
       vertices: []
       indices: 
       edges: []
@@ -314,10 +214,6 @@ TextureImporter:
       drone_1: 5498624604312018247
       drone_2: 3045448774101167736
       drone_3: 2988518329322137845
-      drone_4: -624756239524268068
-      drone_5: 6522191244071690637
-      drone_6: -4876431103759583992
-      drone_7: -1817111100859702293
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
