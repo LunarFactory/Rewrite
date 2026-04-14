@@ -8,6 +8,7 @@ namespace Core
 
         public int CurrentFloor { get; private set; } = 1;
         public int CurrentSeed { get; private set; }
+        public Weapons.WeaponData.WeaponType CurrentWeaponType { get; set; } = Weapons.WeaponData.WeaponType.Pistol;
 
         private void Awake()
         {
@@ -17,6 +18,7 @@ namespace Core
                 return;
             }
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()

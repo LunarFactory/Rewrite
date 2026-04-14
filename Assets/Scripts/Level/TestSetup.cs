@@ -28,7 +28,7 @@ namespace Level
             }
 
             // 2. Map (Floor and Walls)
-            CreateMap();
+            //CreateMap();
 
             // 3. Projectile & Enemy Prefab creation
             CreatePrefabs();
@@ -66,11 +66,27 @@ namespace Level
             // Floor
             GameObject floor = new GameObject("Floor");
             floor.transform.SetParent(mapRoot.transform);
-            floor.transform.localScale = new Vector3(30, 30, 1);
+            floor.transform.localScale = Vector3.one;
             var fSr = floor.AddComponent<SpriteRenderer>();
+            fSr.color = Color.white;
+            fSr.sortingOrder = -10;
+
+#if UNITY_EDITOR
+            Sprite flrSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/tileset/floor.png");
+            if (flrSprite != null) {
+                fSr.sprite = flrSprite;
+                fSr.drawMode = SpriteDrawMode.Tiled;
+                fSr.size = new Vector2(30, 30);
+            } else {
+                fSr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f, 4f);
+                fSr.color = new Color(0.2f, 0.3f, 0.2f);
+                floor.transform.localScale = new Vector3(30, 30, 1);
+            }
+#else
             fSr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f, 4f);
             fSr.color = new Color(0.2f, 0.3f, 0.2f);
-            fSr.sortingOrder = -10;
+            floor.transform.localScale = new Vector3(30, 30, 1);
+#endif
 
             // Walls
             CreateWall(mapRoot, "WallTop", new Vector2(0, 15.5f), new Vector2(32, 1), Color.black);
@@ -84,15 +100,64 @@ namespace Level
             GameObject w = new GameObject(n);
             w.transform.SetParent(root.transform);
             w.transform.position = pos;
-            w.transform.localScale = scale;
+            w.transform.localScale = Vector3.one;
             w.tag = "Obstacle";
 
+            var col = w.AddComponent<BoxCollider2D>();
+            col.size = scale;
+
+#if UNITY_EDITOR
+            string wPath = "Assets/Sprites/tileset/wall.png";
+            var allSprites = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(wPath);
+            Sprite topSprite = null;
+            Sprite botSprite = null;
+            foreach (var asset in allSprites) {
+                if (asset is Sprite s) {
+                    if (s.name == "wall_5") topSprite = s;
+                    if (s.name == "wall_13") botSprite = s;
+                }
+            }
+
+            if (topSprite != null && botSprite != null) {
+                bool isVertical = scale.y > scale.x;
+
+                // Visual Top (Upper wall segment)
+                GameObject topPart = new GameObject("VisualTop");
+                topPart.transform.SetParent(w.transform);
+                topPart.transform.localPosition = isVertical ? Vector3.zero : new Vector3(0, 0.5f, 0); 
+                var srT = topPart.AddComponent<SpriteRenderer>();
+                srT.sprite = topSprite;
+                srT.drawMode = SpriteDrawMode.Tiled;
+                srT.size = isVertical ? new Vector2(1f, scale.y) : new Vector2(scale.x, 1f);
+                srT.sortingOrder = isVertical ? -5 : -1; // Top parts slightly higher sorting
+
+                // Visual Bottom (Lower wall segment)
+                if (!isVertical) {
+                    GameObject botPart = new GameObject("VisualBottom");
+                    botPart.transform.SetParent(w.transform);
+                    botPart.transform.localPosition = new Vector3(0, -0.5f, 0); 
+                    var srB = botPart.AddComponent<SpriteRenderer>();
+                    srB.sprite = botSprite;
+                    srB.drawMode = SpriteDrawMode.Tiled;
+                    srB.size = new Vector2(scale.x, 1f);
+                    srB.sortingOrder = -2;
+                }
+            } else {
+                var sr = w.AddComponent<SpriteRenderer>();
+                sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f, 4f);
+                sr.color = color;
+                sr.sortingOrder = -5;
+                w.transform.localScale = scale;
+                col.size = Vector2.one;
+            }
+#else
             var sr = w.AddComponent<SpriteRenderer>();
             sr.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f, 4f);
             sr.color = color;
             sr.sortingOrder = -5;
-
-            var col = w.AddComponent<BoxCollider2D>();
+            w.transform.localScale = scale;
+            col.size = Vector2.one;
+#endif
         }
 
         void CreatePrefabs()
@@ -107,10 +172,18 @@ namespace Level
             
 #if UNITY_EDITOR
             string dronePath = "Assets/Sprites/enemy/drone.png";
-            Sprite droneSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(dronePath);
-            if (droneSprite != null)
+            var allDrones = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(dronePath);
+            System.Collections.Generic.List<Sprite> droneFrames = new System.Collections.Generic.List<Sprite>();
+            foreach (var asset in allDrones) {
+                if (asset is Sprite s) droneFrames.Add(s);
+            }
+
+            if (droneFrames.Count > 0)
             {
-                eSr.sprite = droneSprite;
+                eSr.sprite = droneFrames[0];
+                var anim = EnemyPrefab.AddComponent<Enemy.EnemySpriteAnimator>();
+                anim.frames = droneFrames.ToArray();
+                anim.fps = 10f;
             }
             else
             {
@@ -167,7 +240,7 @@ namespace Level
             {
                 col = player.AddComponent<BoxCollider2D>();
             }
-            col.size = new Vector2(0.7f, 1.1f); // 상하 충돌 판정 확장
+            //col.size = new Vector2(0.7f, 1.1f); // 상하 충돌 판정 확장
 
             // RB setup
             var rb = player.GetComponent<Rigidbody2D>();
@@ -181,6 +254,14 @@ namespace Level
 
             // Weapon Setup
             Transform weaponPivot = player.transform.Find("WeaponPivot");
+            if (weaponPivot == null)
+            {
+                GameObject pivot = new GameObject("WeaponPivot");
+                pivot.transform.SetParent(player.transform);
+                pivot.transform.localPosition = Vector3.zero;
+                weaponPivot = pivot.transform;
+            }
+
             if (weaponPivot != null)
             {
                 // Create a dedicated object for the weapon visuals and logic, offset from the pivot
@@ -194,72 +275,87 @@ namespace Level
                     weaponInstance = weaponObj.transform;
                 }
 
-                var pistol = weaponInstance.GetComponent<WeaponPistol>();
-                if (pistol == null)
-                {
-                    pistol = weaponInstance.gameObject.AddComponent<WeaponPistol>();
-                }
-                
-                // Ensure Visuals component is present
-                if (weaponInstance.GetComponent<WeaponVisuals>() == null)
-                    weaponInstance.gameObject.AddComponent<WeaponVisuals>();
+            Weapons.WeaponData.WeaponType targetType = Weapons.WeaponData.WeaponType.Pistol;
+            if (Core.RunManager.Instance != null)
+            {
+                targetType = Core.RunManager.Instance.CurrentWeaponType;
+            }
 
-                // Ensure SpriteRenderer is present and loaded
-                var weaponSr = weaponInstance.GetComponent<SpriteRenderer>();
-                if (weaponSr == null) weaponSr = weaponInstance.gameObject.AddComponent<SpriteRenderer>();
-                weaponSr.sortingOrder = 5;
+            Weapons.WeaponBase oldPistol = weaponInstance.GetComponent<Weapons.WeaponBase>();
+            if (oldPistol != null) DestroyImmediate(oldPistol); // Forcibly clean up any mismatched previous components
+
+            Weapons.WeaponBase pistol = null;
+            switch (targetType)
+            {
+                case Weapons.WeaponData.WeaponType.Pistol: pistol = weaponInstance.gameObject.AddComponent<Weapons.WeaponPistol>(); break;
+                case Weapons.WeaponData.WeaponType.AssaultRifle: pistol = weaponInstance.gameObject.AddComponent<Weapons.WeaponAssaultRifle>(); break;
+                case Weapons.WeaponData.WeaponType.Shotgun: pistol = weaponInstance.gameObject.AddComponent<Weapons.WeaponShotgun>(); break;
+                case Weapons.WeaponData.WeaponType.Sniper: pistol = weaponInstance.gameObject.AddComponent<Weapons.WeaponSniper>(); break;
+            }
+            
+            if (weaponInstance.GetComponent<Weapons.WeaponVisuals>() == null)
+                weaponInstance.gameObject.AddComponent<Weapons.WeaponVisuals>();
+
+            var weaponSr = weaponInstance.GetComponent<SpriteRenderer>();
+            if (weaponSr == null) weaponSr = weaponInstance.gameObject.AddComponent<SpriteRenderer>();
+            weaponSr.sortingOrder = 5;
 
 #if UNITY_EDITOR
-                if (weaponSr.sprite == null)
-                {
-                    string wPath = "Assets/Sprites/weapon/weapons.png";
-                    var allWeapons = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(wPath);
-                    foreach (var asset in allWeapons) {
-                        if (asset is Sprite s && s.name == "weapons_0") {
-                            weaponSr.sprite = s;
-                            break;
-                        }
-                    }
+            // Unconditionally update visual instead of checking if null
+            string wPath = "Assets/Sprites/weapon/weapons.png";
+            var allWeapons = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(wPath);
+            int spriteIdx = (int)targetType;
+            foreach (var asset in allWeapons) {
+                if (asset is Sprite s && s.name == "weapons_" + spriteIdx) {
+                    weaponSr.sprite = s;
+                    break;
                 }
+            }
 #endif
 
-                // Configure or Find FirePoint (Tip of the gun)
-                Transform firePoint = weaponInstance.Find("FirePoint");
-                if (firePoint == null)
-                {
-                    GameObject fpObj = new GameObject("FirePoint");
-                    fpObj.transform.SetParent(weaponInstance);
-                    firePoint = fpObj.transform;
-                }
-                // Updated position for Right-facing muzzle (relative to handle pivot at 0, 0.4)
-                firePoint.localPosition = new Vector3(0.8f, 0f, 0);
+            Transform firePoint = weaponInstance.Find("FirePoint");
+            if (firePoint == null)
+            {
+                GameObject fpObj = new GameObject("FirePoint");
+                fpObj.transform.SetParent(weaponInstance);
+                firePoint = fpObj.transform;
+            }
+            // Updated position for Right-facing muzzle (relative to handle pivot at 0, 0.4)
+            firePoint.localPosition = new Vector3(0.8f, 0f, 0);
 
-                // Reset/Verify Fields (using reflection to ensure they are set even if private)
-                var fieldData = typeof(WeaponBase).GetField("weaponData", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (fieldData != null && fieldData.GetValue(pistol) == null)
-                {
-                    WeaponData data = ScriptableObject.CreateInstance<WeaponData>();
-                    data.Type = WeaponData.WeaponType.Pistol;
-                    data.Damage = 10;
-                    data.FireRate = 5f;
-                    data.ProjectileSpeed = 15f;
-                    data.IsAuto = true;
-                    fieldData.SetValue(pistol, data);
-                }
+            // Unconditionally assign fresh data to avoid ghost nulls from previous runtime instances
+            Weapons.WeaponData data = ScriptableObject.CreateInstance<Weapons.WeaponData>();
+            data.Type = targetType;
+            
+            switch (targetType)
+            {
+                case Weapons.WeaponData.WeaponType.Pistol:
+                    data.Damage = 10f; data.FireRate = 5f; data.ProjectileSpeed = 20f; data.IsAuto = true;
+                    data.NumberOfPellets = 1; data.SpreadAngle = 0f; data.PierceCount = 0; break;
+                case Weapons.WeaponData.WeaponType.AssaultRifle:
+                    data.Damage = 5f; data.FireRate = 12f; data.ProjectileSpeed = 25f; data.IsAuto = true;
+                    data.NumberOfPellets = 1; data.SpreadAngle = 5f; data.PierceCount = 0; break;
+                case Weapons.WeaponData.WeaponType.Sniper:
+                    data.Damage = 40f; data.FireRate = 1f; data.ProjectileSpeed = 40f; data.IsAuto = false;
+                    data.NumberOfPellets = 1; data.SpreadAngle = 0f; data.PierceCount = 3; break;
+                case Weapons.WeaponData.WeaponType.Shotgun:
+                    data.Damage = 8f; data.FireRate = 1.5f; data.ProjectileSpeed = 30f; data.IsAuto = false;
+                    data.NumberOfPellets = 5; data.SpreadAngle = 30f; data.PierceCount = 0; break;
+            }
+            
+            pistol.weaponData = data;
 
-                var fieldFP = typeof(WeaponBase).GetField("firePoint", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (fieldFP != null) fieldFP.SetValue(pistol, firePoint);
+                pistol.firePoint = firePoint;
 
                 // Ensure Projectile Prefab is configured correctly
-                var prefabField = typeof(WeaponBase).GetField("projectilePrefab", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                GameObject bulletPrefab = (GameObject)prefabField?.GetValue(pistol);
+                GameObject bulletPrefab = pistol.projectilePrefab;
 
                 if (bulletPrefab == null)
                 {
                     bulletPrefab = new GameObject("BulletPrefab");
                     bulletPrefab.SetActive(false);
-                    bulletPrefab.AddComponent<Projectile>();
-                    prefabField?.SetValue(pistol, bulletPrefab);
+                    bulletPrefab.AddComponent<Weapons.Projectile>();
+                    pistol.projectilePrefab = bulletPrefab;
                 }
                 
                 // Expose it globally so enemies can use it if they don't have their own
@@ -315,8 +411,7 @@ namespace Level
                 var ctrl = player.GetComponent<Player.PlayerController>();
                 if (ctrl != null)
                 {
-                    var field4 = typeof(Player.PlayerController).GetField("currentWeapon", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    if (field4 != null) field4.SetValue(ctrl, pistol);
+                    ctrl.currentWeapon = pistol;
                     ctrl.weaponPivot = weaponPivot;
                 }
             }

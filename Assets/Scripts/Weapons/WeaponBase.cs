@@ -5,9 +5,9 @@ namespace Weapons
 {
     public abstract class WeaponBase : MonoBehaviour
     {
-        [SerializeField] protected WeaponData weaponData;
-        [SerializeField] protected GameObject projectilePrefab;
-        [SerializeField] protected Transform firePoint;
+        [SerializeField] public WeaponData weaponData;
+        [SerializeField] public GameObject projectilePrefab;
+        [SerializeField] public Transform firePoint;
         public Transform FirePoint => firePoint;
 
         [Header("Allegiance")]

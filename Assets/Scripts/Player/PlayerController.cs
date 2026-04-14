@@ -16,7 +16,7 @@ namespace Player
         [Header("Aiming & Weapon")]
         private Vector3 mousePos;
         public Transform weaponPivot;
-        [SerializeField] private Weapons.WeaponBase currentWeapon;
+        [SerializeField] public Weapons.WeaponBase currentWeapon;
 
         [Tooltip("캐릭터 스프라이트의 시각적 중심. 스프라이트 Pivot이 발치에 있을 경우 Y값을 올려서 맞추세요.")]
         [SerializeField] private Vector2 aimCenterOffset = new Vector2(0f, 0.25f);

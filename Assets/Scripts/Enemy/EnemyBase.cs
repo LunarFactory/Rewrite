@@ -9,6 +9,7 @@ namespace Enemy
         public float MoveSpeed = 2f;
         public float AttackDamage = 10f;
         public float HitStunDuration = 0.15f; // 피격시 경직 시간 (초)
+        public bool isInvincible = false; // 더미 등 체력 무한 적용용
         
         protected Transform playerTarget;
         protected float stunTimer;
@@ -33,10 +34,15 @@ namespace Enemy
 
         public virtual void TakeDamage(float damage)
         {
-            currentHealth -= damage;
+            if (!isInvincible)
+            {
+                currentHealth -= damage;
+            }
+            
             stunTimer = HitStunDuration; // 피격시 경직 적용
-            Debug.Log($"{gameObject.name} took {damage} damage, health remaining: {currentHealth}");
-            if (currentHealth <= 0)
+            Debug.Log($"{gameObject.name} took {damage} damage, health remaining: {(isInvincible ? "Unlimited" : currentHealth.ToString())}");
+            
+            if (currentHealth <= 0 && !isInvincible)
             {
                 Die();
             }
