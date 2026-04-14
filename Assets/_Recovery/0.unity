@@ -353,8 +353,6 @@ MonoBehaviour:
   idleSheet:
   - {fileID: -5115618752126089108, guid: b5c6a6613518f234b8e01ae54746bb63, type: 3}
   - {fileID: -5050664382621690000, guid: b5c6a6613518f234b8e01ae54746bb63, type: 3}
-  - {fileID: 262691671, guid: b5c6a6613518f234b8e01ae54746bb63, type: 3}
-  - {fileID: -90825058, guid: b5c6a6613518f234b8e01ae54746bb63, type: 3}
   runSheet:
   - {fileID: -938658608654533949, guid: 95b371eb65e494d4b831482d6616908a, type: 3}
   - {fileID: -4148961355465977301, guid: 95b371eb65e494d4b831482d6616908a, type: 3}
@@ -416,7 +414,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.75, y: 1}
+    oldSize: {x: 0.875, y: 1}
     newSize: {x: 0.14, y: 0.16}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
