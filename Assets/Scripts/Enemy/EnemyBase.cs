@@ -10,17 +10,17 @@ namespace Enemy
         public float AttackDamage = 10f;
         public float HitStunDuration = 0.15f; // 피격시 경직 시간 (초)
         public bool isInvincible = false; // 더미 등 체력 무한 적용용
-        
+
         protected Transform playerTarget;
         protected float stunTimer;
-        
+
         public bool IsStunned => stunTimer > 0f;
 
         protected virtual void Start()
         {
             currentHealth = MaxHealth;
             // Find player
-            GameObject player = GameObject.Find("Player");
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null) playerTarget = player.transform;
         }
 
@@ -38,10 +38,10 @@ namespace Enemy
             {
                 currentHealth -= damage;
             }
-            
+
             stunTimer = HitStunDuration; // 피격시 경직 적용
             Debug.Log($"{gameObject.name} took {damage} damage, health remaining: {(isInvincible ? "Unlimited" : currentHealth.ToString())}");
-            
+
             if (currentHealth <= 0 && !isInvincible)
             {
                 Die();
@@ -52,7 +52,7 @@ namespace Enemy
         {
             Destroy(gameObject);
         }
-        
+
         protected virtual void OnCollisionStay2D(Collision2D collision)
         {
             // Continuous damage if touching player

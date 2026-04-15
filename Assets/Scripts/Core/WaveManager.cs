@@ -9,6 +9,11 @@ namespace Core
         public enum WaveType { Mob, Shop, Rest, Boss }
         [field: SerializeField] public int CurrentWave { get; private set; } = 1;
 
+        // [추가] WaveManager가 직접 관리할 적 프리팹
+        [Header("Wave Resources")]
+        [SerializeField] private GameObject mobPrefab;
+        [SerializeField] private GameObject bossPrefab; // 보스전 대비용 추가
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -37,25 +42,35 @@ namespace Core
             switch (type)
             {
                 case WaveType.Mob:
-                    for (int i = 0; i < 3 + RunManager.Instance.CurrentFloor; i++)
-                    {
-                        if (Level.TestSetup.EnemyPrefab != null)
-                        {
-                            Vector2 randomPos = UnityEngine.Random.insideUnitCircle * 8f;
-                            Instantiate(Level.TestSetup.EnemyPrefab, randomPos, Quaternion.identity).SetActive(true);
-                        }
-                    }
-                    Invoke(nameof(TestCompleteWave), 10f); // 10 seconds for test
+                    SpawnEnemies(mobPrefab, 3 + RunManager.Instance.CurrentFloor);
+                    Invoke(nameof(TestCompleteWave), 10f); // 테스트용 10초 후 완료
                     break;
                 case WaveType.Shop:
-                    Invoke(nameof(TestCompleteWave), 1f);
-                    break;
                 case WaveType.Rest:
                     Invoke(nameof(TestCompleteWave), 1f);
                     break;
                 case WaveType.Boss:
+                    SpawnEnemies(bossPrefab, 1);
                     Invoke(nameof(TestCompleteWave), 5f);
                     break;
+            }
+        }
+
+        // [개선] 소환 로직을 별도 메서드로 분리하여 중복 제거 및 의존성 고립
+        private void SpawnEnemies(GameObject prefab, int count)
+        {
+            if (prefab == null)
+            {
+                Debug.LogWarning($"[WaveManager] {prefab?.name} 프리팹이 할당되지 않았습니다!");
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector2 randomPos = UnityEngine.Random.insideUnitCircle * 8f;
+                // [수정] TestSetup.EnemyPrefab이 아닌 로컬 변수 사용
+                GameObject enemy = Instantiate(prefab, randomPos, Quaternion.identity);
+                enemy.SetActive(true);
             }
         }
 

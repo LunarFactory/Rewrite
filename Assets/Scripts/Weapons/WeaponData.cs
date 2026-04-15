@@ -5,6 +5,8 @@ namespace Weapons
     [CreateAssetMenu(fileName = "NewWeaponData", menuName = "Weapons/WeaponData")]
     public class WeaponData : ScriptableObject
     {
+        public Sprite weaponSprite;
+        public GameObject projectilePrefab; // [추가] 무기별 전용 탄환 프리팹 (필요시)
         public enum WeaponType { Pistol, AssaultRifle, Sniper, Shotgun }
 
         public WeaponType Type;

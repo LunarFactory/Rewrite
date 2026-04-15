@@ -5,7 +5,10 @@ namespace Enemy
     [RequireComponent(typeof(Rigidbody2D))]
     public class DummyEnemy : EnemyBase
     {
+        [Header("Combat Settings")]
+        [Tooltip("적이 발사할 탄환 프리팹 (EnemyBullet 레이어 권장)")]
         public GameObject bulletPrefab;
+        public float bulletSpeed = 10f;
 
         private Rigidbody2D rb;
         private float stateTimer;
@@ -16,13 +19,20 @@ namespace Enemy
             base.Start();
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
-            stateTimer = 2f; 
+            stateTimer = 2f;
         }
 
         private void FixedUpdate()
         {
-            if (playerTarget == null) return;
+            // [추가] 만약 타겟이 없다면 다시 한 번 찾아봅니다.
+            if (playerTarget == null)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null) playerTarget = player.transform;
+                return; // 이번 프레임은 쉬고 다음 프레임부터 움직입니다.
+            }
 
+            // 피격 경직 중에는 정지
             if (IsStunned)
             {
                 rb.linearVelocity = Vector2.zero;
@@ -39,52 +49,43 @@ namespace Enemy
                 if (stateTimer <= 0)
                 {
                     isMoving = false;
-                    stateTimer = 0.5f; 
+                    stateTimer = 0.5f;
                     rb.linearVelocity = Vector2.zero;
-                    ShootAtPlayer();
+                    ShootAtPlayer(); // 사격 실행
                 }
             }
             else
             {
-                rb.linearVelocity = Vector2.zero; 
+                rb.linearVelocity = Vector2.zero;
 
                 if (stateTimer <= 0)
                 {
                     isMoving = true;
-                    stateTimer = 2f; 
+                    stateTimer = 2f;
                 }
             }
         }
 
         private void ShootAtPlayer()
         {
-            GameObject prefab = bulletPrefab;
-            if (prefab == null)
+            // [의존성 제거] TestSetup을 찾지 않고, 자신이 가진 프리팹만 사용합니다.
+            if (bulletPrefab == null)
             {
-                // Fallback attempt to get the generated prefab
-                var testSetup = FindAnyObjectByType<Level.TestSetup>();
-                if (testSetup != null) prefab = Level.TestSetup.BulletPrefab;
+                Debug.LogWarning($"[DummyEnemy] {gameObject.name}의 bulletPrefab이 할당되지 않았습니다!");
+                return;
             }
-
-            if (prefab == null) return;
 
             Vector2 dir = (playerTarget.position - transform.position).normalized;
-            GameObject bullet = Instantiate(prefab, transform.position, Quaternion.identity);
+
+            // 탄환 생성
+            GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
             bullet.SetActive(true);
 
-#if UNITY_EDITOR
-            if (bullet.TryGetComponent<SpriteRenderer>(out var sr))
+            // 탄환 초기화 (isPlayer = false)
+            if (bullet.TryGetComponent(out Weapons.Projectile proj))
             {
-                var normSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/bullet/bullet_normal.png");
-                if (normSprite != null) sr.sprite = normSprite;
+                proj.Initialize(dir, bulletSpeed, AttackDamage, 0, false);
             }
-#endif
-            
-            if (!bullet.TryGetComponent(out Weapons.Projectile proj))
-            {
-                proj = bullet.AddComponent<Weapons.Projectile>();
-            }
-            proj.Initialize(dir, 10f, AttackDamage, 0, false); // speed=10, isPlayer=false
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Weapons
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
-            // Ensure the collider is set as a trigger so it doesn't physically bounce or get blocked by the Player/other objects
             if (TryGetComponent<Collider2D>(out var col))
             {
                 col.isTrigger = true;
@@ -30,75 +29,81 @@ namespace Weapons
         public void Initialize(Vector2 direction, float speed, float damage, int pierceCount, bool isPlayer = true)
         {
             if (rb == null) rb = GetComponent<Rigidbody2D>();
-            
-            // Fallback just in case ProjectileSpeed in WeaponData is 0
+
             if (speed <= 0f) speed = 20f;
             if (damage <= 0f) damage = 10f;
-            
+
             moveVelocity = direction.normalized * speed;
             this.currentPierce = pierceCount;
             this.damageVal = damage;
             this.isPlayerProjectile = isPlayer;
             this.isInitialized = true;
-            
-            // Apply initial velocity immediately
+
             rb.linearVelocity = moveVelocity;
-            #if !UNITY_2023_1_OR_NEWER
+#if !UNITY_2023_1_OR_NEWER
             rb.velocity = moveVelocity;
-            #endif
-            
-            // Auto-align sprite to direction
+#endif
+
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            Destroy(gameObject, 3f); // Bullet life span
+            Destroy(gameObject, 3f);
         }
 
-        private void FixedUpdate()
-        {
-            if (!isInitialized || rb == null) return;
-            
-            // Enforce velocity continuously to override any arbitrary physics stopping
-            rb.linearVelocity = moveVelocity;
-            #if !UNITY_2023_1_OR_NEWER
-            rb.velocity = moveVelocity;
-            #endif
-        }
+        // FixedUpdate는 제거하거나, 특수한 외력이 있을 때만 사용하세요.
+        // 현재처럼 단순 직선 탄환이면 Initialize에서 속도 설정한 것으로 충분합니다.
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (!isInitialized) return;
 
-            // Player projectiles only affect Enemies
+            // [개선] 더 확실한 컴포넌트 감지 로직
             if (isPlayerProjectile)
             {
-                var enemy = collision.GetComponentInParent<Enemy.EnemyBase>();
+                // 적군인지 확인 (자신 혹은 부모에게 EnemyBase가 있는지)
+                var enemy = collision.GetComponent<Enemy.EnemyBase>() ?? collision.GetComponentInParent<Enemy.EnemyBase>();
+
                 if (enemy != null)
                 {
                     enemy.TakeDamage(damageVal);
                     Log.PlayerLogManager.Instance?.RecordShotHit();
 
-                    if (currentPierce <= 0) Destroy(gameObject);
-                    else currentPierce--;
+                    // [디버그] 히트 로그 추가
+                    Debug.Log($"[Projectile] Hit Enemy: {collision.name}, Damage: {damageVal}");
+
+                    HandlePierce();
+                    return; // 적을 맞췄으면 여기서 종료
                 }
             }
-            // Enemy projectiles only affect Players
             else
             {
-                var playerStats = collision.GetComponentInParent<Player.PlayerStats>();
+                // 플레이어인지 확인
+                var playerStats = collision.GetComponent<Player.PlayerStats>() ?? collision.GetComponentInParent<Player.PlayerStats>();
+
                 if (playerStats != null)
                 {
                     playerStats.TakeDamage(damageVal);
-
-                    if (currentPierce <= 0) Destroy(gameObject);
-                    else currentPierce--;
+                    HandlePierce();
+                    return;
                 }
             }
 
-            // Both destroy on obstacles unconditionally
+            // 장애물 충돌 (벽 등)
             if (collision.CompareTag("Obstacle"))
             {
                 Destroy(gameObject);
+            }
+        }
+
+        private void HandlePierce()
+        {
+            if (currentPierce <= 0)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                currentPierce--;
             }
         }
     }

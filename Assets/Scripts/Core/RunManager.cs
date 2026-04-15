@@ -8,7 +8,7 @@ namespace Core
 
         public int CurrentFloor { get; private set; } = 1;
         public int CurrentSeed { get; private set; }
-        public Weapons.WeaponData.WeaponType CurrentWeaponType { get; set; } = Weapons.WeaponData.WeaponType.Pistol;
+        private Weapons.WeaponData CurrentWeaponData;
 
         private void Awake()
         {
@@ -56,6 +56,16 @@ namespace Core
                 Debug.Log("[RunManager] Run Cleared!");
                 // Game clear logic
             }
+        }
+
+        public void SetWeapon(Weapons.WeaponData data)
+        {
+            CurrentWeaponData = data;
+        }
+
+        public Weapons.WeaponData GetWeapon()
+        {
+            return CurrentWeaponData;
         }
     }
 }

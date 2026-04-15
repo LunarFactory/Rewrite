@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef16fab2687a7240946c8872a93996c, type: 3}
+  m_Name: AssultRifleData
+  m_EditorClassIdentifier: Assembly-CSharp::Weapons.WeaponData
+  weaponSprite: {fileID: -5557420877203330147, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
+  projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
+  Type: 1
+  WeaponName: AssultRifle
+  Damage: 2
+  FireRate: 7
+  ProjectileSpeed: 15
+  IsAuto: 1
+  NumberOfPellets: 1
+  SpreadAngle: 20
+  PierceCount: 0

@@ -50,19 +50,19 @@ namespace Player
                 if (screenPos.z > 0)
                 {
                     string promptText = "[E] " + currentInteractable.GetInteractPrompt();
-                    
+
                     GUIStyle style = new GUIStyle(GUI.skin.label);
                     style.alignment = TextAnchor.MiddleCenter;
                     style.fontSize = 20;
                     style.fontStyle = FontStyle.Bold;
-                    
+
                     Vector2 size = style.CalcSize(new GUIContent(promptText));
                     Rect textRect = new Rect(screenPos.x - size.x / 2, Screen.height - screenPos.y - 40, size.x, size.y);
-                    
+
                     // Shadow
                     style.normal.textColor = Color.black;
                     GUI.Label(new Rect(textRect.x + 2, textRect.y + 2, textRect.width, textRect.height), promptText, style);
-                    
+
                     // Text
                     style.normal.textColor = Color.yellow;
                     GUI.Label(textRect, promptText, style);
