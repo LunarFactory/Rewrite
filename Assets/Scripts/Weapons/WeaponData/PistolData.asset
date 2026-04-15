@@ -17,9 +17,10 @@ MonoBehaviour:
   Type: 0
   WeaponName: Pistol
   Damage: 10
-  FireRate: 2
+  FireRate: 2.5
   ProjectileSpeed: 20
+  BulletDeceleration: 0.965
   IsAuto: 0
   NumberOfPellets: 1
-  SpreadAngle: 30
+  SpreadAngle: 20
   PierceCount: 0

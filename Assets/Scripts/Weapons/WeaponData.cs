@@ -16,6 +16,7 @@ namespace Weapons
         [Tooltip("Shots per second")]
         public float FireRate = 1f;
         public float ProjectileSpeed = 20f;
+        public float BulletDeceleration = 1.0f;
         public bool IsAuto = false;
         
         [Header("Shotgun Only")]

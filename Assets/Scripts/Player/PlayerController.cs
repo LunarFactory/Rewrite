@@ -61,6 +61,10 @@ namespace Player
                 {
                     Core.RunManager.Instance.SetWeapon(currentWeapon.weaponData);
                 }
+                else
+                {
+                    currentWeapon.weaponData = Core.RunManager.Instance.GetWeapon();
+                }
             }
             currentWeapon.Initialize(currentWeapon.weaponData);
         }
@@ -164,6 +168,7 @@ namespace Player
         public void SetCurrentWeapon(Weapons.WeaponData newData)
         {
             currentWeapon.Initialize(newData);
+            currentWeapon.ResetFireDelay();
         }
     }
 }

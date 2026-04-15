@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: SniperData
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.WeaponData
   weaponSprite: {fileID: -7888296697152109952, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
-  projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
+  projectilePrefab: {fileID: 674297919083904026, guid: c03c28a359a533b43b5ff3dcfb90bf69, type: 3}
   Type: 2
   WeaponName: Sniper
   Damage: 40
   FireRate: 0.5
-  ProjectileSpeed: 50
+  ProjectileSpeed: 30
+  BulletDeceleration: 0.99
   IsAuto: 1
   NumberOfPellets: 1
   SpreadAngle: 0

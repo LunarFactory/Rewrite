@@ -81,10 +81,18 @@ namespace Player
             Vector2 moveInput = controller.MoveInput;
             bool isMoving = moveInput.sqrMagnitude > 0.01f;
             
-            // Flip logic
-            if (isMoving && Mathf.Abs(moveInput.x) > 0.01f)
+            // Mouse Look Logic
+            Vector2 lookDir = Vector2.right;
+            if (Camera.main != null && UnityEngine.InputSystem.Mouse.current != null)
             {
-                isFacingRight = moveInput.x > 0;
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.InputSystem.Mouse.current.position.ReadValue());
+                lookDir = (Vector2)(mousePos - transform.position);
+            }
+
+            // Flip logic based on mouse position
+            if (Mathf.Abs(lookDir.x) > 0.01f)
+            {
+                isFacingRight = lookDir.x > 0;
                 spriteRenderer.flipX = !isFacingRight;
             }
 
@@ -92,7 +100,7 @@ namespace Player
             Sprite[] targetAnim = idleSprites;
             if (isMoving)
             {
-                if (moveInput.y > 0.1f)
+                if (lookDir.y > 0.1f)
                 {
                     targetAnim = runUpsideSprites;
                 }

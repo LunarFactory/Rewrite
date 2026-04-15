@@ -14,6 +14,20 @@ namespace Core
         [SerializeField] private GameObject mobPrefab;
         [SerializeField] private GameObject bossPrefab; // 보스전 대비용 추가
 
+        private void Start()
+        {
+            if (GameManager.Instance != null)
+            {
+                var RunManager = GameManager.Instance.GetComponent<RunManager>();
+
+                if (RunManager != null)
+                {
+                    Debug.Log($"현재 런의 무기: {RunManager.GetWeapon().WeaponName}");
+                    // ApplyRunSettings(runData);
+                }
+            }
+            StartWave(CurrentWave);
+        }
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -36,9 +50,9 @@ namespace Core
             WaveType type = GetWaveType(CurrentWave);
 
             Debug.Log($"[WaveManager] Wave {CurrentWave} Started - Type: {type}");
-            
+
             Log.PlayerLogManager.Instance?.OnWaveStarted(CurrentWave);
-            
+
             switch (type)
             {
                 case WaveType.Mob:
@@ -82,9 +96,9 @@ namespace Core
         public void CompleteCurrentWave()
         {
             Debug.Log($"[WaveManager] Wave {CurrentWave} Completed.");
-            
+
             Log.PlayerLogManager.Instance?.OnWaveCompleted(CurrentWave);
-            
+
             if (CurrentWave < 9)
             {
                 StartWave(CurrentWave + 1);
@@ -100,7 +114,7 @@ namespace Core
             if (wave == 4) return WaveType.Shop;
             if (wave == 8) return WaveType.Rest;
             if (wave == 9) return WaveType.Boss;
-            return WaveType.Mob; 
+            return WaveType.Mob;
         }
     }
 }

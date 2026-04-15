@@ -12,6 +12,9 @@ namespace Weapons
         private bool isPlayerProjectile = true;
         private Vector2 moveVelocity;
         private int currentPierce;
+        private float currentSpeed;
+        private float minSpeed;
+        public float decelerationRate = 1.00f; // 1.0이면 유지, 작을수록 빨리 느려짐
 
         private void Awake()
         {
@@ -26,20 +29,22 @@ namespace Weapons
             }
         }
 
-        public void Initialize(Vector2 direction, float speed, float damage, int pierceCount, bool isPlayer = true)
+        public void Initialize(Vector2 direction, float speed, float minSpeed, float damage, int pierceCount, bool isPlayer = true)
         {
             if (rb == null) rb = GetComponent<Rigidbody2D>();
 
             if (speed <= 0f) speed = 20f;
             if (damage <= 0f) damage = 10f;
 
-            moveVelocity = direction.normalized * speed;
+            moveVelocity = direction.normalized;
             this.currentPierce = pierceCount;
             this.damageVal = damage;
             this.isPlayerProjectile = isPlayer;
             this.isInitialized = true;
+            this.currentSpeed = speed;
+            this.minSpeed = minSpeed;
 
-            rb.linearVelocity = moveVelocity;
+            rb.linearVelocity = moveVelocity * currentSpeed;
 #if !UNITY_2023_1_OR_NEWER
             rb.velocity = moveVelocity;
 #endif
@@ -50,8 +55,22 @@ namespace Weapons
             Destroy(gameObject, 3f);
         }
 
-        // FixedUpdate는 제거하거나, 특수한 외력이 있을 때만 사용하세요.
-        // 현재처럼 단순 직선 탄환이면 Initialize에서 속도 설정한 것으로 충분합니다.
+        private void FixedUpdate()
+        {
+            if (!isInitialized || rb == null) return;
+
+            // [수정] 매 프레임 속도를 조금씩 줄임
+            currentSpeed *= decelerationRate;
+
+            // 최소 속도 아래로 내려가지 않게 방어 (너무 느려지면 이상하니까요)
+            if (currentSpeed < minSpeed)
+            {
+                Destroy(gameObject); // 혹은 아주 느려지면 소멸
+                return;
+            }
+
+            rb.linearVelocity = moveVelocity * currentSpeed;
+        }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {

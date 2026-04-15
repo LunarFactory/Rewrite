@@ -5,7 +5,7 @@ namespace Core
     public class GameManager : MonoBehaviour // MCP SYNC TEST - IF YOU SEE THIS, IT WORKS!
     {
         public static GameManager Instance { get; private set; }
-        public string projectVersion = "REWRITE-2026-v1.0"; // LIVE SYNC TEST - SHOULD APPEAR IN INSPECTOR
+        public string projectVersion = "REWRITE-2026-v0.5"; // LIVE SYNC TEST - SHOULD APPEAR IN INSPECTOR
 
 
         public enum GameState { MainMenu, Playing, Paused, GameOver }

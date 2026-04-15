@@ -15,9 +15,15 @@ namespace Weapons
         [SerializeField] private Vector3 handleOffset = new Vector3(0.2f, 0.2f, 0f);
         
         private bool wasLeft = false;
+        private SpriteRenderer sr;
         
         private void Update()
         {
+            sr = transform.parent.transform.parent.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                int parentOrder = sr.sortingOrder;
+            }
             HandleOrientation();
         }
 

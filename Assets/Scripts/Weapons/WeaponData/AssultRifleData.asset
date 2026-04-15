@@ -17,9 +17,10 @@ MonoBehaviour:
   Type: 1
   WeaponName: AssultRifle
   Damage: 2
-  FireRate: 7
-  ProjectileSpeed: 15
+  FireRate: 10
+  ProjectileSpeed: 20
+  BulletDeceleration: 0.97
   IsAuto: 1
   NumberOfPellets: 1
-  SpreadAngle: 20
+  SpreadAngle: 25
   PierceCount: 0

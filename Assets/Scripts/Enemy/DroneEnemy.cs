@@ -84,7 +84,7 @@ namespace Enemy
             // 탄환 초기화 (isPlayer = false)
             if (bullet.TryGetComponent(out Weapons.Projectile proj))
             {
-                proj.Initialize(dir, bulletSpeed, AttackDamage, 0, false);
+                proj.Initialize(dir, bulletSpeed, bulletSpeed / 5, AttackDamage, 0, false);
             }
         }
     }

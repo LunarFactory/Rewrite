@@ -18,8 +18,9 @@ MonoBehaviour:
   WeaponName: Shotgun
   Damage: 5
   FireRate: 1
-  ProjectileSpeed: 15
+  ProjectileSpeed: 25
+  BulletDeceleration: 0.92
   IsAuto: 1
-  NumberOfPellets: 10
-  SpreadAngle: 60
+  NumberOfPellets: 8
+  SpreadAngle: 45
   PierceCount: 0

@@ -67,11 +67,18 @@ namespace Weapons
             if (obj.TryGetComponent(out Projectile proj))
             {
                 float spd = Mathf.Max(weaponData.ProjectileSpeed, 5f);
+                float mspd = spd / 10;
                 float dmg = Mathf.Max(weaponData.Damage, 1f);
 
                 // 4. [중요] 계산된 finalDirection을 탄환에게 넘겨줍니다.
-                proj.Initialize(finalDirection, spd, dmg, weaponData.PierceCount, isPlayerWeapon);
+                proj.decelerationRate = weaponData.BulletDeceleration;
+                proj.Initialize(finalDirection, spd, mspd, dmg, weaponData.PierceCount, isPlayerWeapon);
             }
+        }
+
+        public void ResetFireDelay()
+        {
+            nextFireTime = Time.time;
         }
     }
 }
