@@ -61,10 +61,12 @@ namespace Player
 
                     // Shadow
                     style.normal.textColor = Color.black;
+                    style.hover.textColor = Color.black;
                     GUI.Label(new Rect(textRect.x + 2, textRect.y + 2, textRect.width, textRect.height), promptText, style);
 
                     // Text
                     style.normal.textColor = Color.yellow;
+                    style.hover.textColor = Color.yellow;
                     GUI.Label(textRect, promptText, style);
                 }
             }

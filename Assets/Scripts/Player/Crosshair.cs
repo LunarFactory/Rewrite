@@ -11,6 +11,7 @@ namespace Player
     {
         [Header("Crosshair Settings")]
         [SerializeField] private float size = 0.06f;
+        [SerializeField] private float thickness = 0.4f; // 선의 굵기 조절 (기존 0.15f -> 0.4f 로 굵게 설정)
         [SerializeField] private Color color = new Color(1f, 0.2f, 0.2f, 1f);
         [SerializeField] private float lineLength = 5f;
         [SerializeField] private float gapSize = 2f;
@@ -61,8 +62,8 @@ namespace Player
                 var lr = lineObj.AddComponent<LineRenderer>();
                 lr.useWorldSpace = false;
                 lr.positionCount = 2;
-                lr.startWidth = size * 0.15f;
-                lr.endWidth = size * 0.15f;
+                lr.startWidth = size * thickness;
+                lr.endWidth = size * thickness;
                 lr.material = new Material(Shader.Find("Sprites/Default"));
                 lr.startColor = color;
                 lr.endColor = color;

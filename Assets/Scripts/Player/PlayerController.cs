@@ -40,6 +40,13 @@ namespace Player
             {
                 currentWeapon = GetComponentInChildren<Weapons.WeaponBase>();
             }
+
+            // 크로스헤어 UI 추가 (기존 시스템 마우스 커서는 Crosshair.cs 내부에서 숨김 처리됨)
+            // Player 오브젝트 자체가 움직이지 않도록 별도의 빈 오브젝트를 생성하여 부착
+            if (FindAnyObjectByType<Crosshair>() == null)
+            {
+                new GameObject("CrosshairUI").AddComponent<Crosshair>();
+            }
         }
 
         private void Start()
