@@ -4,16 +4,18 @@ using Level; // IInteractable이 있는 네임스페이스
 
 namespace Level
 {
-    [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
+    [RequireComponent(typeof(BoxCollider2D))]
     public class FieldItem : MonoBehaviour, IInteractable
     {
         public PassiveItemData itemData; // 이 오브젝트가 어떤 아이템인지 저장
 
+        public Transform FieldVisual;
         private SpriteRenderer spriteRenderer;
 
         private void Awake()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            FieldVisual = spriteRenderer.transform;
             // 콜라이더를 트리거로 설정 (물리 충돌 방지, 감지만 수행)
             GetComponent<BoxCollider2D>().isTrigger = true;
         }
@@ -26,14 +28,17 @@ namespace Level
                 spriteRenderer.sprite = itemData.icon;
             }
         }
-        
+
         private void Update()
         {
-            // 사인파를 이용해 위아래로 부드럽게 움직임 (둥둥 뜨는 효과)
-            float newY = Mathf.Sin(Time.time * 2f) * 0.1f;
-            spriteRenderer.transform.localPosition = new Vector3(0, newY, 0);
+            if (FieldVisual != null)
+            {
+                float newY = Mathf.Sin(Time.time * 2f) * 0.1f;
+                // 부모(본체)는 가만히 있고, 자식(이미지)만 위아래로 움직입니다.
+                FieldVisual.localPosition = new Vector3(0, newY, 0);
+            }
         }
-        
+
         // [IInteractable 구현] 상호작용 시 출력될 텍스트
         public string GetInteractPrompt()
         {
