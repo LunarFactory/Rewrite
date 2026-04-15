@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7818336578769643338}
   - component: {fileID: 3012368506391336664}
   - component: {fileID: 6285400986896771740}
-  - component: {fileID: -2298761045232301213}
   m_Layer: 0
   m_Name: Station_SupplyPort
   m_TagString: Untagged
@@ -227,16 +226,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!210 &-2298761045232301213
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6864721378166182496}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
-  m_SortAtRoot: 0
-  m_Sort3DAs2D: 0
