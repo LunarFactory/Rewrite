@@ -207,7 +207,7 @@ namespace UI
             {
                 SetStatus("로그인 성공!", Color.green);
                 yield return new WaitForSeconds(0.5f);
-                SceneManager.LoadScene("LobbyScene");
+                SceneManager.LoadScene("TitleScene");
             }
             else
             {

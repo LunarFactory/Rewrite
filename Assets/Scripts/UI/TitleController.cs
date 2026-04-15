@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace UI
 {
-    public class LobbyController : MonoBehaviour
+    public class TitleController : MonoBehaviour
     {
         public Text welcomeText;
         public Button startButton;
@@ -43,11 +43,11 @@ namespace UI
             // In the workspace, TestSetup is attached to "SampleScene" initially. Let's call it "SampleScene".
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.LoadScene("SampleScene");
+                UIManager.Instance.LoadScene("LobbyScene");
             }
             else
             {
-                SceneManager.LoadScene("SampleScene");
+                SceneManager.LoadScene("LobbyScene");
             }
         }
 
