@@ -187,7 +187,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: item_atlas_0
+      name: surge_protector
       rect:
         serializedVersion: 2
         x: 0
@@ -209,7 +209,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_1
+      name: artificial_neural_network
       rect:
         serializedVersion: 2
         x: 16
@@ -231,7 +231,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_2
+      name: bio_memory_chip
       rect:
         serializedVersion: 2
         x: 32
@@ -253,7 +253,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_3
+      name: halucination_compensator
       rect:
         serializedVersion: 2
         x: 48
@@ -275,7 +275,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_4
+      name: fuze
       rect:
         serializedVersion: 2
         x: 64
@@ -297,7 +297,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_5
+      name: emp
       rect:
         serializedVersion: 2
         x: 80
@@ -319,7 +319,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_6
+      name: ion_motor
       rect:
         serializedVersion: 2
         x: 96
@@ -341,7 +341,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_7
+      name: life_support_battery
       rect:
         serializedVersion: 2
         x: 112
@@ -363,7 +363,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_8
+      name: suspension
       rect:
         serializedVersion: 2
         x: 0
@@ -385,7 +385,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_9
+      name: high_precision_gearbox
       rect:
         serializedVersion: 2
         x: 16
@@ -407,7 +407,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_10
+      name: fragment_collector
       rect:
         serializedVersion: 2
         x: 32
@@ -429,7 +429,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_11
+      name: drone_defense
       rect:
         serializedVersion: 2
         x: 48
@@ -451,7 +451,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_12
+      name: recurrent_neural_network
       rect:
         serializedVersion: 2
         x: 0
@@ -473,7 +473,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_13
+      name: drone_shooter
       rect:
         serializedVersion: 2
         x: 16
@@ -495,7 +495,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_14
+      name: magnetic_resonator
       rect:
         serializedVersion: 2
         x: 32
@@ -517,7 +517,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_15
+      name: overcharged_battery
       rect:
         serializedVersion: 2
         x: 48
@@ -539,7 +539,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_16
+      name: laser_inscriber
       rect:
         serializedVersion: 2
         x: 64
@@ -561,7 +561,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_17
+      name: nanomachine
       rect:
         serializedVersion: 2
         x: 80
@@ -583,7 +583,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_18
+      name: thermo_electricity_convertor
       rect:
         serializedVersion: 2
         x: 96
@@ -605,7 +605,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_19
+      name: hologram_projector
       rect:
         serializedVersion: 2
         x: 112
@@ -627,7 +627,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_20
+      name: current_inductor
       rect:
         serializedVersion: 2
         x: 0
@@ -649,7 +649,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_21
+      name: drone_laser
       rect:
         serializedVersion: 2
         x: 0
@@ -671,7 +671,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_22
+      name: laser_heater
       rect:
         serializedVersion: 2
         x: 16
@@ -693,7 +693,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_23
+      name: ic_chip
       rect:
         serializedVersion: 2
         x: 32
@@ -715,7 +715,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_24
+      name: heavy_magazine
       rect:
         serializedVersion: 2
         x: 48
@@ -737,7 +737,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_25
+      name: eco_friendly_rubber_bullet
       rect:
         serializedVersion: 2
         x: 64
@@ -759,7 +759,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_26
+      name: plazma_cutter
       rect:
         serializedVersion: 2
         x: 80
@@ -781,7 +781,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_27
+      name: shockwave_hammer
       rect:
         serializedVersion: 2
         x: 96
@@ -803,7 +803,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_28
+      name: radioactive_injector
       rect:
         serializedVersion: 2
         x: 112
@@ -825,7 +825,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_29
+      name: external_melting_solution
       rect:
         serializedVersion: 2
         x: 0
@@ -847,7 +847,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_30
+      name: shooting_assistant
       rect:
         serializedVersion: 2
         x: 0
@@ -869,7 +869,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_31
+      name: optical_camouflage
       rect:
         serializedVersion: 2
         x: 16
@@ -891,7 +891,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_32
+      name: mutual_empathy_core
       rect:
         serializedVersion: 2
         x: 32
@@ -913,7 +913,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_33
+      name: love_letter
       rect:
         serializedVersion: 2
         x: 48
@@ -935,7 +935,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_34
+      name: superalloy_exoskeleton
       rect:
         serializedVersion: 2
         x: 64
@@ -957,7 +957,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_35
+      name: network_terminal
       rect:
         serializedVersion: 2
         x: 80
@@ -979,7 +979,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_36
+      name: laser_sword
       rect:
         serializedVersion: 2
         x: 96
@@ -1001,7 +1001,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_37
+      name: lightning_rod
       rect:
         serializedVersion: 2
         x: 112
@@ -1023,7 +1023,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: item_atlas_38
+      name: dynamite
       rect:
         serializedVersion: 2
         x: 0
@@ -1060,45 +1060,45 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":16.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      item_atlas_0: -110253057803913907
-      item_atlas_1: 74774517053358310
-      item_atlas_10: 596238918372449588
-      item_atlas_11: 2643497490704597763
-      item_atlas_12: -5020702907934583352
-      item_atlas_13: 2155063617703002175
-      item_atlas_14: 1979371559903902193
-      item_atlas_15: -5077066260086759624
-      item_atlas_16: -2203902133515662219
-      item_atlas_17: 7392216969549802793
-      item_atlas_18: 185949584093502589
-      item_atlas_19: 5680651429845044380
-      item_atlas_2: -167672382679502254
-      item_atlas_20: -3636422283925311074
-      item_atlas_21: -6355480029324396608
-      item_atlas_22: -6435044860868182668
-      item_atlas_23: -6787179531955063524
-      item_atlas_24: -2939268370764038465
-      item_atlas_25: 4723048642802968650
-      item_atlas_26: 1373847076197600120
-      item_atlas_27: -4220707353593549073
-      item_atlas_28: 1624667362681672846
-      item_atlas_29: -2180824162610654767
-      item_atlas_3: 8427203471666680303
-      item_atlas_30: 625385944
-      item_atlas_31: 737999703
-      item_atlas_32: 1076473699
-      item_atlas_33: -1240564883
-      item_atlas_34: -790205290
-      item_atlas_35: 1079715153
-      item_atlas_36: -1829710436
-      item_atlas_37: 2122705243
-      item_atlas_38: -508709749
-      item_atlas_4: 1595240440125043151
-      item_atlas_5: 2352905312685420864
-      item_atlas_6: 4309450945795447526
-      item_atlas_7: -2876290062221220661
-      item_atlas_8: 2206242427272907791
-      item_atlas_9: 2407915556575865624
+      artificial_neural_network: 74774517053358310
+      bio_memory_chip: -167672382679502254
+      current_inductor: -3636422283925311074
+      drone_defense: 2643497490704597763
+      drone_laser: -6355480029324396608
+      drone_shooter: 2155063617703002175
+      dynamite: -508709749
+      eco_friendly_rubber_bullet: 4723048642802968650
+      emp: 2352905312685420864
+      external_melting_solution: -2180824162610654767
+      fragment_collector: 596238918372449588
+      fuze: 1595240440125043151
+      halucination_compensator: 8427203471666680303
+      heavy_magazine: -2939268370764038465
+      high_precision_gearbox: 2407915556575865624
+      hologram_projector: 5680651429845044380
+      ic_chip: -6787179531955063524
+      ion_motor: 4309450945795447526
+      laser_heater: -6435044860868182668
+      laser_inscriber: -2203902133515662219
+      laser_sword: -1829710436
+      life_support_battery: -2876290062221220661
+      lightning_rod: 2122705243
+      love_letter: -1240564883
+      magnetic_resonator: 1979371559903902193
+      mutual_empathy_core: 1076473699
+      nanomachine: 7392216969549802793
+      network_terminal: 1079715153
+      optical_camouflage: 737999703
+      overcharged_battery: -5077066260086759624
+      plazma_cutter: 1373847076197600120
+      radioactive_injector: 1624667362681672846
+      recurrent_neural_network: -5020702907934583352
+      shockwave_hammer: -4220707353593549073
+      shooting_assistant: 625385944
+      superalloy_exoskeleton: -790205290
+      surge_protector: -110253057803913907
+      suspension: 2206242427272907791
+      thermo_electricity_convertor: 185949584093502589
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

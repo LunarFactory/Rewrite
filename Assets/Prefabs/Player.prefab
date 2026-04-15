@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 8619716622789315681}
   - component: {fileID: 5498667811757821503}
   - component: {fileID: 6566512962458825340}
+  - component: {fileID: 5894004677875960011}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -332,6 +333,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInteractor
   interactRange: 1.5
+--- !u!210 &5894004677875960011
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3447314826207853295}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 10
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &4785257334050668402
 GameObject:
   m_ObjectHideFlags: 0

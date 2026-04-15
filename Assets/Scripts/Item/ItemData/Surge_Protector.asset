@@ -15,4 +15,5 @@ MonoBehaviour:
   itemName: "\uC11C\uC9C0 \uD504\uB85C\uD14D\uD130"
   description: 
   tier: 0
-  icon: {fileID: 0}
+  icon: {fileID: -110253057803913907, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  behaviorPrefab: {fileID: 0}

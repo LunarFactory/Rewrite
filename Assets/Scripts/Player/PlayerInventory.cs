@@ -3,9 +3,9 @@ using System;
 [Serializable]
 public class InventorySlot
 {
-    public Items.ItemData item;
+    public Item.PassiveItemData item;
 
-    public InventorySlot(Items.ItemData item)
+    public InventorySlot(Item.PassiveItemData item)
     {
         this.item = item;
     }

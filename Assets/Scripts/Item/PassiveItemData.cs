@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Items
+namespace Item
 {
     public enum ItemTier { Common, Uncommon, Rare, Boss }
 
