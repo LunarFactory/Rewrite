@@ -9,7 +9,8 @@ namespace UI
     public class RecoverController : MonoBehaviour
     {
         [Header("Recovery Fields")]
-        public InputField nicknameInput;
+        [UnityEngine.Serialization.FormerlySerializedAs("nicknameInput")]
+        public InputField emailInput;
         public Button submitBtn;
         public Button backBtn;
 
@@ -28,9 +29,9 @@ namespace UI
 
         private void OnSubmitClicked()
         {
-            if (string.IsNullOrEmpty(nicknameInput?.text))
+            if (string.IsNullOrEmpty(emailInput?.text))
             {
-                SetStatus("닉네임을 입력하세요.", Color.red);
+                SetStatus("이메일을 입력하세요.", Color.red);
                 return;
             }
 
@@ -40,7 +41,7 @@ namespace UI
 
         private IEnumerator PerformRecoveryRoutine()
         {
-            var task = AuthManager.Instance.RecoverAccount(nicknameInput.text);
+            var task = AuthManager.Instance.RecoverAccount(emailInput.text);
             while (!task.IsCompleted) yield return null;
 
             if (task.Result.Success)

@@ -6,8 +6,8 @@ namespace Auth
     public interface IAuthService
     {
         Task<AuthResult> LoginAsync(string id, string password);
-        Task<AuthResult> SignupAsync(string id, string password, string nickname);
-        Task<AuthResult> RecoverAccountAsync(string nickname);
+        Task<AuthResult> SignupAsync(string id, string password, string email);
+        Task<AuthResult> RecoverAccountAsync(string email);
         void Logout();
         bool IsLoggedIn();
         string GetCurrentUserId();

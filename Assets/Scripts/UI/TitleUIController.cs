@@ -30,13 +30,15 @@ namespace UI
         [Header("Signup Panel Fields")]
         public InputField signupIdInput;
         public InputField signupPwInput;
-        public InputField signupNicknameInput;
+        [UnityEngine.Serialization.FormerlySerializedAs("signupNicknameInput")]
+        public InputField signupEmailInput;
         public Button signupSubmitBtn;
         public Button signupBackBtn;
 
         // ─── 계정 찾기 패널 필드 ──────────────────────────────────────
         [Header("Recover Panel Fields")]
-        public InputField recoverNicknameInput;
+        [UnityEngine.Serialization.FormerlySerializedAs("recoverNicknameInput")]
+        public InputField recoverEmailInput;
         public Button recoverSubmitBtn;
         public Button recoverBackBtn;
 
@@ -112,10 +114,38 @@ namespace UI
             {
                 Debug.LogWarning("[TitleUIController] Canvas를 찾을 수 없어 Raycast 블로커를 해제하지 못했습니다.");
             }
+            
+            // 계정 생성 창(Signup)에서 InputField가 가로채기(Block) 당하는 문제를 우회하기 위한 안전장치
+            // 모든 InputField의 raycastTarget과 interactable을 강제로 활성화합니다.
+            if (canvas != null)
+            {
+                foreach (var input in canvas.GetComponentsInChildren<InputField>(true))
+                {
+                    input.interactable = true;
+                    if (input.targetGraphic != null)
+                    {
+                        input.targetGraphic.raycastTarget = true;
+                    }
+                }
+            }
         }
 
         private void BindButtons()
         {
+            // [안전 장치] 에디터 인스펙터에서 버튼(Submit과 Back 등) 연결이 뒤바뀐 상태로 저장되어 
+            // 가입 버튼을 눌렀을 때 엉뚱하게 뒤로가기가 실행되는 것을 막기 위해 강제로 실제 이름으로 덮어씁니다.
+            var canvas = FindObjectOfType<Canvas>();
+            if (canvas != null)
+            {
+                foreach (var b in canvas.GetComponentsInChildren<Button>(true))
+                {
+                    if (b.name == "SignupSubmitBtn") signupSubmitBtn = b;
+                    if (b.name == "SignupBackBtn") signupBackBtn = b;
+                    if (b.name == "RecoverSubmitBtn") recoverSubmitBtn = b;
+                    if (b.name == "RecoverBackBtn") recoverBackBtn = b;
+                }
+            }
+
             // 컴포넌트 정리 (이전에 붙어있던 SceneLoadTrigger 등이 에러를 낼 수 있음)
             CleanButton(loginBtn);
             CleanButton(toSignupBtn);
@@ -154,9 +184,20 @@ namespace UI
         }
 
         // ─── 패널 전환 ────────────────────────────────────────────────
+        private void ClearAllInputs()
+        {
+            if (signupIdInput != null) signupIdInput.text = "";
+            if (signupPwInput != null) signupPwInput.text = "";
+            if (signupEmailInput != null) signupEmailInput.text = "";
+            if (recoverEmailInput != null) recoverEmailInput.text = "";
+            if (loginIdInput != null) loginIdInput.text = "";
+            if (loginPwInput != null) loginPwInput.text = "";
+        }
+
         public void ShowLogin()
         {
             Debug.Log("[TitleUIController] ShowLogin() called! Switching to Login Panel.");
+            ClearAllInputs();
             SetPanelActive(panelLogin, true);
             SetPanelActive(panelSignup, false);
             SetPanelActive(panelRecover, false);
@@ -166,6 +207,7 @@ namespace UI
         public void ShowSignup()
         {
             Debug.Log("[TitleUIController] ShowSignup() called! Switching to Signup Panel.");
+            ClearAllInputs();
             SetPanelActive(panelLogin, false);
             SetPanelActive(panelSignup, true);
             SetPanelActive(panelRecover, false);
@@ -175,6 +217,7 @@ namespace UI
         public void ShowRecover()
         {
             Debug.Log("[TitleUIController] ShowRecover() called! Switching to Recover Panel.");
+            ClearAllInputs();
             SetPanelActive(panelLogin, false);
             SetPanelActive(panelSignup, false);
             SetPanelActive(panelRecover, true);
@@ -220,23 +263,23 @@ namespace UI
         {
             if (string.IsNullOrEmpty(signupIdInput?.text) ||
                 string.IsNullOrEmpty(signupPwInput?.text) ||
-                string.IsNullOrEmpty(signupNicknameInput?.text))
+                string.IsNullOrEmpty(signupEmailInput?.text))
             {
                 SetStatus("모든 정보를 입력하세요.", Color.red);
                 return;
             }
-            SetStatus("계정 생성 중...", Color.blue);
+            SetStatus("회원가입 중...", Color.blue);
             StartCoroutine(SignupRoutine());
         }
 
         private IEnumerator SignupRoutine()
         {
-            var task = AuthManager.Instance.Signup(signupIdInput.text, signupPwInput.text, signupNicknameInput.text);
+            var task = AuthManager.Instance.Signup(signupIdInput.text, signupPwInput.text, signupEmailInput.text);
             while (!task.IsCompleted) yield return null;
 
             if (task.Result.Success)
             {
-                SetStatus("계정 생성 성공! 로그인 화면으로 돌아갑니다.", Color.green);
+                SetStatus("회원가입 성공! 로그인 화면으로 돌아갑니다.", Color.green);
                 yield return new WaitForSeconds(1.5f);
                 ShowLogin();
             }
@@ -249,9 +292,9 @@ namespace UI
         // ─── 계정 찾기 로직 ───────────────────────────────────────────
         private void OnRecoverClicked()
         {
-            if (string.IsNullOrEmpty(recoverNicknameInput?.text))
+            if (string.IsNullOrEmpty(recoverEmailInput?.text))
             {
-                SetStatus("닉네임을 입력하세요.", Color.red);
+                SetStatus("이메일을 입력하세요.", Color.red);
                 return;
             }
             SetStatus("정보 확인 중...", Color.blue);
@@ -260,7 +303,7 @@ namespace UI
 
         private IEnumerator RecoverRoutine()
         {
-            var task = AuthManager.Instance.RecoverAccount(recoverNicknameInput.text);
+            var task = AuthManager.Instance.RecoverAccount(recoverEmailInput.text);
             while (!task.IsCompleted) yield return null;
 
             if (task.Result.Success)
@@ -274,8 +317,20 @@ namespace UI
         {
             if (statusText != null)
             {
+                // 메시지가 표시될 때는 statusText를 Canvas의 최상단 레벨로 꺼내어 특정 패널이 꺼져도 영향을 받지 않도록 합니다.
+                var canvas = FindObjectOfType<Canvas>();
+                if (canvas != null && statusText.transform.parent != canvas.transform)
+                {
+                    statusText.transform.SetParent(canvas.transform, true);
+                }
+                statusText.transform.SetAsLastSibling();
+                statusText.gameObject.SetActive(true);
+                
                 statusText.text = message;
                 statusText.color = color;
+                
+                // 로그인이나 타 버튼들과 겹치지 않도록 안전한 위치로 강제 이동 (-250은 우측 하단 여백)
+                statusText.rectTransform.anchoredPosition = new Vector2(0, -250);
             }
         }
 

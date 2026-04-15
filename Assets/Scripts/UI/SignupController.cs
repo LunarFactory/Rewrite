@@ -11,7 +11,8 @@ namespace UI
         [Header("Signup Fields")]
         public InputField signupIdInput;
         public InputField signupPwInput;
-        public InputField signupNicknameInput;
+        [UnityEngine.Serialization.FormerlySerializedAs("signupNicknameInput")]
+        public InputField signupEmailInput;
         public Button submitBtn;
         public Button backBtn;
 
@@ -32,24 +33,24 @@ namespace UI
         {
             if (string.IsNullOrEmpty(signupIdInput?.text) || 
                 string.IsNullOrEmpty(signupPwInput?.text) || 
-                string.IsNullOrEmpty(signupNicknameInput?.text))
+                string.IsNullOrEmpty(signupEmailInput?.text))
             {
                 SetStatus("모든 정보를 입력하세요.", Color.red);
                 return;
             }
 
-            SetStatus("계정 생성 중...", Color.blue);
+            SetStatus("회원가입 중...", Color.blue);
             StartCoroutine(PerformSignupRoutine());
         }
 
         private IEnumerator PerformSignupRoutine()
         {
-            var task = AuthManager.Instance.Signup(signupIdInput.text, signupPwInput.text, signupNicknameInput.text);
+            var task = AuthManager.Instance.Signup(signupIdInput.text, signupPwInput.text, signupEmailInput.text);
             while (!task.IsCompleted) yield return null;
 
             if (task.Result.Success)
             {
-                SetStatus("계정 생성 성공! 로그인 화면으로 돌아갑니다.", Color.green);
+                SetStatus("회원가입 성공! 로그인 화면으로 돌아갑니다.", Color.green);
                 yield return new WaitForSeconds(1.5f);
                 SceneManager.LoadScene("TitleScene");
             }
