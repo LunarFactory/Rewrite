@@ -6,7 +6,7 @@ namespace Player
 {
     public class PlayerInteractor : MonoBehaviour
     {
-        public float interactRange = 1.5f;
+        public float interactRange = 1.0f;
         private IInteractable currentInteractable;
 
         private void Update()
