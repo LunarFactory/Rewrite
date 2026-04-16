@@ -72,7 +72,7 @@ namespace UI
         {
             // [안전 장치] 에디터 인스펙터에서 버튼(Submit과 Back 등) 연결이 뒤바뀐 상태로 저장되어 
             // 가입 버튼을 눌렀을 때 엉뚱하게 뒤로가기가 실행되는 것을 막기 위해 강제로 실제 이름으로 덮어씁니다.
-            var canvas = FindObjectOfType<Canvas>();
+            var canvas = gameObject;
             if (canvas != null)
             {
                 foreach (var b in canvas.GetComponentsInChildren<Button>(true))
@@ -250,7 +250,7 @@ namespace UI
             if (statusText != null)
             {
                 // 메시지가 표시될 때는 statusText를 Canvas의 최상단 레벨로 꺼내어 특정 패널이 꺼져도 영향을 받지 않도록 합니다.
-                var canvas = FindObjectOfType<Canvas>();
+                var canvas = gameObject;
                 if (canvas != null && statusText.transform.parent != canvas.transform)
                 {
                     statusText.transform.SetParent(canvas.transform, true);

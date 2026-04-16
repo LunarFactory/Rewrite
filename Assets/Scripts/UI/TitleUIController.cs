@@ -16,8 +16,8 @@ namespace UI
         public GameObject mainMenuPanel; // 메인 버튼들이 들어있는 부모 컨테이너
 
         [Header("UI Panels")]
-        public StatsController statsPanel;
-        public SettingsController settingsPanel;
+        public StatsUIController statsPanel;
+        public SettingsUIController settingsPanel;
 
         private void Start()
         {
