@@ -7,7 +7,7 @@ namespace UI
     /// 환경설정 패널 컨트롤러.
     /// 볼륨/해상도/전체화면/수직동기화 설정을 버튼 클릭으로 순환하며 PlayerPrefs에 저장합니다.
     /// </summary>
-    public class SettingsController : MonoBehaviour
+    public class SettingsUIController : MonoBehaviour
     {
         // ── PlayerPrefs 키 ──────────────────────────────────────────
         private const string KeyMasterVol  = "Vol_Master";

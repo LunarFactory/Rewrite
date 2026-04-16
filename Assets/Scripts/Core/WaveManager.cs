@@ -11,20 +11,20 @@ namespace Core
 
         // [추가] WaveManager가 직접 관리할 적 프리팹
         [Header("Wave Resources")]
+        [SerializeField] private GameObject itemPrefab;
         [SerializeField] private GameObject mobPrefab;
         [SerializeField] private GameObject bossPrefab; // 보스전 대비용 추가
+        [Header("Special Prefabs")]
+        [SerializeField] private GameObject exitPortalPrefab; // 다음 웨이브로 가는 포탈
+        [SerializeField] private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
+        private int activeEnemyCount = 0;
 
         private void Start()
         {
-            if (GameManager.Instance != null)
+            if (RunManager.Instance != null)
             {
-                var RunManager = GameManager.Instance.GetComponent<RunManager>();
-
-                if (RunManager != null)
-                {
-                    Debug.Log($"현재 런의 무기: {RunManager.GetWeapon().WeaponName}");
-                    // ApplyRunSettings(runData);
-                }
+                Debug.Log($"현재 런의 무기: {RunManager.Instance.GetWeapon().WeaponName}");
+                // ApplyRunSettings(runData);
             }
             StartWave(CurrentWave);
         }
@@ -57,15 +57,15 @@ namespace Core
             {
                 case WaveType.Mob:
                     SpawnEnemies(mobPrefab, 3 + RunManager.Instance.CurrentFloor);
-                    Invoke(nameof(TestCompleteWave), 10f); // 테스트용 10초 후 완료
                     break;
                 case WaveType.Shop:
+                    SpawnShop();
+                    break;
                 case WaveType.Rest:
-                    Invoke(nameof(TestCompleteWave), 1f);
+                    SpawnRest();
                     break;
                 case WaveType.Boss:
                     SpawnEnemies(bossPrefab, 1);
-                    Invoke(nameof(TestCompleteWave), 5f);
                     break;
             }
         }
@@ -82,12 +82,42 @@ namespace Core
             for (int i = 0; i < count; i++)
             {
                 Vector2 randomPos = UnityEngine.Random.insideUnitCircle * 8f;
-                // [수정] TestSetup.EnemyPrefab이 아닌 로컬 변수 사용
                 GameObject enemy = Instantiate(prefab, randomPos, Quaternion.identity);
                 enemy.SetActive(true);
             }
         }
+        public void OnEnemyDied()
+        {
+            activeEnemyCount--;
+            if (activeEnemyCount <= 0)
+            {
+                // 모든 적 처치 시 다음 웨이브 포탈 소환 또는 즉시 완료
+                SpawnExitPortal();
+            }
+        }
+        private void SpawnShop()
+        {
+            // 3개의 랜덤 아이템 생성 (가격 책정)
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 pos = new Vector2(-2f + (i * 2f), 0);
+                GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity); // 실제론 아이템 프리팹
+                var fieldItem = itemObj.GetComponent<Level.FieldItem>();
+                fieldItem.price = 50 * RunManager.Instance.CurrentFloor; // 층별 가격 상승
+            }
+            SpawnExitPortal();
+        }
+        private void SpawnRest()
+        {
+            Instantiate(healthRestorerPrefab, Vector3.zero, Quaternion.identity);
+            SpawnExitPortal();
+        }
 
+        private void SpawnExitPortal()
+        {
+            // 플레이어 근처나 맵 중앙에 포탈 생성
+            Instantiate(exitPortalPrefab, new Vector2(0, 3f), Quaternion.identity);
+        }
         private void TestCompleteWave()
         {
             CompleteCurrentWave();

@@ -7,7 +7,7 @@ namespace UI
     /// 통계 패널 컨트롤러.
     /// 현재는 시안(placeholder) 상태이며, 서버 로그 연동 후 <see cref="LoadStats"/>를 구현합니다.
     /// </summary>
-    public class StatsController : MonoBehaviour
+    public class StatsUIController : MonoBehaviour
     {
         [Header("통계 수치 (Value Text)")]
         public Text totalGamesValue;

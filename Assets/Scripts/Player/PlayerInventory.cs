@@ -1,11 +1,12 @@
 using System;
+using Item;
 
 [Serializable]
 public class InventorySlot
 {
-    public Item.PassiveItemData item;
+    public PassiveItemData item;
 
-    public InventorySlot(Item.PassiveItemData item)
+    public InventorySlot(PassiveItemData item)
     {
         this.item = item;
     }

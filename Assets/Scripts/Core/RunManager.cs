@@ -10,6 +10,10 @@ namespace Core
         public int CurrentSeed { get; private set; }
         private Weapons.WeaponData CurrentWeaponData;
 
+        [Header("Economy")]
+        [SerializeField] private int bolts = 0;
+        public int Bolts => bolts; // 외부에서 읽기 전용
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -66,6 +70,26 @@ namespace Core
         public Weapons.WeaponData GetWeapon()
         {
             return CurrentWeaponData;
+        }
+
+        public bool AddBolts(int amount)
+        {
+            if (amount > 0)
+            {
+                bolts += amount;
+                Debug.Log($"볼트 획득! 현재 잔액: {bolts}");
+                // 여기에 볼트 UI 업데이트 이벤트를 넣으면 좋습니다.
+                return true;
+            }
+            else
+            {
+                if (bolts >= amount)
+                {
+                    bolts -= amount;
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

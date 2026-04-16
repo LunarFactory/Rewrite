@@ -1,6 +1,7 @@
 using UnityEngine;
 using Item; // ItemData가 있는 네임스페이스
 using Level; // IInteractable이 있는 네임스페이스
+using Core;
 
 namespace Level
 {
@@ -8,6 +9,7 @@ namespace Level
     public class FieldItem : MonoBehaviour, IInteractable
     {
         public PassiveItemData itemData; // 이 오브젝트가 어떤 아이템인지 저장
+        public int price = 0; // 0이면 무료, 0보다 크면 상점 아이템
 
         public Transform FieldVisual;
         private SpriteRenderer spriteRenderer;
@@ -42,13 +44,35 @@ namespace Level
         // [IInteractable 구현] 상호작용 시 출력될 텍스트
         public string GetInteractPrompt()
         {
-            if (itemData == null) return "아이템";
-            return $"{itemData.itemName} 획득";
+            if (itemData == null) return "";
+            // 가격이 있으면 가격 표시, 없으면 이름만 표시
+            return price > 0 ? $"{itemData.itemName} 구매 ({price} 볼트)" : $"{itemData.itemName} 획득";
         }
 
         // [IInteractable 구현] E키를 눌렀을 때 실행될 로직
         public void OnInteract(GameObject interactEntity)
         {
+            // 상점 아이템일 경우 골드 체크 (RunManager에 Gold가 있다고 가정)
+            if (price > 0)
+            {
+                if (RunManager.Instance != null)
+                {
+                    if (RunManager.Instance.Bolts >= price)
+                    {
+                        RunManager.Instance.AddBolts(-price);
+                        GetItem();
+                    }
+                    else
+                    {
+                        Debug.Log("볼트가 부족합니다!");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                GetItem();
+            }
             if (itemData == null) return;
 
             // 1. 인벤토리에 아이템 추가
@@ -58,6 +82,11 @@ namespace Level
             Debug.Log($"아이템 획득: {itemData.itemName}");
 
             // 3. 필드에서 제거
+            Destroy(gameObject);
+        }
+        private void GetItem()
+        {
+            InventoryManager.Instance.AddItem(itemData);
             Destroy(gameObject);
         }
     }

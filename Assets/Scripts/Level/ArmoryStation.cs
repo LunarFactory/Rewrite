@@ -1,5 +1,6 @@
 using UnityEngine;
 using Weapons;
+using Core;
 
 namespace Level
 {
@@ -24,9 +25,9 @@ namespace Level
 
             // 플레이어에게 데이터 주입 및 매니저에 저장
             player.SetCurrentWeapon(selectedData);
-            if (Core.RunManager.Instance != null)
+            if (RunManager.Instance != null)
             {
-                Core.RunManager.Instance.SetWeapon(selectedData);
+                RunManager.Instance.SetWeapon(selectedData);
             }
         }
     }

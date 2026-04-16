@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Log;
+using Core;
 
 namespace Player
 {
@@ -52,9 +53,9 @@ namespace Player
         private void Start()
         {
             // 1. 카메라 연결 확인
-            if (Core.CameraFollow.Instance != null)
+            if (CameraFollow.Instance != null)
             {
-                Core.CameraFollow.Instance.SetTarget(this.transform);
+                CameraFollow.Instance.SetTarget(this.transform);
             }
 
             // 2. 무기 컴포넌트 확인
@@ -62,15 +63,15 @@ namespace Player
             {
                 currentWeapon = GetComponentInChildren<Weapons.WeaponBase>();
             }
-            if (Core.RunManager.Instance != null)
+            if (RunManager.Instance != null)
             {
-                if (Core.RunManager.Instance.GetWeapon() == null)
+                if (RunManager.Instance.GetWeapon() == null)
                 {
-                    Core.RunManager.Instance.SetWeapon(currentWeapon.weaponData);
+                    RunManager.Instance.SetWeapon(currentWeapon.weaponData);
                 }
                 else
                 {
-                    currentWeapon.weaponData = Core.RunManager.Instance.GetWeapon();
+                    currentWeapon.weaponData = RunManager.Instance.GetWeapon();
                 }
             }
             currentWeapon.Initialize(currentWeapon.weaponData);
