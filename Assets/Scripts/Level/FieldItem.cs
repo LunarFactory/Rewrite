@@ -1,6 +1,7 @@
 using UnityEngine;
-using Item; // ItemData가 있는 네임스페이스
-using Level; // IInteractable이 있는 네임스페이스
+using Item; 
+using Level;
+using Core;
 
 namespace Level
 {
@@ -8,6 +9,9 @@ namespace Level
     public class FieldItem : MonoBehaviour, IInteractable
     {
         public PassiveItemData itemData; // 이 오브젝트가 어떤 아이템인지 저장
+        public int price; // 아이템 구매 가격 (0이면 무료)
+        public bool isShopItem; // 상점 아이템 여부
+        public bool isBossReward; // 보스 보상 아이템 여부
 
         public Transform FieldVisual;
         private SpriteRenderer spriteRenderer;
@@ -43,6 +47,12 @@ namespace Level
         public string GetInteractPrompt()
         {
             if (itemData == null) return "아이템";
+            
+            if (price > 0)
+            {
+                return $"{itemData.itemName} 구매 [{price} 볼트]";
+            }
+            
             return $"{itemData.itemName} 획득";
         }
 
@@ -51,11 +61,41 @@ namespace Level
         {
             if (itemData == null) return;
 
+            // 0. 가격 체크
+            if (price > 0)
+            {
+                if (interactEntity.TryGetComponent(out Player.PlayerStats stats))
+                {
+                    if (stats.Bolts >= price)
+                    {
+                        stats.UseBolts(price);
+                    }
+                    else
+                    {
+                        Debug.Log("볼트가 부족합니다!");
+                        return;
+                    }
+                }
+            }
+
             // 1. 인벤토리에 아이템 추가
             InventoryManager.Instance.AddItem(itemData);
 
-            // 2. 획득 로그 출력 (선택 사항)
+            // 2. 획득 로그 출력
             Debug.Log($"아이템 획득: {itemData.itemName}");
+
+            // [추가] 상점/보스 보상 처리 통보
+            if (WaveManager.Instance != null)
+            {
+                if (isBossReward)
+                {
+                    WaveManager.Instance.OnBossItemPicked(this);
+                }
+                else if (isShopItem)
+                {
+                    WaveManager.Instance.OnShopItemPurchased(this);
+                }
+            }
 
             // 3. 필드에서 제거
             Destroy(gameObject);
