@@ -9,8 +9,16 @@ namespace UI
         public Text welcomeText;
         public Button startButton;
         public Button supportPortButton;
+        public Button statsButton;   // 통계 버튼
         public Button settingsButton;
         public Button quitButton;
+
+        [Header("Main Menu")]
+        public GameObject mainMenuPanel; // 메인 버튼들이 들어있는 부모 컨테이너
+
+        [Header("UI Panels")]
+        public StatsController statsPanel;
+        public SettingsController settingsPanel;
 
         private void Start()
         {
@@ -26,11 +34,27 @@ namespace UI
             if (supportPortButton != null)
                 supportPortButton.onClick.AddListener(OnSupportPortClicked);
             
+            if (statsButton != null)
+                statsButton.onClick.AddListener(OnStatsClicked);
+            
             if (settingsButton != null)
                 settingsButton.onClick.AddListener(OnSettingsClicked);
             
             if (quitButton != null)
                 quitButton.onClick.AddListener(OnQuitClicked);
+
+            // 각 패널의 Back 버튼을 눌렀을 때 메인 메뉴를 다시 켜도록 연결
+            if (statsPanel != null && statsPanel.backButton != null)
+                statsPanel.backButton.onClick.AddListener(ShowMainMenu);
+
+            if (settingsPanel != null && settingsPanel.backButton != null)
+                settingsPanel.backButton.onClick.AddListener(ShowMainMenu);
+        }
+
+        private void ShowMainMenu()
+        {
+            if (mainMenuPanel != null)
+                mainMenuPanel.SetActive(true);
         }
 
         private void OnStartClicked()
@@ -57,10 +81,24 @@ namespace UI
             // Typically show a modal or change view to upgrades
         }
 
+        private void OnStatsClicked()
+        {
+            Debug.Log("통계 (Stats) 오픈.");
+            if (mainMenuPanel != null)
+                mainMenuPanel.SetActive(false); // 메인 메뉴 숨기기
+                
+            if (statsPanel != null)
+                statsPanel.Show();
+        }
+
         private void OnSettingsClicked()
         {
-            Debug.Log("환경설정 (Settings) 오픈. (준비중)");
-            // Show settings modal
+            Debug.Log("환경설정 (Settings) 오픈.");
+            if (mainMenuPanel != null)
+                mainMenuPanel.SetActive(false); // 메인 메뉴 숨기기
+                
+            if (settingsPanel != null)
+                settingsPanel.Show();
         }
 
         private void OnQuitClicked()

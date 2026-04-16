@@ -21,7 +21,13 @@ namespace UI
         [Header("패널 제어")]
         public Button backButton;
 
-        /// <summary>LobbyController에서 패널 활성화 시 호출됩니다.</summary>
+        private void Awake()
+        {
+            if (backButton != null)
+                backButton.onClick.AddListener(Hide);
+        }
+
+        /// <summary>LobbyController 또는 TitleController에서 패널 활성화 시 호출됩니다.</summary>
         public void Show()
         {
             gameObject.SetActive(true);
