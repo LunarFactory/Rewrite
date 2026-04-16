@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 235e1ef3daf8e4542829793682dc9eae, type: 3}
-  m_Name: Surge_Protector
+  m_Name: Heavy_Magazine
   m_EditorClassIdentifier: Assembly-CSharp::Items.ItemData
-  itemName: "\uC11C\uC9C0 \uD504\uB85C\uD14D\uD130"
-  description: "\uB9E4 5\uCD08\uB9C8\uB2E4 \uB2E4\uC74C \uD53C\uACA9\uC744 \uBB34\uD6A8\uD654\uD569\uB2C8\uB2E4"
-  tier: 0
-  icon: {fileID: -110253057803913907, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  itemName: "\uC911\uD615 \uD0C4\uCC3D"
+  description: "\uBAA8\uB4E0 \uD22C\uC0AC\uCCB4\uC758 \uD06C\uAE30\uAC00 \uC99D\uAC00\uD558\uACE0
+    200%\uC758 \uCD94\uAC00 \uD53C\uD574\uB97C \uC785\uD788\uC9C0\uB9CC \uD22C\uC0AC\uCCB4
+    \uC18D\uB3C4\uAC00 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  tier: 2
+  icon: {fileID: -2939268370764038465, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   behaviorPrefab: {fileID: 0}

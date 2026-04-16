@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 235e1ef3daf8e4542829793682dc9eae, type: 3}
-  m_Name: Surge_Protector
+  m_Name: SuperAlloy_Exoskeleton
   m_EditorClassIdentifier: Assembly-CSharp::Items.ItemData
-  itemName: "\uC11C\uC9C0 \uD504\uB85C\uD14D\uD130"
-  description: "\uB9E4 5\uCD08\uB9C8\uB2E4 \uB2E4\uC74C \uD53C\uACA9\uC744 \uBB34\uD6A8\uD654\uD569\uB2C8\uB2E4"
-  tier: 0
-  icon: {fileID: -110253057803913907, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  itemName: "\uCD08\uD569\uAE08 \uC678\uACE8\uACA9 "
+  description: "\uBC1B\uB294 \uD53C\uD574\uAC00 20% \uAC10\uC18C\uD558\uBA70 \uCCB4\uB825\uC744
+    100% \uC774\uC0C1 \uD68C\uBCF5\uD560 \uC2DC 1\uD68C \uD53C\uACA9 \uBB34\uD6A8
+    \uC784\uC2DC \uBCF4\uD638\uB9C9\uC744 \uC5BB\uC2B5\uB2C8\uB2E4"
+  tier: 3
+  icon: {fileID: -790205290, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   behaviorPrefab: {fileID: 0}

@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 235e1ef3daf8e4542829793682dc9eae, type: 3}
-  m_Name: Surge_Protector
+  m_Name: Drone_Shooter
   m_EditorClassIdentifier: Assembly-CSharp::Items.ItemData
-  itemName: "\uC11C\uC9C0 \uD504\uB85C\uD14D\uD130"
-  description: "\uB9E4 5\uCD08\uB9C8\uB2E4 \uB2E4\uC74C \uD53C\uACA9\uC744 \uBB34\uD6A8\uD654\uD569\uB2C8\uB2E4"
-  tier: 0
-  icon: {fileID: -110253057803913907, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  itemName: "\uB4DC\uB860 - \uC0AC\uACA9"
+  description: "\uC8FC\uBCC0\uC744 \uBE44\uD589\uD558\uBA70 \uD50C\uB808\uC774\uC5B4\uC758
+    \uACF5\uC18D\uC5D0 \uBE44\uB840\uD574 \uC8FC\uBCC0 \uC801\uC744 \uC790\uB3D9
+    \uACF5\uACA9\uD558\uB294 \uC0AC\uACA9 \uB4DC\uB860\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4"
+  tier: 1
+  icon: {fileID: 2155063617703002175, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   behaviorPrefab: {fileID: 0}
