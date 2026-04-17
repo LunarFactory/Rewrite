@@ -9,7 +9,7 @@ namespace Level
     {
         public override string GetInteractPrompt()
         {
-            return "무기 변경 (Armory)";
+            return "무기 변경";
         }
 
         public WeaponData[] weaponLibrary;
