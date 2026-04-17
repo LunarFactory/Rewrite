@@ -6,7 +6,7 @@ using Core;
 namespace Level
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class Stair : InteractableBase
+    public class Elevator : InteractableBase
     {
         public override string GetInteractPrompt()
         {

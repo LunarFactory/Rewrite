@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 71235fdeb91428c4cbb548f875dc7ca0
+guid: c73828e89c7f5cf408296522de3d218d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2505128802583380795
-    second: stair_0
+      213: -4010617647764655359
+    second: dummy_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: elevator
+      name: dummy_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 32
-        height: 32
+        width: 14
+        height: 16
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b33059a8f5104c220800000000000000
-      internalID: 2505128802583380795
+      spriteID: 103331f9f7c6758c0800000000000000
+      internalID: -4010617647764655359
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2f52f04d4eb3c1142807be07b4fab724
+    spriteID: a70e8a23ce521a947948602d66f7ab29
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      elevator: 2505128802583380795
+      dummy_0: -4010617647764655359
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
