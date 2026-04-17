@@ -17,16 +17,10 @@ namespace Core
         [Header("Special Prefabs")]
         [SerializeField] private GameObject exitPortalPrefab; // 다음 웨이브로 가는 포탈
         [SerializeField] private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
-        private int activeEnemyCount = 0;
+        public int activeEnemyCount = 0;
 
         private void Start()
         {
-            if (RunManager.Instance != null)
-            {
-                Debug.Log($"현재 런의 무기: {RunManager.Instance.GetWeapon().WeaponName}");
-                // ApplyRunSettings(runData);
-            }
-            StartWave(CurrentWave);
         }
         private void Awake()
         {
@@ -84,6 +78,7 @@ namespace Core
                 Vector2 randomPos = UnityEngine.Random.insideUnitCircle * 8f;
                 GameObject enemy = Instantiate(prefab, randomPos, Quaternion.identity);
                 enemy.SetActive(true);
+                activeEnemyCount++;
             }
         }
         public void OnEnemyDied()
@@ -92,7 +87,7 @@ namespace Core
             if (activeEnemyCount <= 0)
             {
                 // 모든 적 처치 시 다음 웨이브 포탈 소환 또는 즉시 완료
-                SpawnExitPortal();
+                CompleteCurrentWave();
             }
         }
         private void SpawnShop()
@@ -117,10 +112,6 @@ namespace Core
         {
             // 플레이어 근처나 맵 중앙에 포탈 생성
             Instantiate(exitPortalPrefab, new Vector2(0, 3f), Quaternion.identity);
-        }
-        private void TestCompleteWave()
-        {
-            CompleteCurrentWave();
         }
 
         public void CompleteCurrentWave()

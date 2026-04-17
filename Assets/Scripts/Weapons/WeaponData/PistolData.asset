@@ -17,7 +17,7 @@ MonoBehaviour:
   Type: 0
   WeaponName: Pistol
   Damage: 10
-  FireRate: 2.5
+  FireRate: 4
   ProjectileSpeed: 20
   BulletDeceleration: 0.965
   IsAuto: 0

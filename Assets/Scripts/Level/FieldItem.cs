@@ -13,6 +13,7 @@ namespace Level
 
         private Transform FieldVisual;
         private SpriteRenderer spriteRenderer;
+        private Vector3 _basePosition;
 
         private void Awake()
         {
@@ -29,6 +30,7 @@ namespace Level
             {
                 spriteRenderer.sprite = itemData.icon;
             }
+            _basePosition = transform.position;
         }
 
         private void Update()
@@ -36,8 +38,7 @@ namespace Level
             if (FieldVisual != null)
             {
                 float newY = Mathf.Sin(Time.time * 2f) * 0.1f;
-                // 부모(본체)는 가만히 있고, 자식(이미지)만 위아래로 움직입니다.
-                FieldVisual.localPosition = new Vector3(transform.position.x, newY, transform.position.z);
+                FieldVisual.localPosition = _basePosition + new Vector3(0, newY, 0);
             }
         }
 

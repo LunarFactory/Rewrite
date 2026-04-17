@@ -10,6 +10,7 @@ namespace Enemy
         public float AttackDamage = 10f;
         public float HitStunDuration = 0.15f; // 피격시 경직 시간 (초)
         public bool isInvincible = false; // 더미 등 체력 무한 적용용
+        private bool isDead = false;
 
         protected Transform playerTarget;
         protected float stunTimer;
@@ -50,6 +51,12 @@ namespace Enemy
 
         protected virtual void Die()
         {
+            if (isDead) return;
+            isDead = true;
+            if (Core.WaveManager.Instance != null)
+            {
+                Core.WaveManager.Instance.OnEnemyDied();
+            }
             Destroy(gameObject);
         }
 
