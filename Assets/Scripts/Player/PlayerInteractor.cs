@@ -7,7 +7,7 @@ namespace Player
     public class PlayerInteractor : MonoBehaviour
     {
         public float interactRange = 1.0f;
-        private IInteractable currentInteractable;
+        private InteractableBase currentInteractable;
 
         private void Update()
         {
@@ -23,11 +23,11 @@ namespace Player
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, interactRange);
             float closestDist = float.MaxValue;
-            IInteractable closest = null;
+            InteractableBase closest = null;
 
             foreach (var col in colliders)
             {
-                var interactable = col.GetComponentInParent<IInteractable>();
+                var interactable = col.GetComponentInParent<InteractableBase>();
                 if (interactable != null)
                 {
                     float dist = Vector2.Distance(transform.position, col.transform.position);
@@ -38,8 +38,17 @@ namespace Player
                     }
                 }
             }
+            if (closest != currentInteractable)
+            {
+                // 1. 이전 대상의 외곽선을 끕니다.
+                currentInteractable?.ShowOutline(false);
 
-            currentInteractable = closest;
+                // 2. 새로운 대상으로 교체합니다.
+                currentInteractable = closest;
+
+                // 3. 새로운 대상의 외곽선을 켭니다.
+                currentInteractable?.ShowOutline(true);
+            }
         }
 
         private void OnGUI()

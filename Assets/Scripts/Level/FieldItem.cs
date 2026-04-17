@@ -6,17 +6,17 @@ using Core;
 namespace Level
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class FieldItem : MonoBehaviour, IInteractable
+    public class FieldItem : InteractableBase
     {
         public PassiveItemData itemData; // 이 오브젝트가 어떤 아이템인지 저장
         public int price = 0; // 0이면 무료, 0보다 크면 상점 아이템
 
-        public Transform FieldVisual;
+        private Transform FieldVisual;
         private SpriteRenderer spriteRenderer;
 
         private void Awake()
         {
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
             FieldVisual = spriteRenderer.transform;
             // 콜라이더를 트리거로 설정 (물리 충돌 방지, 감지만 수행)
             GetComponent<BoxCollider2D>().isTrigger = true;
@@ -37,12 +37,12 @@ namespace Level
             {
                 float newY = Mathf.Sin(Time.time * 2f) * 0.1f;
                 // 부모(본체)는 가만히 있고, 자식(이미지)만 위아래로 움직입니다.
-                FieldVisual.localPosition = new Vector3(0, newY, 0);
+                FieldVisual.localPosition = new Vector3(transform.position.x, newY, transform.position.z);
             }
         }
 
         // [IInteractable 구현] 상호작용 시 출력될 텍스트
-        public string GetInteractPrompt()
+        public override string GetInteractPrompt()
         {
             if (itemData == null) return "";
             // 가격이 있으면 가격 표시, 없으면 이름만 표시
@@ -50,7 +50,7 @@ namespace Level
         }
 
         // [IInteractable 구현] E키를 눌렀을 때 실행될 로직
-        public void OnInteract(GameObject interactEntity)
+        public override void OnInteract(GameObject interactEntity)
         {
             // 상점 아이템일 경우 골드 체크 (RunManager에 Gold가 있다고 가정)
             if (price > 0)

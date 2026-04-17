@@ -5,16 +5,16 @@ using Core;
 namespace Level
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class ArmoryStation : MonoBehaviour, IInteractable
+    public class ArmoryStation : InteractableBase
     {
-        public string GetInteractPrompt()
+        public override string GetInteractPrompt()
         {
             return "무기 변경 (Armory)";
         }
 
         public WeaponData[] weaponLibrary;
 
-        public void OnInteract(GameObject interactEntity)
+        public override void OnInteract(GameObject interactEntity)
         {
             var player = interactEntity.GetComponent<Player.PlayerController>();
             if (player == null) return;

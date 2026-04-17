@@ -6,14 +6,14 @@ using Core;
 namespace Level
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class Stair : MonoBehaviour, IInteractable
+    public class Stair : InteractableBase
     {
-        public string GetInteractPrompt()
+        public override string GetInteractPrompt()
         {
             return "게임 진입";
         }
 
-        public void OnInteract(GameObject interactEntity)
+        public override void OnInteract(GameObject interactEntity)
         {
             Debug.Log("본 게임으로 진입합니다!");
             
