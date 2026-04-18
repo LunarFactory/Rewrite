@@ -1,4 +1,6 @@
 using UnityEngine;
+using Player;
+using Core;
 
 namespace Weapons
 {
@@ -10,6 +12,7 @@ namespace Weapons
 
         protected float nextFireTime;
         public bool isPlayerWeapon = true; //
+        private PlayerStats _playerStats;
 
         private void Awake()
         {
@@ -18,6 +21,11 @@ namespace Weapons
             if (firePoint == null)
             {
                 firePoint = transform.Find("FirePoint");
+            }
+            if (isPlayerWeapon)
+            {
+                _playerStats = GetComponentInParent<PlayerStats>();
+                Debug.Log(_playerStats.baseAttackSpeed);
             }
         }
         // [추가] 외부(PlayerController 등)에서 무기 정보를 주입하는 함수
@@ -38,8 +46,19 @@ namespace Weapons
 
         public virtual void Fire(Vector2 direction)
         {
-            if (weaponData == null || Time.time < nextFireTime) return; //
-            nextFireTime = Time.time + (1f / weaponData.FireRate); //
+            if (weaponData == null || Time.time < nextFireTime) return;
+            float finalFireRate;
+            if (isPlayerWeapon && _playerStats != null)
+            {
+                // 플레이어 스탯이 반영된 연사 속도
+                finalFireRate = _playerStats.GetCalculatedFireRate(weaponData.FireRate);
+            }
+            else
+            {
+                // 적이거나 스탯이 없으면 무기 기본 연사 속도 사용
+                finalFireRate = weaponData.FireRate;
+            }
+            nextFireTime = Time.time + (1f / Mathf.Max(finalFireRate, 0.1f)); //
 
             // 데이터의 탄환 수만큼 발사 로직 수행
             for (int i = 0; i < weaponData.NumberOfPellets; i++)
@@ -68,11 +87,23 @@ namespace Weapons
             {
                 float spd = Mathf.Max(weaponData.ProjectileSpeed, 5f);
                 float mspd = spd / 10;
-                float dmg = Mathf.Max(weaponData.Damage, 1f);
+                int finalDamage;
+
+                if (isPlayerWeapon && _playerStats != null)
+                {
+                    // PlayerStats의 GetCalculatedDamage 호출 (weaponData.Damage를 배수로 사용)
+                    finalDamage = _playerStats.GetCalculatedDamage(weaponData.damageMultiplier);
+                }
+                else
+                {
+                    // 플레이어 무기가 아니거나 스탯을 못 찾았다면 기존 데이터 값 사용
+                    finalDamage = Mathf.RoundToInt(weaponData.damageMultiplier * 10);
+                }
 
                 // 4. [중요] 계산된 finalDirection을 탄환에게 넘겨줍니다.
                 proj.decelerationRate = weaponData.BulletDeceleration;
-                proj.Initialize(finalDirection, spd, mspd, dmg, weaponData.PierceCount, isPlayerWeapon);
+                proj.ownerStats = _playerStats;
+                proj.Initialize(finalDirection, spd, mspd, finalDamage, weaponData.PierceCount, isPlayerWeapon, _playerStats);
             }
         }
 

@@ -11,8 +11,8 @@ namespace Weapons
 
         public WeaponType Type;
         public string WeaponName;
-        [Tooltip("Damage per shot or pellet")]
-        public float Damage = 10f;
+        [Tooltip("탄환에 적용할 피해량 계수")]
+        public float damageMultiplier = 1f;
         [Tooltip("Shots per second")]
         public float FireRate = 1f;
         public float ProjectileSpeed = 20f;

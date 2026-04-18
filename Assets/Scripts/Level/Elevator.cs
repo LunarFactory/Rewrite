@@ -15,12 +15,6 @@ namespace Level
 
         public override void OnInteract(GameObject interactEntity)
         {
-            Debug.Log("본 게임으로 진입합니다!");
-            
-            if (RunManager.Instance != null)
-            {
-                RunManager.Instance.StartNewRun();
-            }
 
             if (UIManager.Instance != null)
             {
@@ -29,6 +23,10 @@ namespace Level
             else
             {
                 SceneManager.LoadScene("SampleScene");
+            }
+            if (RunManager.Instance != null)
+            {
+                RunManager.Instance.StartNewRun();
             }
         }
     }

@@ -1,4 +1,6 @@
 using UnityEngine;
+using Player; // PlayerStats 참조를 위해 필요
+using Enemy;  // EnemyBase 참조를 위해 필요
 
 namespace Weapons
 {
@@ -7,7 +9,7 @@ namespace Weapons
     public class Projectile : MonoBehaviour
     {
         private Rigidbody2D rb;
-        private float damageVal;
+        private int damageVal;
         private bool isInitialized = false;
         private bool isPlayerProjectile = true;
         private Vector2 moveVelocity;
@@ -15,6 +17,7 @@ namespace Weapons
         private float currentSpeed;
         private float minSpeed;
         public float decelerationRate = 1.00f; // 1.0이면 유지, 작을수록 빨리 느려짐
+        [HideInInspector] public PlayerStats ownerStats; // [핵심] 신호를 보낼 대상
 
         private void Awake()
         {
@@ -29,20 +32,21 @@ namespace Weapons
             }
         }
 
-        public void Initialize(Vector2 direction, float speed, float minSpeed, float damage, int pierceCount, bool isPlayer = true)
+        public void Initialize(Vector2 direction, float speed, float minSpeed, int damage, int pierceCount, bool isPlayer, PlayerStats stats)
         {
             if (rb == null) rb = GetComponent<Rigidbody2D>();
 
             if (speed <= 0f) speed = 20f;
-            if (damage <= 0f) damage = 10f;
+            if (damage <= 0) damage = 10;
 
-            moveVelocity = direction.normalized;
+            this.moveVelocity = direction.normalized;
             this.currentPierce = pierceCount;
             this.damageVal = damage;
             this.isPlayerProjectile = isPlayer;
-            this.isInitialized = true;
             this.currentSpeed = speed;
             this.minSpeed = minSpeed;
+            this.ownerStats = stats;
+            this.isInitialized = true;
 
             rb.linearVelocity = moveVelocity * currentSpeed;
 #if !UNITY_2023_1_OR_NEWER
@@ -82,16 +86,16 @@ namespace Weapons
                 // 적군인지 확인 (자신 혹은 부모에게 EnemyBase가 있는지)
                 var enemy = collision.GetComponent<Enemy.EnemyBase>() ?? collision.GetComponentInParent<Enemy.EnemyBase>();
 
-                if (enemy != null)
+                if (enemy != null && !enemy.isDead)
                 {
                     enemy.TakeDamage(damageVal);
-                    Log.PlayerLogManager.Instance?.RecordShotHit();
-
-                    // [디버그] 히트 로그 추가
-                    Debug.Log($"[Projectile] Hit Enemy: {collision.name}, Damage: {damageVal}");
+                    if (ownerStats != null)
+                    {
+                        Debug.Log($"<color=cyan>[Projectile]</color> {enemy.name} 적중 신호 전달!");
+                        ownerStats.NotifyAttackHit(enemy, damageVal);
+                    }
 
                     HandlePierce();
-                    return; // 적을 맞췄으면 여기서 종료
                 }
             }
             else
@@ -103,13 +107,16 @@ namespace Weapons
                 {
                     playerStats.TakeDamage(damageVal);
                     HandlePierce();
-                    return;
                 }
             }
 
             // 장애물 충돌 (벽 등)
             if (collision.CompareTag("Obstacle"))
             {
+                if (isPlayerProjectile && ownerStats != null)
+                {
+                    ownerStats.NotifyWallHit();
+                }
                 Destroy(gameObject);
             }
         }

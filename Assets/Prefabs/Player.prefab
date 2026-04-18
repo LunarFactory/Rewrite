@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 419177347334533652}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -201,9 +201,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93c29f429cbf7242a31409d53c0920b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerController
-  moveSpeed: 5
   weaponPivot: {fileID: 2142200513355683706}
   aimCenterOffset: {x: 0, y: 0.5}
+  attackAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  stealthAction: {fileID: 3065782347376509614, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3070044694485022357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +275,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerStats
   MaxHealth: 100
   currentHealth: 0
+  baseAttackDamage: 10
+  AttackDamage:
+    BaseValue: 0
+  baseAttackSpeed: 1
+  AttackSpeed:
+    BaseValue: 0
+  baseMoveSpeed: 5
+  MoveSpeed:
+    BaseValue: 0
 --- !u!61 &5498667811757821503
 BoxCollider2D:
   m_ObjectHideFlags: 0

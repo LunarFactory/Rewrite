@@ -56,11 +56,11 @@ namespace Level
             // 상점 아이템일 경우 골드 체크 (RunManager에 Gold가 있다고 가정)
             if (price > 0)
             {
-                if (RunManager.Instance != null)
+                if (interactEntity.TryGetComponent(out Player.PlayerStats stats))
                 {
-                    if (RunManager.Instance.Bolts >= price)
+                    if (stats.GetBolts() >= price)
                     {
-                        RunManager.Instance.AddBolts(-price);
+                        stats.AddBolts(-price);
                         GetItem();
                     }
                     else
@@ -75,9 +75,6 @@ namespace Level
                 GetItem();
             }
             if (itemData == null) return;
-
-            // 1. 인벤토리에 아이템 추가
-            InventoryManager.Instance.AddItem(itemData);
 
             // 2. 획득 로그 출력 (선택 사항)
             Debug.Log($"아이템 획득: {itemData.itemName}");

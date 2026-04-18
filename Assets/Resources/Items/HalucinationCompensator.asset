@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8baf029d218fdff41babd241b6099df6, type: 3}
+  m_Name: HalucinationCompensator
+  m_EditorClassIdentifier: Assembly-CSharp::Item.HalucinationCompensator
+  itemName: "\uD658\uAC01 \uBCF4\uC815\uAE30"
+  description: "\uD50C\uB808\uC774\uC5B4\uAC00 \uBC1C\uC0AC\uD55C \uD0C4\uD658\uC774
+    \uBCBD\uC5D0 \uBD80\uB52A\uD790 \uACBD\uC6B0 3\uCD08\uAC04 \uD53C\uD574\uB7C9\uC774
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  icon: {fileID: 8427203471666680303, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 0
+  bonusDamage: 5
+  duration: 3

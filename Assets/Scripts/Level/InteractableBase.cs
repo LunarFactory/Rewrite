@@ -8,6 +8,7 @@ namespace Level
         private static Material _outlineMaterial;
         public Color outlineColor = Color.white;
         private SpriteRenderer[] outlineSRs = new SpriteRenderer[4];
+        private MaterialPropertyBlock _mpb; // 각 오브젝트의 고유 속성 저장소
         private bool isInitialized = false;
 
         public void ShowOutline(bool show)
@@ -24,13 +25,21 @@ namespace Level
         {
             SpriteRenderer mainSR = GetComponent<SpriteRenderer>();
             if (mainSR == null) return;
-
             if (_outlineMaterial == null)
             {
-                // 1. 시도: 이름으로 찾기
                 Shader shader = Shader.Find("Custom/FlatColor");
-                _outlineMaterial = new Material(shader);
+                if (shader != null)
+                {
+                    _outlineMaterial = new Material(shader);
+                }
+                else
+                {
+                    Debug.LogError("Custom/FlatColor 셰이더를 찾을 수 없습니다.");
+                    return;
+                }
             }
+            if (_mpb == null) _mpb = new MaterialPropertyBlock();
+            _mpb.SetColor("_Color", outlineColor);
             if (GetComponent<UnityEngine.Rendering.SortingGroup>() == null)
             {
                 var group = gameObject.AddComponent<UnityEngine.Rendering.SortingGroup>();
@@ -61,12 +70,8 @@ namespace Level
                 SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
                 sr.sortingLayerID = mainSR.sortingLayerID;
                 sr.sprite = mainSR.sprite;
-
-                if (_outlineMaterial != null)
-                {
-                    _outlineMaterial.SetColor("_Color", Color.white);
-                    sr.material = _outlineMaterial;
-                }
+                sr.sharedMaterial = _outlineMaterial;
+                sr.SetPropertyBlock(_mpb);
 
                 sr.sortingOrder = -1;
                 sr.spriteSortPoint = mainSR.spriteSortPoint;

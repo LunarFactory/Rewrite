@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using Item;
 
 namespace Core
 {
@@ -21,7 +23,27 @@ namespace Core
 
         private void Start()
         {
+            // 씬이 시작되자마자 실행됩니다.
+            if (RunManager.Instance != null)
+            {
+                Debug.Log("[WaveManager] RunManager를 발견했습니다. 층 데이터 동기화를 시작합니다.");
+                // 현재 RunManager에 저장된 층 번호로 웨이브를 시작합니다.
+                StartFloor(RunManager.Instance.CurrentFloor);
+            }
+            else
+            {
+                Debug.LogWarning("[WaveManager] RunManager를 찾을 수 없습니다. 테스트용 모드로 작동하거나 대기합니다.");
+            }
+            GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
+
+            // 2. 플레이어 객체를 찾아 위치 이동
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null && spawnPoint != null)
+            {
+                player.transform.position = spawnPoint.transform.position;
+            }
         }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -92,15 +114,33 @@ namespace Core
         }
         private void SpawnShop()
         {
-            // 3개의 랜덤 아이템 생성 (가격 책정)
-            for (int i = 0; i < 3; i++)
+            // 1. 중복 없는 아이템 세트 3개를 한 번에 가져옴
+            List<PassiveItemData> itemsToSpawn = RunManager.Instance.GetRandomItemSet(CurrentWave, 3);
+
+            for (int i = 0; i < itemsToSpawn.Count; i++)
             {
                 Vector2 pos = new Vector2(-2f + (i * 2f), 0);
-                GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity); // 실제론 아이템 프리팹
-                var fieldItem = itemObj.GetComponent<Level.FieldItem>();
-                fieldItem.price = 50 * RunManager.Instance.CurrentFloor; // 층별 가격 상승
+                GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity);
+
+                if (itemObj.TryGetComponent(out Level.FieldItem fieldItem))
+                {
+                    fieldItem.itemData = itemsToSpawn[i];
+
+                    // 가격 책정 로직...
+                    fieldItem.price = GetPriceByRarity(itemsToSpawn[i].tier) * RunManager.Instance.CurrentFloor;
+                }
             }
             SpawnExitPortal();
+        }
+        private int GetPriceByRarity(ItemTier rarity)
+        {
+            return rarity switch
+            {
+                ItemTier.Common => 40,   // 커먼: 40, 80, 120...
+                ItemTier.Uncommon => 80, // 언커먼: 80, 160, 240...
+                ItemTier.Rare => 150,   // 레어: 150, 300, 450...
+                _ => 50
+            };
         }
         private void SpawnRest()
         {
@@ -111,7 +151,7 @@ namespace Core
         private void SpawnExitPortal()
         {
             // 플레이어 근처나 맵 중앙에 포탈 생성
-            Instantiate(exitPortalPrefab, new Vector2(0, 3f), Quaternion.identity);
+            Instantiate(exitPortalPrefab, new Vector2(0.5f, 3.5f), Quaternion.identity);
         }
 
         public void CompleteCurrentWave()

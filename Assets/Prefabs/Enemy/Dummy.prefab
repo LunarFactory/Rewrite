@@ -179,10 +179,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 850a7a9c2307a4145b332ef6cf17a3ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.DummyEnemy
-  MaxHealth: 30
-  MoveSpeed: 2
-  AttackDamage: 10
-  HitStunDuration: 0.15
-  isInvincible: 1
-  bulletPrefab: {fileID: 0}
-  bulletSpeed: 10
+  data: {fileID: 11400000, guid: 98c295de5189f294fbad9d0ee66d3813, type: 2}
