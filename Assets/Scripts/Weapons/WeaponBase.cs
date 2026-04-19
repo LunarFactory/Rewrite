@@ -26,7 +26,6 @@ namespace Weapons
             if (isPlayerWeapon)
             {
                 _playerStats = GetComponentInParent<PlayerStats>();
-                Debug.Log(_playerStats.baseAttackSpeed);
             }
         }
         // [추가] 외부(PlayerController 등)에서 무기 정보를 주입하는 함수
@@ -39,9 +38,6 @@ namespace Weapons
             {
                 weaponRenderer.sprite = newData.weaponSprite;
                 weaponRenderer.color = Color.white; // 투명도 체크
-
-                // 콘솔창에 이게 뜨는지 확인하세요!
-                Debug.Log($"[비주얼 확인] 현재 무기: {newData.WeaponName}, 스프라이트 이름: {weaponRenderer.sprite.name}");
             }
         }
 
@@ -58,7 +54,6 @@ namespace Weapons
                 // 적이거나 스탯이 없으면 무기 기본 연사 속도 사용
                 finalFireRate = weaponData.FireRate;
             }
-            Debug.Log($"이것이 당신의 발사 속도입니다. {finalFireRate}");
             nextFireTime = Time.time + (1f / Mathf.Max(finalFireRate, 0.1f)); //
 
             // 데이터의 탄환 수만큼 발사 로직 수행

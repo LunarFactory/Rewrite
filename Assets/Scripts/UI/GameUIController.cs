@@ -75,8 +75,6 @@ namespace UI
 
                 // 이동 후 스케일이 꼬일 수 있으니 (1,1,1)로 초기화
                 interactRoot.transform.localScale = Vector3.one;
-
-                Debug.Log("[HUD] 상호작용 UI를 캔버스 자식으로 이식 완료!");
             }
         }
 
@@ -117,7 +115,6 @@ namespace UI
         // 씬이 로드될 때마다 실행됨
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log($"<color=cyan>[HUD]</color> 씬 로드 감지: {scene.name}. 데이터 갱신 시도.");
 
             // 씬이 바뀌었으므로 즉시 플레이어를 다시 찾아서 연결
             if (Player.PlayerStats.LocalPlayer != null)
@@ -135,7 +132,6 @@ namespace UI
             playerInteractor.OnInteractableChanged += UpdateInteractUI;
 
             RebuildUIReferences();
-            Debug.Log("<color=green>[HUD]</color> 플레이어 참조 연결 완료!");
         }
 
         private void RebuildUIReferences()

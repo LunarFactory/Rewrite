@@ -15,14 +15,23 @@ namespace Player
         public InteractableBase currentInteractable
         {
             get => _currentInteractable;
-            private set
+            set
             {
-                if (_currentInteractable != value)
+                // [수정] 
+                // 1. 기존 참조가 '진짜 null'이거나 '파괴(Missing)'된 상태인지 체크
+                // 2. 혹은 새로운 값(value)과 실제로 다른지 체크
+                bool isMissing = _currentInteractable == null || _currentInteractable.Equals(null);
+
+                if (isMissing || _currentInteractable != value)
                 {
-                    _currentInteractable?.ShowOutline(false);
+                    // 안전하게 이전 대상의 외곽선을 끕니다 (이미 파괴됐다면 실행 안 됨)
+                    if (!isMissing) _currentInteractable.ShowOutline(false);
+
                     _currentInteractable = value;
+
+                    // 새로운 대상 설정 및 이벤트 알림
                     _currentInteractable?.ShowOutline(true);
-                    OnInteractableChanged?.Invoke(_currentInteractable); // 값이 바뀔 때만 알림!
+                    OnInteractableChanged?.Invoke(_currentInteractable);
                 }
             }
         }
@@ -34,7 +43,6 @@ namespace Player
             if (currentInteractable != null && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
             {
                 currentInteractable.OnInteract(gameObject);
-                currentInteractable = null;
             }
         }
 
