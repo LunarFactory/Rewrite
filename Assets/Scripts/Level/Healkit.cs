@@ -41,7 +41,7 @@ namespace Level
             {
 
                 // 2. 최대 체력 기반으로 회복량 계산
-                int healAmount = Mathf.RoundToInt((stats.MaxHealth * healPercentage) / 100);
+                int healAmount = Mathf.RoundToInt((stats.maxHealth * healPercentage) / 100);
 
                 // 3. 플레이어 치료
                 stats.Heal(healAmount);

@@ -16,8 +16,8 @@ MonoBehaviour:
   projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
   Type: 1
   WeaponName: AssultRifle
-  damageMultiplier: 0.2
-  FireRate: 15
+  damageMultiplier: 0.4
+  FireRate: 10
   ProjectileSpeed: 20
   BulletDeceleration: 0.97
   IsAuto: 1

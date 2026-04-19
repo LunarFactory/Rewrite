@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 5498667811757821503}
   - component: {fileID: 6566512962458825340}
   - component: {fileID: 5894004677875960011}
+  - component: {fileID: 476352381844101484}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -273,16 +274,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88914c0c5adf8c24092ecd970a992a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerStats
-  MaxHealth: 100
+  maxHealth: 0
   currentHealth: 0
-  baseAttackDamage: 10
   AttackDamage:
     BaseValue: 0
-  baseAttackSpeed: 1
-  AttackSpeed:
-    BaseValue: 0
-  baseMoveSpeed: 5
   MoveSpeed:
+    BaseValue: 0
+  isDead: 0
+  isStunned: 0
+  baseAttackDamage: 10
+  baseAttackSpeed: 1
+  baseMoveSpeed: 5
+  AttackSpeed:
     BaseValue: 0
 --- !u!61 &5498667811757821503
 BoxCollider2D:
@@ -343,6 +346,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerInteractor
   interactRange: 1.5
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!210 &5894004677875960011
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -356,6 +362,18 @@ SortingGroup:
   m_SortingOrder: 10
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
+--- !u!114 &476352381844101484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3447314826207853295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 702ba29cc4681b34484637771b36a01c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuffManager
 --- !u!1 &4785257334050668402
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,6 +424,7 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: 19d58b4a4633848439eadebb983b270e, type: 2}
   firePoint: {fileID: 8835398890804912518}
   isPlayerWeapon: 1
+  finalFireRate: 0
 --- !u!114 &2123846632919973463
 MonoBehaviour:
   m_ObjectHideFlags: 0

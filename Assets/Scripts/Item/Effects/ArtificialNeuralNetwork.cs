@@ -25,8 +25,6 @@ namespace Item
                 lastFireTime = Time.time;
                 stats.StartCoroutine(NeuralChainRoutine(target, stats));
             };
-            
-            Debug.Log($"{itemName} 효과가 적용되었습니다!");
         }
 
         private IEnumerator NeuralChainRoutine(EnemyBase firstTarget, PlayerStats stats)
@@ -43,7 +41,7 @@ namespace Item
                 if (currentTarget == null || currentTarget.isDead) break;
 
                 // A. 데미지 적용 (플레이어 기본 공격력의 일정 비율)
-                float chainDamage = stats.AttackDamage.GetValue() * synapticDamageMult;
+                int chainDamage = Mathf.RoundToInt(stats.AttackDamage.GetValue() * synapticDamageMult);
                 currentTarget.TakeDamage(chainDamage);
                 Debug.Log($"연쇄 번개 발사됨 : {chainDamage}");
                 activatedNodes.Add(currentTarget);

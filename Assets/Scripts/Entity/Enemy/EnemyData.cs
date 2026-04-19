@@ -11,9 +11,9 @@ namespace Enemy
         [Tooltip("최대 체력")]
         public int maxHealth = 30;
         [Tooltip("이동 속도")]
-        public float moveSpeed = 2f;
+        public float baseMoveSpeed = 2f;
         [Tooltip("공격 피해")]
-        public int attackDamage = 10;
+        public int baseAttackDamage = 10;
         [Tooltip("피격 시 경직 시간")]
         public float hitstunDuration = 0.15f;
         [Tooltip("발사 딜레이")]

@@ -91,7 +91,6 @@ namespace Weapons
                     enemy.TakeDamage(damageVal);
                     if (ownerStats != null)
                     {
-                        Debug.Log($"<color=cyan>[Projectile]</color> {enemy.name} 적중 신호 전달!");
                         ownerStats.NotifyAttackHit(enemy, damageVal);
                     }
 
@@ -102,9 +101,9 @@ namespace Weapons
             {
                 // 플레이어인지 확인
                 var playerStats = collision.GetComponent<Player.PlayerStats>() ?? collision.GetComponentInParent<Player.PlayerStats>();
-
                 if (playerStats != null)
                 {
+                    if (playerStats.isStealth()) return;
                     playerStats.TakeDamage(damageVal);
                     HandlePierce();
                 }

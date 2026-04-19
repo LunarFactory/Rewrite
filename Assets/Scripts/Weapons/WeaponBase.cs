@@ -13,6 +13,7 @@ namespace Weapons
         protected float nextFireTime;
         public bool isPlayerWeapon = true; //
         private PlayerStats _playerStats;
+        public float finalFireRate;
 
         private void Awake()
         {
@@ -47,17 +48,17 @@ namespace Weapons
         public virtual void Fire(Vector2 direction)
         {
             if (weaponData == null || Time.time < nextFireTime) return;
-            float finalFireRate;
             if (isPlayerWeapon && _playerStats != null)
             {
                 // 플레이어 스탯이 반영된 연사 속도
-                finalFireRate = _playerStats.GetCalculatedFireRate(weaponData.FireRate);
+                finalFireRate = _playerStats.GetCalculatedAttackSpeed();
             }
             else
             {
                 // 적이거나 스탯이 없으면 무기 기본 연사 속도 사용
                 finalFireRate = weaponData.FireRate;
             }
+            Debug.Log($"이것이 당신의 발사 속도입니다. {finalFireRate}");
             nextFireTime = Time.time + (1f / Mathf.Max(finalFireRate, 0.1f)); //
 
             // 데이터의 탄환 수만큼 발사 로직 수행
@@ -92,7 +93,7 @@ namespace Weapons
                 if (isPlayerWeapon && _playerStats != null)
                 {
                     // PlayerStats의 GetCalculatedDamage 호출 (weaponData.Damage를 배수로 사용)
-                    finalDamage = _playerStats.GetCalculatedDamage(weaponData.damageMultiplier);
+                    finalDamage = Mathf.RoundToInt(_playerStats.GetCalculatedAttackDamage());
                 }
                 else
                 {

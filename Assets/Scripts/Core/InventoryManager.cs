@@ -20,6 +20,7 @@ public class InventoryManager : MonoBehaviour
 
         // 플레이어 스탯 참조를 미리 가져옵니다.
         _playerStats = FindAnyObjectByType<PlayerStats>();
+        DontDestroyOnLoad(gameObject);
     }
 
     public void AddItem(Item.PassiveItemData newItem)
@@ -32,7 +33,7 @@ public class InventoryManager : MonoBehaviour
         items.Add(newItem);
         Debug.Log($"{newItem.itemName} 획득!");
 
-        newItem.OnApply(this.gameObject, _playerStats);
+        newItem.OnApply(_playerStats.gameObject, _playerStats);
 
         // 스탯 재계산 및 UI 업데이트 알림
         OnItemAdded?.Invoke();

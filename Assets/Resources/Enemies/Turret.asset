@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: Turret
   maxHealth: 1000
-  moveSpeed: 0
-  attackDamage: 10
+  baseMoveSpeed: 0
+  baseAttackDamage: 40
   hitstunDuration: 0
   shootDelay: 3
   animationFrames: []

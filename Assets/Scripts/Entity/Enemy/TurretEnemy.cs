@@ -16,7 +16,7 @@ namespace Enemy
         protected override void Start()
         {
             base.Start();
-            if (rb != null) rb.bodyType = RigidbodyType2D.Static;
+            if (_rb != null) _rb.bodyType = RigidbodyType2D.Static;
 
             // [핵심] 코드 단에서 자식 객체 직접 생성
             CreateMarker();
@@ -49,21 +49,16 @@ namespace Enemy
 
         protected override void Update()
         {
-            if (IsStunned)
+            base.Update();
+            if (isStunned)
             {
                 if (_markerObj != null) _markerObj.SetActive(false);
 
                 _currentState = State.Rest;
                 _stateTimer = data.restDuration;
-                spriteRenderer.color = Color.white;
 
             }
-            if (playerTarget == null)
-            {
-                if (_markerObj != null) _markerObj.SetActive(false);
-                return;
-            }
-
+            if (playerTarget == null) return;
             _stateTimer -= Time.deltaTime;
 
             switch (_currentState)
@@ -71,7 +66,7 @@ namespace Enemy
                 case State.Rest:
                     _aimDirection = (playerTarget.position - transform.position).normalized;
                     _animator.UpdateAnimation(Time.deltaTime, _aimDirection);
-                    spriteRenderer.color = Color.white;
+                    if (!isStunned) _spriteRenderer.color = Color.white;
 
                     if (_stateTimer <= 0)
                     {
@@ -88,10 +83,13 @@ namespace Enemy
                     _animator.UpdateAnimation(Time.deltaTime, _aimDirection);
 
                     // 표식이 플레이어를 실시간 추적 (World 좌표 기준)
-                    if (_markerObj != null) _markerObj.transform.position = playerTarget.position;
+                    if (_markerObj != null) {
+                        if (!_markerObj.activeSelf) _markerObj.SetActive(true);
+                        _markerObj.transform.position = playerTarget.position;
+                    }
 
                     float ratio = 1f - (_stateTimer / data.aimDuration);
-                    spriteRenderer.color = Color.Lerp(Color.white, Color.red, ratio);
+                    _spriteRenderer.color = Color.Lerp(Color.white, Color.red, ratio);
 
                     if (_stateTimer <= 0)
                     {
@@ -102,6 +100,7 @@ namespace Enemy
                     break;
 
                 case State.Fire:
+                    if (!_markerObj.activeSelf) _markerObj.SetActive(true);
                     _animator.UpdateAnimation(Time.deltaTime, _aimDirection);
 
                     if (_stateTimer <= 0)
@@ -112,7 +111,7 @@ namespace Enemy
 
                         _currentState = State.Rest;
                         _stateTimer = data.restDuration;
-                        spriteRenderer.color = Color.white;
+                        _spriteRenderer.color = Color.white;
                     }
                     break;
             }
@@ -125,7 +124,7 @@ namespace Enemy
             GameObject bullet = Instantiate(data.bulletPrefab, transform.position, Quaternion.identity);
             if (bullet.TryGetComponent(out Weapons.Projectile proj))
             {
-                proj.Initialize(_aimDirection, data.bulletSpeed, data.bulletSpeed, data.attackDamage, 0, false, null);
+                proj.Initialize(_aimDirection, data.bulletSpeed, data.bulletSpeed, Mathf.RoundToInt(AttackDamage.GetValue()), 0, false, null);
             }
         }
     }

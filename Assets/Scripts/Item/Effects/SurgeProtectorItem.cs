@@ -30,8 +30,6 @@ namespace Item
                     CreateShieldVisual(player.transform);
                 }
             };
-
-            Debug.Log($"{itemName} 효과가 적용되었습니다!");
         }
 
         private IEnumerator ShieldRoutine()

@@ -7,6 +7,7 @@ namespace Item
     [CreateAssetMenu(fileName = "Fuze", menuName = "Items/Fuze")]
     public class Fuze : PassiveItemData
     {
+        public StatusEffectData effectToTrigger;
         public float range = 6f;
         public float stunDuration = 2f;
         
@@ -17,7 +18,7 @@ namespace Item
         {
             stats.OnHealthChanged += (currentHP) =>
             {
-                bool isBelowThreshold = currentHP <= stats.MaxHealth * 0.5f;
+                bool isBelowThreshold = currentHP <= stats.maxHealth * 0.5f;
 
                 // 1. 50% 이하이고, 아직 발동하지 않았다면 실행!
                 if (isBelowThreshold && !_hasTriggered)
@@ -52,7 +53,10 @@ namespace Item
                 var enemy = hit.GetComponent<EnemyBase>();
                 if (enemy != null)
                 {
-                    enemy.Stun(stunDuration);
+                    if (enemy.TryGetComponent<BuffManager>(out BuffManager buff))
+                    {
+                        buff.ApplyEffect(effectToTrigger, 2);
+                    }
                 }
             }
             

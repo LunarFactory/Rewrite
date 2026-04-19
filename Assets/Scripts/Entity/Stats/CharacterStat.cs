@@ -38,7 +38,7 @@ public class CharacterStat
         }
 
         // 최종 합산 퍼센트 적용 (예: 10% + 20% = 30% 증가)
-        finalValue *= (1 + percentSum / 100f);
+        finalValue *= 1 + percentSum;
 
         return finalValue;
     }

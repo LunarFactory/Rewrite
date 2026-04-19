@@ -2,14 +2,11 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro; // TMP 사용을 위해 필수 추가
 using Auth;
 
 namespace UI
 {
-    /// <summary>
-    /// TitleScene 전용 통합 컨트롤러.
-    /// 왼쪽 패널은 고정하고, 오른쪽 세 패널(로그인/회원가입/계정찾기)을 Show/Hide로 전환.
-    /// </summary>
     public class LoginUIController : MonoBehaviour
     {
         // ─── 패널 루트 ────────────────────────────────────────────────
@@ -20,39 +17,36 @@ namespace UI
 
         // ─── 로그인 패널 필드 ─────────────────────────────────────────
         [Header("Login Panel Fields")]
-        public InputField loginIdInput;
-        public InputField loginPwInput;
+        public TMP_InputField loginIdInput; // InputField -> TMP_InputField
+        public TMP_InputField loginPwInput;
         public Button loginBtn;
         public Button toSignupBtn;
         public Button toRecoverBtn;
 
         // ─── 회원가입 패널 필드 ───────────────────────────────────────
         [Header("Signup Panel Fields")]
-        public InputField signupIdInput;
-        public InputField signupPwInput;
-        [UnityEngine.Serialization.FormerlySerializedAs("signupNicknameInput")]
-        public InputField signupEmailInput;
+        public TMP_InputField signupIdInput;
+        public TMP_InputField signupPwInput;
+        public TMP_InputField signupEmailInput;
         public Button signupSubmitBtn;
         public Button signupBackBtn;
 
         // ─── 계정 찾기 패널 필드 ──────────────────────────────────────
         [Header("Recover Panel Fields")]
-        [UnityEngine.Serialization.FormerlySerializedAs("recoverNicknameInput")]
-        public InputField recoverEmailInput;
+        public TMP_InputField recoverEmailInput;
         public Button recoverSubmitBtn;
         public Button recoverBackBtn;
 
         // ─── 공통 ─────────────────────────────────────────────────────
         [Header("General")]
-        public Text statusText;
+        public TextMeshProUGUI statusText; // Text -> TextMeshProUGUI
 
         // ─────────────────────────────────────────────────────────────
         private void Start()
         {
             BindButtons();
-            ShowLogin(); // 시작 시 로그인 패널 표시
+            ShowLogin();
         }
-
 
         private void SafeFixClearBackground(Button btn)
         {
@@ -60,18 +54,17 @@ namespace UI
             var img = btn.GetComponent<Image>();
             if (img != null && img.color.a < 0.05f)
             {
-                img.color = new Color(0, 0, 0, 0.01f); // 눈에 안보이지만 클릭(Raycast)을 즉각 캐치하는 1% 알파 코팅
+                img.color = new Color(0, 0, 0, 0.01f);
             }
 
-            // 안에 있는 텍스트의 클릭 판정도 무조건 켬
-            var txt = btn.GetComponentInChildren<Text>();
+            // [수정] 자식 중에서 TMP 텍스트를 찾아 레이캐스트 설정을 켭니다.
+            var txt = btn.GetComponentInChildren<TextMeshProUGUI>();
             if (txt != null) txt.raycastTarget = true;
         }
 
         private void BindButtons()
         {
-            // [안전 장치] 에디터 인스펙터에서 버튼(Submit과 Back 등) 연결이 뒤바뀐 상태로 저장되어 
-            // 가입 버튼을 눌렀을 때 엉뚱하게 뒤로가기가 실행되는 것을 막기 위해 강제로 실제 이름으로 덮어씁니다.
+            // 인스펙터 연결 보정 로직 (기존 이름 유지)
             var canvas = gameObject;
             if (canvas != null)
             {
@@ -84,7 +77,6 @@ namespace UI
                 }
             }
 
-            // 컴포넌트 정리 (이전에 붙어있던 SceneLoadTrigger 등이 에러를 낼 수 있음)
             CleanButton(loginBtn);
             CleanButton(toSignupBtn);
             CleanButton(toRecoverBtn);
@@ -93,20 +85,17 @@ namespace UI
             CleanButton(recoverSubmitBtn);
             CleanButton(recoverBackBtn);
 
-            // 로그인 패널
             if (loginBtn != null) loginBtn.onClick.AddListener(OnLoginClicked);
             if (toSignupBtn != null) toSignupBtn.onClick.AddListener(ShowSignup);
             if (toRecoverBtn != null) toRecoverBtn.onClick.AddListener(ShowRecover);
 
-            // 회원가입 패널
             if (signupSubmitBtn != null) signupSubmitBtn.onClick.AddListener(OnSignupClicked);
             if (signupBackBtn != null) signupBackBtn.onClick.AddListener(ShowLogin);
 
-            // 계정 찾기 패널
             if (recoverSubmitBtn != null) recoverSubmitBtn.onClick.AddListener(OnRecoverClicked);
             if (recoverBackBtn != null) recoverBackBtn.onClick.AddListener(ShowLogin);
 
-            Debug.Log("[TitleUIController] 모든 버튼 바인딩 완료!");
+            Debug.Log("[LoginUIController] TMP 기반 모든 버튼 바인딩 완료!");
         }
 
         private void CleanButton(Button btn)
@@ -128,7 +117,6 @@ namespace UI
 
         public void ShowLogin()
         {
-            Debug.Log("[TitleUIController] ShowLogin() called! Switching to Login Panel.");
             ClearAllInputs();
             SetPanelActive(panelLogin, true);
             SetPanelActive(panelSignup, false);
@@ -138,7 +126,6 @@ namespace UI
 
         public void ShowSignup()
         {
-            Debug.Log("[TitleUIController] ShowSignup() called! Switching to Signup Panel.");
             ClearAllInputs();
             SetPanelActive(panelLogin, false);
             SetPanelActive(panelSignup, true);
@@ -148,7 +135,6 @@ namespace UI
 
         public void ShowRecover()
         {
-            Debug.Log("[TitleUIController] ShowRecover() called! Switching to Recover Panel.");
             ClearAllInputs();
             SetPanelActive(panelLogin, false);
             SetPanelActive(panelSignup, false);
@@ -249,11 +235,10 @@ namespace UI
         {
             if (statusText != null)
             {
-                // 메시지가 표시될 때는 statusText를 Canvas의 최상단 레벨로 꺼내어 특정 패널이 꺼져도 영향을 받지 않도록 합니다.
-                var canvas = gameObject;
-                if (canvas != null && statusText.transform.parent != canvas.transform)
+                // [안전장치] statusText가 부모 패널이 꺼질 때 같이 꺼지지 않도록 캔버스 최상단으로 이동
+                if (statusText.transform.parent != transform)
                 {
-                    statusText.transform.SetParent(canvas.transform, true);
+                    statusText.transform.SetParent(transform, true);
                 }
                 statusText.transform.SetAsLastSibling();
                 statusText.gameObject.SetActive(true);
@@ -261,7 +246,7 @@ namespace UI
                 statusText.text = message;
                 statusText.color = color;
 
-                // 로그인이나 타 버튼들과 겹치지 않도록 안전한 위치로 강제 이동 (-250은 우측 하단 여백)
+                // 위치 보정
                 statusText.rectTransform.anchoredPosition = new Vector2(0, -250);
             }
         }
@@ -273,15 +258,12 @@ namespace UI
 
         private void Update()
         {
-            // 사용자가 New Input System을 쓰기 때문에 구버전 Input은 꺼두거나 제거
 #if ENABLE_INPUT_SYSTEM
             if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                Debug.Log("[TitleUIController] ESC 키 입력 감지 -> 강제 ShowLogin() 호출");
                 ShowLogin();
             }
 #endif
         }
-
     }
 }

@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro; // TMP 사용을 위해 필수 추가
 
 namespace UI
 {
     public class TitleController : MonoBehaviour
     {
-        public Text welcomeText;
+        public TextMeshProUGUI welcomeText;
         public Button startButton;
         public Button statsButton;   // 통계 버튼
         public Button settingsButton;

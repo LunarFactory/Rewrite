@@ -8,7 +8,7 @@ namespace Item
     public class BioMemoryChip : PassiveItemData
     {
         [Header("Heal Settings")]
-        public float healPercent = 0.05f;
+        public float healPercent = 0.2f;
         public float delayTime = 2f;
 
         // [핵심] 현재 실행 중인 코루틴을 저장할 변수
@@ -37,12 +37,11 @@ namespace Item
             yield return new WaitForSeconds(delayTime);
 
             // 대기가 끝났다면 (취소되지 않았다면) 회복 실행
-            float lostHealth = stats.MaxHealth - stats.currentHealth;
+            float lostHealth = stats.maxHealth - stats.currentHealth;
             if (lostHealth > 0)
             {
-                int recovery = Mathf.RoundToInt(lostHealth * healPercent);
+                int recovery = Mathf.RoundToInt(Mathf.Max(lostHealth * healPercent, 1f));
                 stats.Heal(recovery);
-                Debug.Log($"[지연 회복 완료] {recovery}만큼 회복됨");
             }
 
             // 코루틴이 끝났으므로 변수 비워주기

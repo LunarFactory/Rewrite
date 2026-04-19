@@ -1,117 +1,107 @@
 using UnityEngine;
 using Core;
 using System;
+using Entity;
+using Weapons;
 
 namespace Player
 {
-    public class PlayerStats : MonoBehaviour
+    public class PlayerStats : EntityStatus // 상속 변경
     {
-        public int MaxHealth = 100;
-        public int currentHealth;
-        [Header("Attack Stats")]
-        public int baseAttackDamage = 10; // 플레이어 순수 공격력
-        public CharacterStat AttackDamage;
-        public float baseAttackSpeed = 1f; // 플레이어 순수 공격 속도
+        [Header("Player Specifics")]
+        public int baseAttackDamage = 10;
+        public float baseAttackSpeed = 1;
+        public float baseMoveSpeed = 5;
         public CharacterStat AttackSpeed;
-        public float baseMoveSpeed = 5f;
-        public CharacterStat MoveSpeed;
         private PlayerStealth stealth;
+
+        private WeaponBase currentWeapon;
+        private WeaponData wData;
+
+        // 이벤트들
         public delegate void PreDamageHandler(ref int damage);
         public event PreDamageHandler OnPreDamage;
-        public event Action<int> OnHealthChanged;
+        public event Action<float> OnHealthChanged; // float으로 변경 권장
         public event Action<float> OnPostDamage;
         public event Action OnWallHit;
-
-        [Header("Economy")]
-        private int bolts = 0;
-
         public event Action<Enemy.EnemyBase, float> OnAttackHit;
 
-        private void Start()
+        private int bolts = 0;
+        public static event Action<PlayerStats> OnPlayerReady;
+        // 현재 활성화된 플레이어를 즉시 참조하기 위한 스태틱 변수
+        public static PlayerStats LocalPlayer { get; private set; }
+
+        protected override void Awake()
         {
-            currentHealth = MaxHealth;
+            base.Awake();
+            LocalPlayer = this;
+            // 씬이 로드되자마자 "나 여기 있다!"라고 알림
+            OnPlayerReady?.Invoke(this);
+        }
+        protected virtual void Start()
+        {
+            maxHealth = 100; // 또는 데이터 시트 참조
+            currentHealth = maxHealth;
             stealth = GetComponent<PlayerStealth>();
-            // 게임 시작 시 혹은 씬 진입 시 자신을 GameManager에 등록
+            currentWeapon = GetComponentInChildren<WeaponBase>();
+
             if (GameManager.Instance != null)
-            {
                 GameManager.Instance.RegisterPlayer(this);
-            }
-            AttackDamage = new CharacterStat(baseAttackDamage);
+
+            AttackDamage = new CharacterStat(baseAttackDamage); // 기본값
             AttackSpeed = new CharacterStat(baseAttackSpeed);
             MoveSpeed = new CharacterStat(baseMoveSpeed);
         }
 
-        public void TakeDamage(int damage)
+        public override void TakeDamage(int damage)
         {
-            // 스텔스 활성 중 (회피 포함) 모든 피해 면역
             if (stealth != null && (stealth.IsDodging || stealth.IsStealthActive)) return;
 
-            if (damage > 0)
+            int intDamage = (int)damage;
+            if (intDamage > 0)
             {
-                OnPreDamage?.Invoke(ref damage);
-                if (damage <= 0)
-                {
-                    Debug.Log("피격이 무효화되었습니다!");
-                    return;
-                }
+                OnPreDamage?.Invoke(ref intDamage);
+                if (intDamage <= 0) return;
             }
-            currentHealth -= damage;
-            Debug.Log($"<color=red>Player Hit!</color> Took {damage} damage. HP: {currentHealth}");
-            OnHealthChanged?.Invoke(currentHealth); // 신호 발송
-            OnPostDamage?.Invoke(damage);
 
-            if (currentHealth <= 0)
+            base.TakeDamage(intDamage); // 부모 로직 실행 (currentHealth 감소 및 Die 체크)
+            if (FDTManager.Instance != null)
             {
-                Die();
+                // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
+                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, Mathf.RoundToInt(damage), Color.red);
             }
+            OnHealthChanged?.Invoke(currentHealth);
+            OnPostDamage?.Invoke(intDamage);
         }
 
-        public void NotifyWallHit() => OnWallHit?.Invoke();
-        public void Heal(int heal)
+        public override void Heal(int amount)
         {
-            // 현재 체력 + 회복량이 MaxHealth를 넘지 않도록 제한
-            currentHealth = Mathf.Min(currentHealth + heal, MaxHealth);
-
-            Debug.Log($"<color=green>체력 회복됨!</color> HP: {currentHealth}/{MaxHealth}");
+            base.Heal(amount);
+            OnHealthChanged?.Invoke(currentHealth);
         }
 
-
-        private void Die()
+        protected override void Die() // 추상 메서드 구현
         {
-            Debug.LogError("Game Over! Player HP reached 0. Restarting...");
-            // RunManager 시드 재초기화 및 맵 갱신을 위해 씬 리로드
+            Debug.LogError("Player Died!");
             GameManager.Instance?.ChangeState(GameManager.GameState.MainMenu);
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
-        public void NotifyAttackHit(Enemy.EnemyBase target, float damage)
-        {
-            OnAttackHit?.Invoke(target, damage);
-        }
-        public int GetCalculatedDamage(float weaponBaseDamageMultiplier)
-        {
-            // 플레이어 기초 피해량 * 무기 배수
-            float damage = AttackDamage.GetValue() * weaponBaseDamageMultiplier;
 
-            return Mathf.RoundToInt(damage);
-        }
-        public float GetCalculatedFireRate(float weaopnBaseFireRate)
+        public int GetCalculatedAttackDamage()
         {
-            // 플레이어 기초 피해량 * 무기 배수
-            float fireRate = AttackSpeed.GetValue() * weaopnBaseFireRate;
+            wData = currentWeapon.weaponData;
+            return Mathf.RoundToInt(AttackDamage.GetValue() * wData.damageMultiplier);
+        }
 
-            return fireRate;
-        }
-        public float GetCalculatedMoveSpeed()
+        public float GetCalculatedAttackSpeed()
         {
-            // 플레이어 기초 피해량 * 무기 배수
-            float speed = MoveSpeed.GetValue();
+            wData = currentWeapon.weaponData;
+            return AttackSpeed.GetValue() * wData.FireRate;
+        }
 
-            return speed;
-        }
-        public int GetBolts()
-        {
-            return bolts;
-        }
+        // 경제 및 유틸리티 메서드들...
+        public void NotifyWallHit() => OnWallHit?.Invoke();
+        public void NotifyAttackHit(Enemy.EnemyBase target, float damage) => OnAttackHit?.Invoke(target, damage);
         public bool AddBolts(int amount)
         {
             if (amount > 0)
@@ -130,6 +120,15 @@ namespace Player
                 }
                 return false;
             }
+        }
+        public int GetBolts()
+        {
+            return bolts;
+        }
+
+        public bool isStealth()
+        {
+            return stealth.IsStealthActive;
         }
     }
 }

@@ -18,5 +18,4 @@ MonoBehaviour:
     \uC99D\uAC00\uD569\uB2C8\uB2E4."
   icon: {fileID: 8427203471666680303, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 0
-  bonusDamage: 5
-  duration: 3
+  buffData: {fileID: 11400000, guid: 41f9f2a2682e1094781d0b6b7f86fd3d, type: 2}

@@ -13,8 +13,6 @@ namespace Enemy
         protected override void Start()
         {
             base.Start();
-            rb = GetComponent<Rigidbody2D>();
-            rb.gravityScale = 0f;
 
             // 초기 상태 설정
             if (data != null) stateTimer = data.moveDuration;
@@ -40,22 +38,22 @@ namespace Enemy
                     HandleShootingState();
                     break;
             }
-            if (IsStaggered)
+            if (isStaggered)
             {
-                rb.linearVelocity = Vector2.zero;
+                _rb.linearVelocity = Vector2.zero;
             }
         }
 
         private void HandleMovingState()
         {
             Vector2 dir = (playerTarget.position - transform.position).normalized;
-            rb.linearVelocity = dir * data.moveSpeed; // data에서 가져옴
+            _rb.linearVelocity = dir * MoveSpeed.GetValue(); // data에서 가져옴
 
             if (stateTimer <= 0)
             {
                 currentState = State.Shooting;
                 stateTimer = data.shootDelay;
-                rb.linearVelocity = Vector2.zero;
+                _rb.linearVelocity = Vector2.zero;
                 ShootAtPlayer();
             }
         }
@@ -63,7 +61,7 @@ namespace Enemy
         private void HandleShootingState()
         {
             // 발사 후 잠시 정지해 있는 상태
-            rb.linearVelocity = Vector2.zero;
+            _rb.linearVelocity = Vector2.zero;
 
             if (stateTimer <= 0)
             {
@@ -88,7 +86,7 @@ namespace Enemy
                     direction: dir,                         // 1. 방향
                     speed: data.bulletSpeed,                // 2. 현재 속도
                     minSpeed: data.bulletSpeed,             // 3. 최소 속도 (감속 안 하면 speed와 동일하게)
-                    damage: data.attackDamage,              // 4. 데미지
+                    damage: Mathf.RoundToInt(AttackDamage.GetValue()),              // 4. 데미지
                     pierceCount: 0,                         // 5. 관통 횟수 (드론 탄환은 보통 0)
                     isPlayer: false,                        // 6. 적이 쏜 것이므로 false
                     stats: null

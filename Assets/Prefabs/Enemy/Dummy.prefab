@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4798245936202287496}
   - component: {fileID: 427112728581198921}
   - component: {fileID: 5911332620364599462}
+  - component: {fileID: 342506308181776952}
   m_Layer: 7
   m_Name: Dummy
   m_TagString: Enemy
@@ -179,4 +180,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 850a7a9c2307a4145b332ef6cf17a3ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.DummyEnemy
+  maxHealth: 0
+  currentHealth: 0
+  AttackDamage:
+    BaseValue: 0
+  MoveSpeed:
+    BaseValue: 0
+  isDead: 0
+  isStunned: 0
   data: {fileID: 11400000, guid: 98c295de5189f294fbad9d0ee66d3813, type: 2}
+--- !u!114 &342506308181776952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4702737991148996496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 702ba29cc4681b34484637771b36a01c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuffManager

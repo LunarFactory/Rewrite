@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 614147132539788747}
   - component: {fileID: 752494281596729147}
   - component: {fileID: 5308354221952383345}
+  - component: {fileID: 1757342346251682351}
   m_Layer: 7
   m_Name: DroneEnemy
   m_TagString: Enemy
@@ -179,6 +180,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 850a7a9c2307a4145b332ef6cf17a3ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.DummyEnemy
-  data: {fileID: 11400000, guid: 967f3b87bf373d94d9b18d7accdcb4d8, type: 2}
+  maxHealth: 0
+  currentHealth: 0
+  AttackDamage:
+    BaseValue: 0
+  MoveSpeed:
+    BaseValue: 0
   isDead: 0
-  IsStunned: 0
+  isStunned: 0
+  data: {fileID: 11400000, guid: 967f3b87bf373d94d9b18d7accdcb4d8, type: 2}
+--- !u!114 &1757342346251682351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6456062719637019349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 702ba29cc4681b34484637771b36a01c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuffManager

@@ -1,140 +1,86 @@
 using UnityEngine;
-using System.Collections;
 using Core;
+using System;
+using Entity;
 
 namespace Enemy
 {
-    public class EnemyBase : MonoBehaviour
+    public class EnemyBase : EntityStatus // 상속 변경
     {
-        [Header("Data Reference")]
-        public EnemyData data; // 인스펙터에서 할당
+        [Header("Enemy Specifics")]
+        public EnemyData data;
         protected EnemySpriteAnimationModule _animator = new EnemySpriteAnimationModule();
 
-        protected float currentHealth;
-        public bool isDead = false;
         protected float staggerTimer;
         protected Transform playerTarget;
-        private Coroutine _stunCoroutine;
-        private Color _originalColor;
-        protected SpriteRenderer spriteRenderer;
-        protected Rigidbody2D rb;
 
-        public bool IsStaggered => staggerTimer > 0f;
-        public bool IsStunned = false;
+        public bool isStaggered => staggerTimer > 0f;
+
+        private GameObject player;
+        private Player.PlayerStats stat;
 
         protected virtual void Start()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            rb = GetComponent<Rigidbody2D>();
+            // 부모의 Awake에서 이미 컴포넌트를 잡았으므로 초기화만 진행
+            _animator.Initialize(_spriteRenderer, _rb, data);
 
-            if (spriteRenderer != null) _originalColor = spriteRenderer.color;
+            if (data != null)
+            {
+                maxHealth = data.maxHealth;
+                currentHealth = maxHealth;
+                AttackDamage = new CharacterStat(data.baseAttackDamage);
+                MoveSpeed = new CharacterStat(data.baseMoveSpeed);
+            }
 
-            // 애니메이터 모듈 초기화 (참조 전달)
-            _animator.Initialize(spriteRenderer, rb, data);
-
-            if (data != null) currentHealth = data.maxHealth;
-
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            player = GameObject.FindGameObjectWithTag("Player");
+            stat = player.GetComponent<Player.PlayerStats>();
             if (player != null) playerTarget = player.transform;
         }
 
         protected virtual void Update()
         {
             if (staggerTimer > 0f) staggerTimer -= Time.deltaTime;
-
-            // 애니메이터 모듈에게 "일 해라"라고 시킵니다.
             _animator.UpdateAnimation(Time.deltaTime);
+            if (stat.isStealth()) playerTarget = null;
+            else playerTarget = player.transform;
         }
 
-        private void FixedUpdate() // 오버라이드 불가능하게 private이나 sealed로!
+        private void FixedUpdate()
         {
-            if (IsStunned)
+            if (isStunned)
             {
-                rb.linearVelocity = Vector2.zero;
+                if (_rb.bodyType != RigidbodyType2D.Static) _rb.linearVelocity = Vector2.zero;
                 return;
             }
-
-            // 기절하지 않았을 때만 자식의 고유 로직을 실행하도록 시킴
             OnFixedUpdate();
         }
 
-        protected virtual void OnFixedUpdate() {}
+        protected virtual void OnFixedUpdate() { }
 
-        public virtual void TakeDamage(float damage)
+        public override void TakeDamage(int damage)
         {
-            if (data == null) return;
+            if (data != null && data.isInvincible) return;
 
-            if (!data.isInvincible)
-            {
-                currentHealth -= damage;
-            }
-
+            base.TakeDamage(damage); // 부모의 체력 감소 로직 실행
             staggerTimer = data.hitstunDuration;
-
-            if (currentHealth <= 0 && !data.isInvincible)
+            if (FDTManager.Instance != null)
             {
-                Die();
+                // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
+                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, Mathf.RoundToInt(damage), Color.white);
             }
         }
 
-        protected virtual void Die()
+        protected override void Die() // 추상 메서드 구현
         {
             if (isDead) return;
             isDead = true;
+
             if (WaveManager.Instance != null)
             {
                 GameManager.Instance.Player.AddBolts(100);
                 WaveManager.Instance.OnEnemyDied();
             }
             Destroy(gameObject);
-        }
-
-        protected virtual void OnCollisionStay2D(Collision2D collision)
-        {
-
-        }
-
-        protected virtual void OnCollisionEnter2D(Collision2D collision)
-        {
-            // Initial impact damage
-            if (collision.gameObject.CompareTag("Player") && data != null)
-            {
-                if (collision.gameObject.TryGetComponent(out Player.PlayerStats stats))
-                {
-                    stats.TakeDamage(data.attackDamage);
-                }
-            }
-        }
-
-        public void Stun(float duration)
-        {
-            // 이미 기절 중이라면 이전 기절 코루틴을 멈춤 (지속시간 갱신)
-            if (_stunCoroutine != null)
-            {
-                StopCoroutine(_stunCoroutine);
-            }
-
-            _stunCoroutine = StartCoroutine(StunRoutine(duration));
-        }
-
-        private IEnumerator StunRoutine(float duration)
-        {
-            IsStunned = true;
-
-            // 시각적 피드백: 색상을 노랗거나 파랗게 변경
-            if (spriteRenderer != null) spriteRenderer.color = Color.yellow;
-
-            // AI나 이동 로직이 이 값을 체크해서 멈춰야 합니다.
-            Debug.Log($"{gameObject.name} 기절됨!");
-
-            yield return new WaitForSeconds(duration);
-
-            // 기절 해제
-            IsStunned = false;
-            if (spriteRenderer != null) spriteRenderer.color = _originalColor;
-
-            _stunCoroutine = null;
-            Debug.Log($"{gameObject.name} 기절 풀림!");
         }
     }
 }

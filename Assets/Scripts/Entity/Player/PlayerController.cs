@@ -80,15 +80,42 @@ namespace Player
         }
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
-            var targetGroup = FindAnyObjectByType<Unity.Cinemachine.CinemachineTargetGroup>();
+            var vcam = FindAnyObjectByType<CinemachineCamera>();
+            if (vcam == null) return;
 
-            if (vcam != null && targetGroup != null)
+            var targetGroup = FindAnyObjectByType<CinemachineTargetGroup>();
+
+            if (targetGroup == null)
             {
-                // 타겟 그룹에 플레이어와 크로스헤어가 잘 들어있는지 확인하고 재설정
-                // (필요 시 targetGroup.AddTarget(...) 코드를 활용)
-                vcam.Follow = targetGroup.transform;
+                GameObject tgObj = new GameObject("DynamicTargetGroup");
+                targetGroup = tgObj.AddComponent<CinemachineTargetGroup>();
             }
+
+            // 1. 기존 리스트 비우기
+            targetGroup.Targets.Clear();
+
+            // 2. [수정] 리스트에 직접 Target 데이터 추가하기
+            // 플레이어 추가
+            targetGroup.Targets.Add(new CinemachineTargetGroup.Target
+            {
+                Object = this.transform,
+                Weight = 0.7f,
+                Radius = 1f
+            });
+
+            // 크로스헤어 추가
+            if (Crosshair.Instance != null)
+            {
+                targetGroup.Targets.Add(new CinemachineTargetGroup.Target
+                {
+                    Object = Crosshair.Instance.transform,
+                    Weight = 0.3f,
+                    Radius = 1f
+                });
+            }
+
+            vcam.Target.TrackingTarget = targetGroup.transform;
+            vcam.ForceCameraPosition(transform.position, Quaternion.identity);
         }
 
         private void Update()
@@ -119,12 +146,13 @@ namespace Player
 
         private void HandleMovement()
         {
+            if (stats.isStunned) return;
             if (stealth != null && stealth.IsDodging)
             {
                 return; // Maintain dodging velocity
             }
             // Compatibility for 2023+ (velocity or linearVelocity)
-            rb.linearVelocity = moveInput.normalized * stats.GetCalculatedMoveSpeed();
+            rb.linearVelocity = moveInput.normalized * stats.MoveSpeed.GetValue();
         }
 
         private void HandleAiming()
@@ -146,6 +174,7 @@ namespace Player
 
         private void HandleActions()
         {
+            if (stats.isStunned) return;
             // 1. 공격 (연사형): 버튼을 '누르고 있는 동안' 계속 실행
             // InputActionReference의 .IsPressed()를 쓰면 떼는 순간 즉시 정지합니다.
             if (attackAction.action.IsPressed())
@@ -153,6 +182,7 @@ namespace Player
                 // 처음 눌렀을 때만 로그 기록 (중복 로그 방지)
                 if (attackAction.action.WasPressedThisFrame())
                 {
+                    stealth.CancelStealth();
                     PlayerLogManager.Instance?.RecordAction();
                 }
 
