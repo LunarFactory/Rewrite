@@ -1,4 +1,5 @@
 using UnityEngine;
+using Entity;
 using Player; // PlayerStats 참조를 위해 필요
 using Enemy;  // EnemyBase 참조를 위해 필요
 
@@ -17,7 +18,7 @@ namespace Weapons
         private float currentSpeed;
         private float minSpeed;
         public float decelerationRate = 1.00f; // 1.0이면 유지, 작을수록 빨리 느려짐
-        [HideInInspector] public PlayerStats ownerStats; // [핵심] 신호를 보낼 대상
+        [HideInInspector] public EntityStatus ownerStats; // [핵심] 신호를 보낼 대상
 
         private void Awake()
         {
@@ -32,16 +33,16 @@ namespace Weapons
             }
         }
 
-        public void Initialize(Vector2 direction, float speed, float minSpeed, int damage, int pierceCount, bool isPlayer, PlayerStats stats)
+        public void Initialize(Vector2 direction, float speed, float minSpeed, int damage, int pierceCount, bool isPlayer, EntityStatus stats)
         {
             if (rb == null) rb = GetComponent<Rigidbody2D>();
 
-            if (speed <= 0f) speed = 20f;
-            if (damage <= 0) damage = 10;
+            if (speed <= 0f) speed = minSpeed + 0.1f;
+            if (damage <= 0) damage = 1;
 
             this.moveVelocity = direction.normalized;
             this.currentPierce = pierceCount;
-            this.damageVal = damage;
+            this.damageVal = Mathf.RoundToInt(stats.DamageIncreased.GetValue(damage));
             this.isPlayerProjectile = isPlayer;
             this.currentSpeed = speed;
             this.minSpeed = minSpeed;
@@ -80,41 +81,44 @@ namespace Weapons
         {
             if (!isInitialized) return;
 
-            // [개선] 더 확실한 컴포넌트 감지 로직
-            if (isPlayerProjectile)
-            {
-                // 적군인지 확인 (자신 혹은 부모에게 EnemyBase가 있는지)
-                var enemy = collision.GetComponent<Enemy.EnemyBase>() ?? collision.GetComponentInParent<Enemy.EnemyBase>();
+            // 1. 공통 EntityStatus 추출 (자신 혹은 부모)
+            EntityStatus target = collision.GetComponent<EntityStatus>() ?? collision.GetComponentInParent<EntityStatus>();
 
-                if (enemy != null && !enemy.isDead)
+            if (target != null && !target.isDead)
+            {
+                if (isPlayerProjectile)
                 {
-                    enemy.TakeDamage(damageVal);
-                    if (ownerStats != null)
+                    // [플레이어 투사체 -> 적 타격]
+                    if (target is EnemyBase enemy)
                     {
-                        ownerStats.NotifyAttackHit(enemy, damageVal);
+                        enemy.TakeDamage(damageVal);
+
+                        if (ownerStats != null)
+                        {
+                            ((PlayerStats)ownerStats).NotifyAttackHit(enemy, damageVal);
+                        }
+                        HandlePierce();
                     }
-
-                    HandlePierce();
                 }
-            }
-            else
-            {
-                // 플레이어인지 확인
-                var playerStats = collision.GetComponent<Player.PlayerStats>() ?? collision.GetComponentInParent<Player.PlayerStats>();
-                if (playerStats != null)
+                else
                 {
-                    if (playerStats.isStealth()) return;
-                    playerStats.TakeDamage(damageVal);
-                    HandlePierce();
+                    // [적 투사체 -> 플레이어 타격]
+                    if (target is PlayerStats player)
+                    {
+                        if (player.isStealth()) return;
+
+                        player.TakeDamage(damageVal);
+                        HandlePierce();
+                    }
                 }
             }
 
-            // 장애물 충돌 (벽 등)
+            // 2. 장애물 충돌 (벽 등)
             if (collision.CompareTag("Obstacle"))
             {
                 if (isPlayerProjectile && ownerStats != null)
                 {
-                    ownerStats.NotifyWallHit();
+                    ((PlayerStats)ownerStats).NotifyWallHit();
                 }
                 Destroy(gameObject);
             }

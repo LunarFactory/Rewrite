@@ -13,6 +13,8 @@ namespace Entity
         // BuffManager나 아이템 시스템이 공통적으로 접근할 스탯들
         public CharacterStat AttackDamage;
         public CharacterStat MoveSpeed;
+        public CharacterStat DamageTaken;
+        public CharacterStat DamageIncreased;
 
         [Header("Common Components")]
         protected SpriteRenderer _spriteRenderer;
@@ -33,7 +35,8 @@ namespace Entity
         public virtual void TakeDamage(int damage)
         {
             if (isDead) return;
-            currentHealth -= damage;
+            int totalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
+            currentHealth -= totalDamage;
             if (currentHealth <= 0)
             {
                 currentHealth = 0;

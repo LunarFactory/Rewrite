@@ -23,7 +23,7 @@ namespace Item
             {
                 if (Time.time < lastFireTime + cooldown) return;
                 lastFireTime = Time.time;
-                stats.StartCoroutine(NeuralChainRoutine(target, stats));
+                stats.StartCoroutine(NeuralChainRoutine((EnemyBase)target, stats));
             };
         }
 

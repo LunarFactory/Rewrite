@@ -24,7 +24,7 @@ namespace Player
         public event Action<float> OnHealthChanged; // float으로 변경 권장
         public event Action<float> OnPostDamage;
         public event Action OnWallHit;
-        public event Action<Enemy.EnemyBase, float> OnAttackHit;
+        public event Action<EntityStatus, float> OnAttackHit;
 
         private int bolts = 0;
         public static event Action<PlayerStats> OnPlayerReady;
@@ -101,7 +101,7 @@ namespace Player
 
         // 경제 및 유틸리티 메서드들...
         public void NotifyWallHit() => OnWallHit?.Invoke();
-        public void NotifyAttackHit(Enemy.EnemyBase target, float damage) => OnAttackHit?.Invoke(target, damage);
+        public void NotifyAttackHit(EntityStatus target, float damage) => OnAttackHit?.Invoke(target, damage);
         public bool AddBolts(int amount)
         {
             if (amount > 0)
