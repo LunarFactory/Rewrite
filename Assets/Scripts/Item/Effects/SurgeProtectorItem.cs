@@ -10,7 +10,7 @@ namespace Item
     public class SurgeProtector : PassiveItemData // 부모를 상속받음
     {
         [Header("Shield Settings")]
-        public float cooldown = 5f;
+        public float cooldown = 20f;
 
         private bool _isShieldReady = false;
 

@@ -1,0 +1,637 @@
+fileFormatVersion: 2
+guid: 08dd350af1e744643b578b8929b69e16
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5978832047109654551
+    second: boom_atlas_0
+  - first:
+      213: 4571643661096948581
+    second: boom_atlas_1
+  - first:
+      213: -4687126672945097205
+    second: boom_atlas_2
+  - first:
+      213: 7601577511191486692
+    second: boom_atlas_3
+  - first:
+      213: -3718674825426804632
+    second: boom_atlas_4
+  - first:
+      213: -8433695097306495905
+    second: boom_atlas_5
+  - first:
+      213: -7322919815942646662
+    second: boom_atlas_6
+  - first:
+      213: -4409254163674414359
+    second: boom_atlas_7
+  - first:
+      213: -741473171679241326
+    second: boom_atlas_8
+  - first:
+      213: 3583872117969155686
+    second: boom_atlas_9
+  - first:
+      213: 5576345654996831074
+    second: boom_atlas_10
+  - first:
+      213: 5297657325952918439
+    second: boom_atlas_11
+  - first:
+      213: 9148466966792687942
+    second: boom_atlas_12
+  - first:
+      213: -706182782487400620
+    second: boom_atlas_13
+  - first:
+      213: 6217220506600979346
+    second: boom_atlas_14
+  - first:
+      213: 1052455458602942480
+    second: boom_atlas_15
+  - first:
+      213: -8033912417136326226
+    second: boom_atlas_16
+  - first:
+      213: -8283590000113794407
+    second: boom_atlas_17
+  - first:
+      213: 3142620192292338547
+    second: boom_atlas_18
+  - first:
+      213: -8674617977317106695
+    second: boom_atlas_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: boom_atlas_0
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 19
+        width: 9
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71841b3d11419f250800000000000000
+      internalID: 5978832047109654551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_1
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 19
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 563995b20bdb17f30800000000000000
+      internalID: 4571643661096948581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_2
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 39
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0659d9df1bf3feb0800000000000000
+      internalID: -4687126672945097205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_3
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 42
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e0aa27b87a3e7960800000000000000
+      internalID: 7601577511191486692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_4
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 6
+        width: 56
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8606f3bd2fc946cc0800000000000000
+      internalID: -3718674825426804632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_5
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 14
+        width: 51
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f54c71d1efe75fa80800000000000000
+      internalID: -8433695097306495905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_6
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 28
+        width: 30
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a74d114d933cf5a90800000000000000
+      internalID: -7322919815942646662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_7
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 31
+        width: 24
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e246c903be2fc2c0800000000000000
+      internalID: -4409254163674414359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_8
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 4
+        width: 51
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29b939f2412c5b5f0800000000000000
+      internalID: -741473171679241326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_9
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 13
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6667afff3b87cb130800000000000000
+      internalID: 3583872117969155686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_10
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 28
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26b01e614d8236d40800000000000000
+      internalID: 5576345654996831074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_11
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 8
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a36b2f054f058940800000000000000
+      internalID: 5297657325952918439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_12
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 8
+        width: 14
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 641d2135c32e5fe70800000000000000
+      internalID: 9148466966792687942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_13
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 8
+        width: 9
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45f675730822336f0800000000000000
+      internalID: -706182782487400620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_14
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 11
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29bb93a4c11084650800000000000000
+      internalID: 6217220506600979346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_15
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 4
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01003f7d9a21b9e00800000000000000
+      internalID: 1052455458602942480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_16
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 12
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea94dfbd83fc18090800000000000000
+      internalID: -8033912417136326226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_17
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 14
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9924d3288c6ca0d80800000000000000
+      internalID: -8283590000113794407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_18
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 10
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37bfd812a64dc9b20800000000000000
+      internalID: 3142620192292338547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boom_atlas_19
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 10
+        width: 11
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fbdbc3e8e09d9780800000000000000
+      internalID: -8674617977317106695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      boom_atlas_0: 5978832047109654551
+      boom_atlas_1: 4571643661096948581
+      boom_atlas_10: 5576345654996831074
+      boom_atlas_11: 5297657325952918439
+      boom_atlas_12: 9148466966792687942
+      boom_atlas_13: -706182782487400620
+      boom_atlas_14: 6217220506600979346
+      boom_atlas_15: 1052455458602942480
+      boom_atlas_16: -8033912417136326226
+      boom_atlas_17: -8283590000113794407
+      boom_atlas_18: 3142620192292338547
+      boom_atlas_19: -8674617977317106695
+      boom_atlas_2: -4687126672945097205
+      boom_atlas_3: 7601577511191486692
+      boom_atlas_4: -3718674825426804632
+      boom_atlas_5: -8433695097306495905
+      boom_atlas_6: -7322919815942646662
+      boom_atlas_7: -4409254163674414359
+      boom_atlas_8: -741473171679241326
+      boom_atlas_9: 3583872117969155686
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
