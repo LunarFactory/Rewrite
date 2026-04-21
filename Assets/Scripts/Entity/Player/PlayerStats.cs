@@ -2,7 +2,7 @@ using UnityEngine;
 using Core;
 using System;
 using Entity;
-using Weapons;
+using Weapon;
 
 namespace Player
 {
@@ -12,6 +12,13 @@ namespace Player
         public int baseAttackDamage = 10;
         public float baseAttackSpeed = 1;
         public float baseMoveSpeed = 5;
+        public int baseRicochet = 0;
+        public int basePierce = 0;
+        public float baseHomingRange = 0f;
+        public float baseHomingStrength = 0f;
+        public float baseDecelerationRate = 1f;
+        public float baseProjectileScale = 1f;
+        public float baseProjectileSpeed = 1f;
         public float baseDamageIncreasedFlat = 0f;
         public float baseDamageIncreasedPercent = 0f;
         public float baseDamageTakenFlat = 0f;
@@ -20,15 +27,16 @@ namespace Player
         private PlayerStealth stealth;
 
         private WeaponBase currentWeapon;
-        private WeaponData wData;
+
 
         // 이벤트들
         public delegate void PreDamageHandler(ref int damage);
         public event PreDamageHandler OnPreDamage;
         public event Action<int> OnHealthChanged; // float으로 변경 권장
         public event Action<int> OnPostDamage;
-        public event Action OnWallHit;
+        public event Action<Projectile> OnWallHit;
         public event Action OnKill;
+        public event Action<PlayerStats, EntityStats> OnPlayerApplyHardCC;
 
         private int bolts = 0;
         public static event Action<PlayerStats> OnPlayerReady;
@@ -45,7 +53,6 @@ namespace Player
             maxHealth = 100; // 또는 데이터 시트 참조
             currentHealth = maxHealth;
             stealth = GetComponent<PlayerStealth>();
-            currentWeapon = GetComponentInChildren<WeaponBase>();
 
             if (GameManager.Instance != null)
                 GameManager.Instance.RegisterPlayer(this);
@@ -53,37 +60,26 @@ namespace Player
             AttackDamage = new CharacterStat(baseAttackDamage); // 기본값
             AttackSpeed = new CharacterStat(baseAttackSpeed);
             MoveSpeed = new CharacterStat(baseMoveSpeed);
+            Ricochet = new CharacterStat(baseRicochet);
+            Pierce = new CharacterStat(basePierce);
+            HomingRange = new CharacterStat(baseHomingRange);
+            HomingStrength = new CharacterStat(baseHomingStrength);
+            DecelerationRate = new CharacterStat(baseDecelerationRate);
+            ProjectileScale = new CharacterStat(baseProjectileScale);
+            ProjectileSpeed = new CharacterStat(baseProjectileSpeed);
             DamageIncreased = new CharacterStat(0);
             if (baseDamageIncreasedFlat != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedFlat", baseDamageIncreasedFlat, ModifierType.Flat, this));
             if (baseDamageIncreasedPercent != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedPercent", baseDamageIncreasedPercent, ModifierType.Percent, this));
             DamageTaken = new CharacterStat(0);
             if (baseDamageTakenFlat != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenFlat", baseDamageTakenFlat, ModifierType.Flat, this));
             if (baseDamageTakenPercent != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenPercent", baseDamageTakenPercent, ModifierType.Percent, this));
-            ApplyUpgrades();
+
+            currentWeapon = GetComponentInChildren<WeaponBase>();
         }
-        private void ApplyUpgrades()
-        {
-            foreach (var data in UpgradeManager.Instance.allUpgrades)
-            {
-                int level = UpgradeManager.Instance.GetLevel(data.id);
-                if (level <= 0) continue;
 
-                float bonusValue = data.statOffsets[level - 1];
-
-                // 기존의 StatModifier 시스템 활용
-                StatModifier metaMod = new StatModifier("MetaUpgrade", bonusValue, ModifierType.Percent, this);
-
-                switch (data.statType)
-                {
-                    case StatType.Damage: AttackDamage.AddModifier(metaMod); break;
-                    case StatType.AttackSpeed: AttackSpeed.AddModifier(metaMod); break;
-                    case StatType.MoveSpeed: MoveSpeed.AddModifier(metaMod); break;
-                }
-            }
-        }
         public override void TakeDamage(EntityStats attacker, int damage)
         {
-            if (stealth != null && (stealth.IsDodging || stealth.IsStealthActive)) return;
+            if (stealth != null && stealth.IsStealthActive) return;
 
             if (damage > 0)
             {
@@ -100,6 +96,17 @@ namespace Player
             OnHealthChanged?.Invoke(currentHealth);
             OnPostDamage?.Invoke(damage);
         }
+
+        public int GetWeaponBaseAttackDamage()
+        {
+            return Mathf.RoundToInt(baseAttackDamage * currentWeapon.weaponData.damageMultiplier);
+        }
+
+        public float GetWeaponBaseAttackSpeed()
+        {
+            return baseAttackSpeed * currentWeapon.weaponData.fireRate;
+        }
+
 
         public override void Heal(int amount)
         {
@@ -127,20 +134,16 @@ namespace Player
             OnKill?.Invoke();
         }
 
-        public int GetCalculatedAttackDamage()
+        public override void NotifyHardCC(EntityStats attacker, EntityStats target)
         {
-            wData = currentWeapon.weaponData;
-            return Mathf.RoundToInt(AttackDamage.GetValue() * wData.damageMultiplier);
-        }
-
-        public float GetCalculatedAttackSpeed()
-        {
-            wData = currentWeapon.weaponData;
-            return AttackSpeed.GetValue() * wData.FireRate;
+            if (attacker is PlayerStats)
+            {
+                OnPlayerApplyHardCC?.Invoke((PlayerStats)attacker, target);
+            }
         }
 
         // 경제 및 유틸리티 메서드들...
-        public void NotifyWallHit() => OnWallHit?.Invoke();
+        public void NotifyWallHit(Projectile proj) => OnWallHit?.Invoke(proj);
         public bool AddBolts(int amount)
         {
             if (amount > 0)
@@ -164,7 +167,7 @@ namespace Player
         {
             return bolts;
         }
-
+        
         public bool isStealth()
         {
             return stealth.IsStealthActive;

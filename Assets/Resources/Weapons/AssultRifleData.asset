@@ -15,12 +15,11 @@ MonoBehaviour:
   weaponSprite: {fileID: -5557420877203330147, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
   projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
   Type: 1
-  WeaponName: AssultRifle
+  weaponName: "\uB3CC\uACA9\uC18C\uCD1D"
   damageMultiplier: 0.4
-  FireRate: 10
-  ProjectileSpeed: 20
-  BulletDeceleration: 0.97
-  IsAuto: 1
-  NumberOfPellets: 1
-  SpreadAngle: 25
-  PierceCount: 0
+  fireRate: 10
+  projectileSpeed: 20
+  decelerationRate: 0.03
+  numberOfPellets: 1
+  spreadAngle: 25
+  pierceCount: 0

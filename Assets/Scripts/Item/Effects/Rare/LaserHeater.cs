@@ -6,8 +6,6 @@ using Enemy;
 
 namespace Item
 {
-    public class GearboxMarker : MonoBehaviour { }
-
     [CreateAssetMenu(fileName = "HighPrecisionGearbox", menuName = "Items/Common/High Precision Gearbox")]
     public class HighPrecisionGearboxItem : PassiveItemData
     {

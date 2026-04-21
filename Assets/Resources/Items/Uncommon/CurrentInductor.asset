@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a44c6613c7d826c4d9d679b23a0a54e7, type: 3}
+  m_Name: CurrentInductor
+  m_EditorClassIdentifier: Assembly-CSharp::Item.CurrentInductorItem
+  itemName: "\uC804\uB958 \uC720\uB3C4\uAE30"
+  description: "\uD0C4\uD658\uC774 \uC57D\uD55C \uC720\uB3C4 \uD6A8\uACFC\uB97C \uC5BB\uC73C\uBA70
+    1\uD68C \uCD94\uAC00\uB85C \uAD00\uD1B5\uD569\uB2C8\uB2E4."
+  icon: {fileID: -3636422283925311074, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 1
+  homingRange: 5
+  homingStrength: 5
+  pierceCount: 1

@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Log;
 using Core;
+using Weapon;
 
 namespace Player
 {
@@ -21,7 +22,7 @@ namespace Player
         [Header("Aiming & Weapon")]
         private Vector3 mousePos;
         public Transform weaponPivot;
-        private Weapons.WeaponBase currentWeapon;
+        private WeaponBase currentWeapon;
 
         [Tooltip("캐릭터 스프라이트의 시각적 중심. 스프라이트 Pivot이 발치에 있을 경우 Y값을 올려서 맞추세요.")]
         [SerializeField] private Vector2 aimCenterOffset = new Vector2(0f, 0.25f);
@@ -56,7 +57,7 @@ namespace Player
             rb.gravityScale = 0f;
             if (currentWeapon == null)
             {
-                currentWeapon = GetComponentInChildren<Weapons.WeaponBase>();
+                currentWeapon = GetComponentInChildren<Weapon.WeaponBase>();
             }
             DontDestroyOnLoad(gameObject);
         }
@@ -66,7 +67,7 @@ namespace Player
             // 2. 무기 컴포넌트 확인
             if (currentWeapon == null)
             {
-                currentWeapon = GetComponentInChildren<Weapons.WeaponBase>();
+                currentWeapon = GetComponentInChildren<Weapon.WeaponBase>();
             }
             currentWeapon.Initialize(currentWeapon.weaponData);
         }
@@ -147,10 +148,6 @@ namespace Player
         private void HandleMovement()
         {
             if (stats.isStunned) return;
-            if (stealth != null && stealth.IsDodging)
-            {
-                return; // Maintain dodging velocity
-            }
             // Compatibility for 2023+ (velocity or linearVelocity)
             rb.linearVelocity = moveInput.normalized * stats.MoveSpeed.GetValue();
         }
@@ -182,7 +179,6 @@ namespace Player
                 // 처음 눌렀을 때만 로그 기록 (중복 로그 방지)
                 if (attackAction.action.WasPressedThisFrame())
                 {
-                    stealth.CancelStealth();
                     PlayerLogManager.Instance?.RecordAction();
                 }
 
@@ -190,6 +186,7 @@ namespace Player
                 {
                     Vector2 aimDir = weaponPivot != null ? weaponPivot.right : transform.right;
                     currentWeapon.Fire(aimDir);
+                    stealth.CancelStealth();
                 }
             }
 
@@ -206,18 +203,18 @@ namespace Player
             if (currentWeapon == null || currentWeapon.weaponData == null) return;
 
             // 여기서 무기의 스프라이트를 바꾸거나, 초기화 로직을 실행합니다.
-            Debug.Log($"[Player] {currentWeapon.weaponData.WeaponName} 데이터 적용 완료!");
+            Debug.Log($"[Player] {currentWeapon.weaponData.weaponName} 데이터 적용 완료!");
 
             // 만약 무기에 Visual을 업데이트하는 기능이 있다면 여기서 호출하세요.
             // currentWeapon.GetComponent<WeaponVisuals>()?.UpdateSprite();
         }
 
-        public Weapons.WeaponData GetCurrentWeapon()
+        public WeaponData GetCurrentWeapon()
         {
             return currentWeapon.weaponData;
         }
 
-        public void SetCurrentWeapon(Weapons.WeaponData newData)
+        public void SetCurrentWeapon(WeaponData newData)
         {
             currentWeapon.Initialize(newData);
             currentWeapon.ResetFireDelay();

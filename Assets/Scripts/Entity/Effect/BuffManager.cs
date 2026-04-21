@@ -50,6 +50,10 @@ public class BuffManager : MonoBehaviour
                 newEffect.Initialize(data, duration, source);
                 newEffect.OnStart(_stats, source);
                 _activeEffects.Add(newEffect);
+                if (data.isHard)
+                {
+                    source.NotifyHardCC(source, _stats);
+                }
             }
         }
     }

@@ -26,10 +26,10 @@ namespace Item
             {
                 var droneObj = Instantiate(dronePrefab);
                 var droneBase = droneObj.GetComponent<DroneBase>();
-                
+
                 // 플레이어를 중심으로 공전하도록 설정 (초기 각도는 랜덤)
                 droneBase.SetCenter(player.transform, Random.Range(0, 360f));
-                
+
                 // 매니저에 등록 (능력치 실시간 동기화를 위해)
                 DroneManager.Instance.RegisterDrone(droneBase);
             }

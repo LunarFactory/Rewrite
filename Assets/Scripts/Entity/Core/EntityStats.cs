@@ -13,6 +13,13 @@ namespace Entity
         // BuffManager나 아이템 시스템이 공통적으로 접근할 스탯들
         public CharacterStat AttackDamage;
         public CharacterStat MoveSpeed;
+        public CharacterStat Ricochet;
+        public CharacterStat Pierce;
+        public CharacterStat HomingRange;
+        public CharacterStat HomingStrength;
+        public CharacterStat DecelerationRate;
+        public CharacterStat ProjectileScale;
+        public CharacterStat ProjectileSpeed;
         public CharacterStat DamageIncreased;
         public CharacterStat DamageTaken;
 
@@ -46,8 +53,9 @@ namespace Entity
             }
         }
 
-        public virtual void NotifyAttackHit(EntityStats attacker, EntityStats entity, int damage) {}
-        public virtual void NotifyKill() {}
+        public virtual void NotifyAttackHit(EntityStats attacker, EntityStats entity, int damage) { }
+        public virtual void NotifyKill() { }
+        public virtual void NotifyHardCC(EntityStats attacker, EntityStats target) { }
 
         public virtual void Heal(int amount)
         {

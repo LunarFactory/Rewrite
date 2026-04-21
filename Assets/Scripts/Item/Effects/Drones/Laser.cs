@@ -1,6 +1,7 @@
 using UnityEngine;
-using Player;
 using Entity;
+using Player;
+using Enemy;
 
 namespace Drone
 {
@@ -23,14 +24,15 @@ namespace Drone
             // 3. 라인 렌더러 설정
             _line = GetComponent<LineRenderer>();
             if (_line == null) _line = gameObject.AddComponent<LineRenderer>();
-            
+
             _line.positionCount = 2;
             _line.startWidth = 0.1f;
             _line.endWidth = 0.1f;
             _line.material = new Material(Shader.Find("Sprites/Default"));
-            _line.startColor = Color.red;
+            _line.startColor = Color.magenta;
             _line.endColor = Color.red;
             _line.enabled = false;
+            _line.sortingOrder = 10;
         }
 
         private void Update()
@@ -52,13 +54,13 @@ namespace Drone
             _line.SetPosition(1, _currentTarget.position);
 
             // 데미지 (초당 50%)
-            float dps = PlayerStats.LocalPlayer.AttackDamage.GetValue() * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier;
+            float dps = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.baseAttackDamage) * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier);
             _damageAccumulator += dps * Time.deltaTime;
 
             if (_damageAccumulator >= 1f)
             {
                 int intDmg = Mathf.FloorToInt(_damageAccumulator);
-                _currentTarget.GetComponent<EntityStats>()?.TakeDamage(PlayerStats.LocalPlayer, intDmg);
+                _currentTarget.GetComponent<EnemyStats>()?.TakeDamage(PlayerStats.LocalPlayer, intDmg, Color.magenta);
                 _damageAccumulator -= intDmg;
             }
         }
@@ -68,7 +70,7 @@ namespace Drone
             // range가 0이면 아무것도 못 찾음. 여기서 강제로 8 할당
             float currentRange = (range <= 0) ? 8f : range;
             Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, currentRange, enemyLayer);
-            
+
             Transform closest = null;
             float minDistance = float.MaxValue;
 

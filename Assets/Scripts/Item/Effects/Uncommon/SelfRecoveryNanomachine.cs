@@ -46,7 +46,7 @@ namespace Item
             if (!_isCooldown)
             {
                 attacker.Heal(_healAmount);
-                StartCoroutine(CooldownRoutine());  
+                StartCoroutine(CooldownRoutine());
             }
         }
 
@@ -55,6 +55,14 @@ namespace Item
             _isCooldown = true;
             yield return new WaitForSeconds(_cooldown);
             _isCooldown = false;
+        }
+
+        private void OnDestroy()
+        {
+            if (_player != null)
+            {
+                _player.OnPlayerAttackHit -= HandleItemEffect;
+            }
         }
     }
 }

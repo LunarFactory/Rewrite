@@ -1,5 +1,5 @@
 using UnityEngine;
-using Weapons;
+using Weapon;
 using Core;
 
 namespace Level

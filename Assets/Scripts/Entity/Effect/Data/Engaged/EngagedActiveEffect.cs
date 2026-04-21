@@ -13,7 +13,7 @@ public class EngagedActiveEffect : ActiveEffect
         _tickTimer = 0f;
         SpriteRenderer sr = target.GetRenderer();
         if (sr != null)
-            sr.color = Color.magenta;
+            sr.color = Color.gray;
 
         Debug.Log($"{target.name}에게 Engaged 효과 시작! (초당 피해: {_engagedData.damage})");
     }
@@ -35,7 +35,7 @@ public class EngagedActiveEffect : ActiveEffect
             _tickTimer -= 1.0f;
 
             // 정해진 초당 데미지를 입힙니다.
-            if (target is Enemy.EnemyStats enemy) enemy.TakeDamage(source, _engagedData.damage, Color.magenta);
+            if (target is Enemy.EnemyStats enemy) enemy.TakeDamage(source, _engagedData.damage, Color.gray);
             else target.TakeDamage(source, _engagedData.damage);
 
             Debug.Log($"{target.name}이 Engaged 피해를 입음: {_engagedData.damage} (남은 시간: {RemainingTime:F1}초)");

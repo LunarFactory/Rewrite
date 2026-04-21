@@ -13,11 +13,6 @@ namespace Level
 
         public override void OnInteract(GameObject interactEntity)
         {
-            if (UpgradeUIController.Instance != null)
-            {
-                UpgradeUIController.Instance.Open();
-            }
-            else
             {
                 Debug.LogError("씬에 SupplyPortUI가 없습니다!");
             }

@@ -15,12 +15,11 @@ MonoBehaviour:
   weaponSprite: {fileID: -7888296697152109952, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
   projectilePrefab: {fileID: 674297919083904026, guid: c03c28a359a533b43b5ff3dcfb90bf69, type: 3}
   Type: 2
-  WeaponName: Sniper
+  weaponName: "\uC800\uACA9\uC18C\uCD1D"
   damageMultiplier: 4
-  FireRate: 0.5
-  ProjectileSpeed: 30
-  BulletDeceleration: 0.99
-  IsAuto: 1
-  NumberOfPellets: 1
-  SpreadAngle: 0
-  PierceCount: 1
+  fireRate: 0.5
+  projectileSpeed: 30
+  decelerationRate: 0.01
+  numberOfPellets: 1
+  spreadAngle: 0
+  pierceCount: 1

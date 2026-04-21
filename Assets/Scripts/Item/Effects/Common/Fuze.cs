@@ -70,7 +70,7 @@ namespace Item
             Debug.Log("<color=red>[위기 관리]</color> 1회성 충격파 발동!");
 
             // 주변의 적 탄환 제거 및 적 기절 로직 (이전과 동일)
-            int mask = LayerMask.GetMask("Enemy", "EnemyBullet");
+            int mask = LayerMask.GetMask("Enemy", "EnemyProjectile");
             Collider2D[] hits = Physics2D.OverlapCircleAll(center, _range, mask);
 
             foreach (var hit in hits)

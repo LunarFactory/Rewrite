@@ -19,6 +19,7 @@ namespace Enemy
         private GameObject player;
         private Player.PlayerStats stat;
         public event Action<EnemyStats, EntityStats, int> OnEnemyAttackHit;
+        public event Action<EnemyStats, EntityStats> OnEnemyApplyHardCC;
 
         protected override void Awake()
         {
@@ -29,6 +30,13 @@ namespace Enemy
                 currentHealth = maxHealth;
                 AttackDamage = new CharacterStat(data.baseAttackDamage);
                 MoveSpeed = new CharacterStat(data.baseMoveSpeed);
+                Ricochet = new CharacterStat(data.baseRicochet);
+                Pierce = new CharacterStat(data.basePierce);
+                HomingRange = new CharacterStat(data.baseHomingRange);
+                HomingStrength = new CharacterStat(data.baseHomingStrength);
+                DecelerationRate = new CharacterStat(data.baseDecelerationRate);
+                ProjectileScale = new CharacterStat(data.baseProjectileScale);
+                ProjectileSpeed = new CharacterStat(data.baseProjectileSpeed);
                 DamageIncreased = new CharacterStat(0);
                 if (data.baseDamageIncreasedFlat != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedFlat", data.baseDamageIncreasedFlat, ModifierType.Flat, this));
                 if (data.baseDamageIncreasedPercent != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedPercent", data.baseDamageIncreasedPercent, ModifierType.Percent, this));
@@ -92,9 +100,16 @@ namespace Enemy
         }
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)
         {
-            if (attacker is EntityStats)
+            if (attacker is EnemyStats)
             {
                 OnEnemyAttackHit?.Invoke((EnemyStats)attacker, target, damage);
+            }
+        }
+        public override void NotifyHardCC(EntityStats attacker, EntityStats target)
+        {
+            if (attacker is EnemyStats)
+            {
+                OnEnemyApplyHardCC?.Invoke((EnemyStats)attacker, target);
             }
         }
 

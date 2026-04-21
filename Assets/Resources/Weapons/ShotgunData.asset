@@ -15,12 +15,11 @@ MonoBehaviour:
   weaponSprite: {fileID: 698664279297640794, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
   projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
   Type: 3
-  WeaponName: Shotgun
+  weaponName: "\uC0B0\uD0C4\uCD1D"
   damageMultiplier: 0.8
-  FireRate: 1
-  ProjectileSpeed: 25
-  BulletDeceleration: 0.92
-  IsAuto: 1
-  NumberOfPellets: 8
-  SpreadAngle: 45
-  PierceCount: 0
+  fireRate: 1
+  projectileSpeed: 20
+  decelerationRate: 0.08
+  numberOfPellets: 8
+  spreadAngle: 45
+  pierceCount: 0

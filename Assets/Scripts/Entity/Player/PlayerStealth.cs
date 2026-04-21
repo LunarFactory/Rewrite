@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 namespace Player
 {
@@ -20,9 +21,6 @@ namespace Player
         /// <summary>현재 스텔스 발동 중</summary>
         public bool IsStealthActive { get; private set; }
 
-        /// <summary>회피 구르기 중 (무적 포함)</summary>
-        public bool IsDodging { get; private set; }
-
         /// <summary>스텔스 게이지가 완전히 충전되지 않아 사용 불가</summary>
         public bool IsRecharging => !IsStealthActive && stealthTimer < stealthDuration;
 
@@ -42,6 +40,11 @@ namespace Player
         private Rigidbody2D rb;
         /// <summary>플레이어 본체 + 무기 등 모든 자식 SpriteRenderer</summary>
         private SpriteRenderer[] allRenderers;
+
+        // ── 이벤트 등록 ───────────────────────────────────────────────
+
+        public event Action OnStealthStart;
+        public event Action OnStealthEnd;
 
         // ────────────────────────────────────────────────────────────
         #region Unity Lifecycle
@@ -77,7 +80,8 @@ namespace Player
         {
             // 충전이 안 됐거나 이미 활성 중이면 무시
             if (IsStealthActive || IsRecharging) return;
-
+            
+            OnStealthStart?.Invoke();
             activeCoroutine = StartCoroutine(StealthRoutine());
         }
 
@@ -115,14 +119,12 @@ namespace Player
         private IEnumerator StealthRoutine()
         {
             IsStealthActive = true;
-            IsDodging       = true;
 
             // 플레이어 + 무기 모두 반투명
             SetAlpha(0.3f);
 
             // 이동 속도 부스트 없이 즉시 스텔스로 진입
             yield return null;
-            IsDodging = false;
 
             // 게이지를 시간에 따라 소모
             while (stealthTimer > 0f)
@@ -139,8 +141,8 @@ namespace Player
         private void EndStealth()
         {
             IsStealthActive = false;
-            IsDodging       = false;
             SetAlpha(1f);
+            OnStealthEnd?.Invoke();
         }
 
         private void SetAlpha(float alpha)

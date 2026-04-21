@@ -84,7 +84,8 @@ namespace Enemy
                     _animator.UpdateAnimation(Time.deltaTime, _aimDirection);
 
                     // 표식이 플레이어를 실시간 추적 (World 좌표 기준)
-                    if (_markerObj != null) {
+                    if (_markerObj != null)
+                    {
                         if (!_markerObj.activeSelf) _markerObj.SetActive(true);
                         _markerObj.transform.position = playerTarget.position;
                     }
@@ -123,9 +124,20 @@ namespace Enemy
             if (data == null || data.bulletPrefab == null) return;
 
             GameObject bullet = Instantiate(data.bulletPrefab, transform.position, Quaternion.identity);
-            if (bullet.TryGetComponent(out Weapons.Projectile proj))
+            if (bullet.TryGetComponent(out Weapon.Projectile proj))
             {
-                proj.Initialize(_aimDirection, data.bulletSpeed, data.bulletSpeed, Mathf.RoundToInt(AttackDamage.GetValue()), 0, (EntityStats)this);
+                proj.Initialize(_aimDirection, new Weapon.ProjectileInfo
+                {
+                    damage = Mathf.RoundToInt(DamageIncreased.GetValue(AttackDamage.GetValue())),
+                    pierceCount = (int)Pierce.GetValue(),
+                    ricochetCount = (int)Ricochet.GetValue(),
+                    homingRange = HomingRange.GetValue(),
+                    homingStrength = HomingStrength.GetValue(),
+                    decelerationRate = DecelerationRate.GetValue(),
+                    scale = ProjectileScale.GetValue(),
+                    speed = ProjectileSpeed.GetValue(),
+                    minSpeed = ProjectileSpeed.GetValue() / 10,
+                }, this);
             }
         }
     }

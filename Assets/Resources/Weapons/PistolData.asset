@@ -15,12 +15,11 @@ MonoBehaviour:
   weaponSprite: {fileID: 1098179606456428539, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
   projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
   Type: 0
-  WeaponName: Pistol
-  Damage: 10
-  FireRate: 4
-  ProjectileSpeed: 20
-  BulletDeceleration: 0.965
-  IsAuto: 0
-  NumberOfPellets: 1
-  SpreadAngle: 20
-  PierceCount: 0
+  weaponName: 
+  damageMultiplier: 1
+  fireRate: 4
+  projectileSpeed: 20
+  decelerationRate: 0.035
+  numberOfPellets: 1
+  spreadAngle: 20
+  pierceCount: 0

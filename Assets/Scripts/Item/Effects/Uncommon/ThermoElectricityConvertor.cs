@@ -5,57 +5,58 @@ using Enemy;
 
 namespace Item
 {
-    [CreateAssetMenu(fileName = "MagneticResonator", menuName = "Items/Common/Magnetic Resonator")]
-    public class MagneticResonatorItem : PassiveItemData
+    [CreateAssetMenu(fileName = "ThermoElectricityConvertor", menuName = "Items/Uncommon/Thermo Electricity Convertor")]
+    public class ThermoElectricityConvertorItem : PassiveItemData
     {
         public float range = 6f;
-        public float threshold = 0.5f;
+        public float healPercent = 0.02f;
 
         // 이 효과가 이미 발동했는지 체크하는 변수
         public float cooldown = 30f;
 
         public override void OnApply(PlayerStats player)
         {
-            var tracker = player.GetComponent<FuzeTracker>();
+            var tracker = player.GetComponent<ThermoElectricityConvertorTracker>();
             if (tracker == null)
             {
-                tracker = player.gameObject.AddComponent<FuzeTracker>();
-                tracker.Initialize(player, effectToTrigger, range, stunDuration, threshold, cooldown);
+                tracker = player.gameObject.AddComponent<ThermoElectricityConvertorTracker>();
+                tracker.Initialize(player, range, healPercent, cooldown);
             }
         }
     }
 
-    public class FuzeTracker : MonoBehaviour
+    public class ThermoElectricityConvertorTracker : MonoBehaviour
     {
+        private PlayerStealth _playerStealth;
         private PlayerStats _player;
         private float _range;
+        private float _healPercent;
         private float _cooldown;
         private bool _isCooldown = false;
 
-        public void Initialize(PlayerStats player, StatusEffectData effectToTrigger, float range, float stunDuration, float threshold, float cooldown)
+        public void Initialize(PlayerStats player, float range, float healPercent, float cooldown)
         {
             _player = player;
+            _playerStealth = _player.GetComponent<PlayerStealth>();
             _range = range;
+            _healPercent = healPercent;
             _cooldown = cooldown;
 
-            _player.OnHealthChanged += HandleItemEffect;
+            _playerStealth.OnStealthStart += HandleItemEffect;
         }
 
-        private void HandleItemEffect(int currentHealth)
+        private void HandleItemEffect()
         {
             if (!_isCooldown)
             {
-                RemoveBulletEffect(_player.transform.position);
+                AbsorbBullet(_player.transform.position);
                 StartCoroutine(CooldownRoutine());
-
             }
         }
 
-        private void RemoveBulletEffect(Vector2 center)
+        private void AbsorbBullet(Vector2 center)
         {
-
-            // 주변의 적 탄환 제거 및 적 기절 로직 (이전과 동일)
-            int mask = LayerMask.GetMask("Enemy", "EnemyBullet");
+            int mask = LayerMask.GetMask("EnemyProjectile");
             Collider2D[] hits = Physics2D.OverlapCircleAll(center, _range, mask);
 
             foreach (var hit in hits)
@@ -63,6 +64,7 @@ namespace Item
                 if (hit.CompareTag("EnemyProjectile"))
                 {
                     Destroy(hit.gameObject);
+                    _player.Heal(Mathf.RoundToInt(_player.maxHealth * _healPercent));
                 }
             }
 
@@ -79,7 +81,7 @@ namespace Item
         {
             if (_player != null)
             {
-                _player.OnHealthChanged -= HandleItemEffect;
+                _playerStealth.OnStealthStart -= HandleItemEffect;
             }
         }
     }

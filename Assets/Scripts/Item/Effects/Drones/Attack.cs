@@ -1,7 +1,7 @@
 using UnityEngine;
 using Player;
 using Entity;
-using Weapons;
+using Weapon;
 
 namespace Drone
 {
@@ -9,7 +9,7 @@ namespace Drone
     {
         [Header("Settings")]
         public float range = 10f;
-        public float bulletSpeed = 12f;
+        public float ProjectileSpeed = 10f;
         private LayerMask enemyLayer;
 
         private float _timer;
@@ -79,14 +79,19 @@ namespace Drone
 
             if (proj != null)
             {
-                // 데미지: (플레이어 공격력 50%) * (드론 글로벌 배율)
-                float baseDmg = PlayerStats.LocalPlayer.AttackDamage.GetValue() * 0.5f;
-                int finalDmg = Mathf.RoundToInt(baseDmg * DroneManager.Instance.globalDroneDamageMultiplier);
-
                 // Projectile 초기화 (관통 0, PlayerStats 전달)
-                proj.Initialize(direction, bulletSpeed, 5f, finalDmg, 0, PlayerStats.LocalPlayer);
+                proj.Initialize(direction, new ProjectileInfo{
+                    damage = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.baseAttackDamage) * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier), 
+                    pierceCount = 0, 
+                    ricochetCount = 0,
+                    homingRange = 0, 
+                    homingStrength = 0,
+                    decelerationRate = 0,
+                    scale = 1,
+                    speed = ProjectileSpeed, 
+                    minSpeed = ProjectileSpeed / 10, 
+                }, PlayerStats.LocalPlayer);
                 
-                // Debug.Log($"사격! 타겟: {_currentTarget.name}, 데미지: {finalDmg}");
             }
         }
 

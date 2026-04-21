@@ -14,6 +14,13 @@ namespace Enemy
         public float baseMoveSpeed = 2f;
         [Tooltip("공격 피해")]
         public int baseAttackDamage = 10;
+        public int baseRicochet = 0;
+        public int basePierce = 0;
+        public float baseHomingRange = 0f;
+        public float baseHomingStrength = 0f;
+        public float baseDecelerationRate = 1f;
+        public float baseProjectileScale = 1f;
+        public float baseProjectileSpeed = 1f;
         public float baseDamageIncreasedFlat = 0f;
         public float baseDamageIncreasedPercent = 0f;
         public float baseDamageTakenFlat = 0f;

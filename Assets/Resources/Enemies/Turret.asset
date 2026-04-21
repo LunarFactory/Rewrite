@@ -16,6 +16,17 @@ MonoBehaviour:
   maxHealth: 1000
   baseMoveSpeed: 0
   baseAttackDamage: 40
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 0
+  baseProjectileScale: 1
+  baseProjectileSpeed: 40
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
   hitstunDuration: 0
   shootDelay: 3
   animationFrames: []

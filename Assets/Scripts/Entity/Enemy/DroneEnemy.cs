@@ -79,17 +79,19 @@ namespace Enemy
 
             GameObject bullet = Instantiate(data.bulletPrefab, transform.position, Quaternion.identity);
 
-            if (bullet.TryGetComponent(out Weapons.Projectile proj))
+            if (bullet.TryGetComponent(out Weapon.Projectile proj))
             {
-                // 알려주신 시그니처에 맞게 값을 정확히 매칭합니다.
-                proj.Initialize(
-                    direction: dir,                         // 1. 방향
-                    speed: data.bulletSpeed,                // 2. 현재 속도
-                    minSpeed: data.bulletSpeed,             // 3. 최소 속도 (감속 안 하면 speed와 동일하게)
-                    damage: Mathf.RoundToInt(AttackDamage.GetValue()),              // 4. 데미지
-                    pierceCount: 0,                         // 5. 관통 횟수 (드론 탄환은 보통 0)
-                    stats: this
-                );
+                proj.Initialize(dir, new Weapon.ProjectileInfo{
+                    damage = Mathf.RoundToInt(DamageIncreased.GetValue(AttackDamage.GetValue())), 
+                    pierceCount = (int)Pierce.GetValue(), 
+                    ricochetCount = (int)Ricochet.GetValue(),
+                    homingRange = HomingRange.GetValue(), 
+                    homingStrength = HomingStrength.GetValue(),
+                    decelerationRate = DecelerationRate.GetValue(),
+                    scale = ProjectileScale.GetValue(),
+                    speed = ProjectileSpeed.GetValue(),
+                    minSpeed = ProjectileSpeed.GetValue() / 10, 
+                }, this);
             }
         }
     }

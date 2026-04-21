@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c4b2f54bd2bc2543af4786ff860d7ee, type: 3}
+  m_Name: OverchargedBattery
+  m_EditorClassIdentifier: Assembly-CSharp::Item.OverchargedBatteryItem
+  itemName: "\uACFC\uCDA9\uC804 \uBC30\uD130\uB9AC"
+  description: 
+  icon: {fileID: -5077066260086759624, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 1
+  damagePercent: 3

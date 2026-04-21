@@ -1,5 +1,6 @@
 using UnityEngine;
 using Player;
+using Weapon;
 using Core;
 
 namespace Item
@@ -35,7 +36,7 @@ namespace Item
             _player.OnWallHit += HandleItemEffect;
         }
 
-        private void HandleItemEffect()
+        private void HandleItemEffect(Projectile proj)
         {
             if (_player.TryGetComponent(out BuffManager buffManager))
             {
