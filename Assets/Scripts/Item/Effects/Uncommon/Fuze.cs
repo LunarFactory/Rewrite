@@ -16,23 +16,23 @@ namespace Item
 
         public override void OnApply(PlayerStats player)
         {
-            var tracker = player.GetComponent<FuzeTracker>();
+            var tracker = player.GetComponent<MagneticResonatorTracker>();
             if (tracker == null)
             {
-                tracker = player.gameObject.AddComponent<FuzeTracker>();
-                tracker.Initialize(player, effectToTrigger, range, stunDuration, threshold, cooldown);
+                tracker = player.gameObject.AddComponent<MagneticResonatorTracker>();
+                tracker.Initialize(player, range, cooldown);
             }
         }
     }
 
-    public class FuzeTracker : MonoBehaviour
+    public class MagneticResonatorTracker : MonoBehaviour
     {
         private PlayerStats _player;
         private float _range;
         private float _cooldown;
         private bool _isCooldown = false;
 
-        public void Initialize(PlayerStats player, StatusEffectData effectToTrigger, float range, float stunDuration, float threshold, float cooldown)
+        public void Initialize(PlayerStats player, float range, float cooldown)
         {
             _player = player;
             _range = range;
