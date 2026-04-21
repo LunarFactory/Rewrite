@@ -9,7 +9,7 @@ namespace Item
     public class HalucinationCompensatorItem : PassiveItemData
     {
         [Header("Buff Data")]
-        [SerializeField] private StatusEffectData buffData;
+        [SerializeField] private CompensatedEffect buffData;
 
         public override void OnApply(PlayerStats player)
         {
@@ -26,9 +26,9 @@ namespace Item
     public class HalucinationCompensatorTracker : MonoBehaviour
     {
         private PlayerStats _player;
-        private StatusEffectData _buffData;
+        private CompensatedEffect _buffData;
 
-        public void Initialize(PlayerStats player, StatusEffectData buffData)
+        public void Initialize(PlayerStats player, CompensatedEffect buffData)
         {
             _player = player;
             _buffData = buffData;

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: RecurrentNeuralNetwork
   m_EditorClassIdentifier: Assembly-CSharp::Item.RecurrentNeuralNetworkItem
   itemName: "\uC21C\uD658 \uC2E0\uACBD\uB9DD"
-  description: "\uBCBD\uC5D0 \uD0C4\uD658\uC774 2\uD68C\uAE4C\uC9C0 \uD295\uAE30\uAC8C
-    \uB429\uB2C8\uB2E4."
+  description: "\uBCBD\uC5D0 \uD0C4\uD658\uC774 2\uD68C \uCD94\uAC00\uB85C \uD295\uAE41\uB2C8\uB2E4."
   icon: {fileID: -5020702907934583352, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 1
   ricochetCount: 2

@@ -35,12 +35,13 @@ namespace Player
         public event Action<int> OnHealthChanged; // float으로 변경 권장
         public event Action<int> OnPostDamage;
         public event Action<Projectile> OnWallHit;
-        public event Action OnKill;
+        public event Action<EntityStats> OnKill;
         public event Action<PlayerStats, EntityStats> OnPlayerApplyHardCC;
 
         private int bolts = 0;
         public static event Action<PlayerStats> OnPlayerReady;
         public event Action<PlayerStats, EntityStats, int> OnPlayerAttackHit;
+        public event Action<PlayerStats, EntityStats, int> OnPlayerPostAttackHit;
         // 현재 활성화된 플레이어를 즉시 참조하기 위한 스태틱 변수
         public static PlayerStats LocalPlayer { get; private set; }
 
@@ -99,12 +100,12 @@ namespace Player
 
         public int GetWeaponBaseAttackDamage()
         {
-            return Mathf.RoundToInt(baseAttackDamage * currentWeapon.weaponData.damageMultiplier);
+            return Mathf.RoundToInt(AttackDamage.GetValue() * currentWeapon.weaponData.damageMultiplier);
         }
 
         public float GetWeaponBaseAttackSpeed()
         {
-            return baseAttackSpeed * currentWeapon.weaponData.fireRate;
+            return AttackSpeed.GetValue() * currentWeapon.weaponData.fireRate;
         }
 
 
@@ -128,10 +129,17 @@ namespace Player
                 OnPlayerAttackHit?.Invoke((PlayerStats)attacker, target, damage);
             }
         }
-        public override void NotifyKill()
+        public override void NotifyPostAttackHit(EntityStats attacker, EntityStats target, int damage)
+        {
+            if (attacker is PlayerStats)
+            {
+                OnPlayerPostAttackHit?.Invoke((PlayerStats)attacker, target, damage);
+            }
+        }
+        public override void NotifyKill(EntityStats entity)
         {
             AddBolts(100);
-            OnKill?.Invoke();
+            OnKill?.Invoke(entity);
         }
 
         public override void NotifyHardCC(EntityStats attacker, EntityStats target)
@@ -167,7 +175,7 @@ namespace Player
         {
             return bolts;
         }
-        
+
         public bool isStealth()
         {
             return stealth.IsStealthActive;

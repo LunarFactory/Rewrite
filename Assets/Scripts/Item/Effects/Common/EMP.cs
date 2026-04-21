@@ -12,7 +12,7 @@ namespace Item
         public int maxStack = 10;
         public float duration = 0.5f;
         // BuffManager에 전달할 EMP 트리거용 SO (EMPEffectSO)
-        [SerializeField] private StatusEffectData empTriggerData;
+        [SerializeField] private EMPEffect empTriggerData;
 
         public override void OnApply(PlayerStats player)
         {

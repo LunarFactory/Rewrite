@@ -81,7 +81,7 @@ namespace Drone
             {
                 // Projectile 초기화 (관통 0, PlayerStats 전달)
                 proj.Initialize(direction, new ProjectileInfo{
-                    damage = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.baseAttackDamage) * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier), 
+                    damage = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.AttackDamage.GetValue() * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier)), 
                     pierceCount = 0, 
                     ricochetCount = 0,
                     homingRange = 0, 

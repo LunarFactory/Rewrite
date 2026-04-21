@@ -51,4 +51,9 @@ public class InventoryManager : MonoBehaviour
     {
         return items.Exists(x => x.itemName == itemName);
     }
+
+    public int CountItem()
+    {
+        return items.Count;
+    }
 }

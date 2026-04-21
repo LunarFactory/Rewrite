@@ -11,9 +11,9 @@ namespace Item
     public class HighPrecisionGearboxItem : PassiveItemData
     {
         [Header("Gearbox Settings")]
-        public StatusEffectData engagedEffect;
+        public EngagedEffect engagedEffect;
         public float engagedDuration = 3f;
-        public float engagedDamagePercent = 0.5f;
+        public float engagedDamageMultiplier = 0.5f;
 
 
         public override void OnApply(PlayerStats player)
@@ -22,7 +22,7 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<HighPrecisionGearboxTracker>();
-                tracker.Initialize(player, engagedEffect, engagedDuration, engagedDamagePercent);
+                tracker.Initialize(player, engagedEffect, engagedDuration, engagedDamageMultiplier);
             }
         }
     }
@@ -31,15 +31,15 @@ namespace Item
         private PlayerStats _player;
         private EngagedEffect _engagedEffect;
         private float _duration;
-        private float _damagePercent;
+        private float _damageMultiplier;
         private readonly HashSet<EntityId> _hitTargets = new HashSet<EntityId>();
 
-        public void Initialize(PlayerStats player, StatusEffectData engagedEffect, float engagedDuration, float engagedDamagePercent)
+        public void Initialize(PlayerStats player, EngagedEffect engagedEffect, float engagedDuration, float engagedDamageMultiplier)
         {
             _player = player;
-            _engagedEffect = (EngagedEffect)engagedEffect;
+            _engagedEffect = engagedEffect;
             _duration = engagedDuration;
-            _damagePercent = engagedDamagePercent;
+            _damageMultiplier = engagedDamageMultiplier;
 
             _player.OnPlayerAttackHit += HandleItemEffect;
         }
@@ -59,7 +59,7 @@ namespace Item
                 if (buffManager != null && _engagedEffect != null)
                 {
                     _engagedEffect.duration = _duration;
-                    _engagedEffect.damage = Mathf.RoundToInt(_player.AttackDamage.GetValue() * _damagePercent);
+                    _engagedEffect.damage = Mathf.RoundToInt(_player.DamageIncreased.GetValue(_player.AttackDamage.GetValue() * _damageMultiplier));
                     buffManager.ApplyEffect(_engagedEffect, _engagedEffect.duration, player);
                 }
             }

@@ -54,7 +54,7 @@ namespace Drone
             _line.SetPosition(1, _currentTarget.position);
 
             // 데미지 (초당 50%)
-            float dps = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.baseAttackDamage) * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier);
+            float dps = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.AttackDamage.GetValue() * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier));
             _damageAccumulator += dps * Time.deltaTime;
 
             if (_damageAccumulator >= 1f)

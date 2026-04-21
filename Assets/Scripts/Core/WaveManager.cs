@@ -110,8 +110,15 @@ namespace Core
             {
                 if (GetWaveType(CurrentWave) == WaveType.Boss)
                 {
-                    SpawnBossRewards();
-                    SpawnExitPortal(); // 보상을 다 보고 나갈 수 있게 포탈 소환
+                    if (RunManager.Instance.CurrentFloor == 5)
+                    {
+                        RunManager.Instance.AdvanceFloor();
+                    }
+                    else
+                    {
+                        SpawnBossRewards();
+                        SpawnExitPortal(); // 보상을 다 보고 나갈 수 있게 포탈 소환
+                    }
                 }
                 else CompleteCurrentWave();
                 // 모든 적 처치 시 다음 웨이브 포탈 소환 또는 즉시 완료
@@ -177,7 +184,7 @@ namespace Core
         private void SpawnBossRewards()
         {
             // 1. 보스 보상용 아이템 3개 가져오기 (보스니까 더 좋은 티어 확률을 높여도 좋습니다)
-            List<PassiveItemData> rewards = RunManager.Instance.GetTierItemSet(ItemTier.Boss, CurrentWave, 3);
+            List<PassiveItemData> rewards = RunManager.Instance.GetTierItemSet(ItemTier.Boss, 3, CurrentWave);
 
             for (int i = 0; i < rewards.Count; i++)
             {

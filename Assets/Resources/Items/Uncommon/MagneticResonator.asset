@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MagneticResonator
   m_EditorClassIdentifier: Assembly-CSharp::Item.MagneticResonatorItem
   itemName: "\uC790\uAE30\uC2DD \uACF5\uBA85\uAE30"
-  description: 
+  description: "15\uCD08\uB9C8\uB2E4 \uC8FC\uBCC0\uC758 \uBAA8\uB4E0 \uC801 \uD0C4\uD658\uC744
+    \uC81C\uAC70\uD569\uB2C8\uB2E4."
   icon: {fileID: 1979371559903902193, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 1
   range: 6

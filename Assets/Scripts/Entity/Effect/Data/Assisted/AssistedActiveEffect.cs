@@ -6,11 +6,14 @@ public class AssistedActiveEffect : ActiveEffect
 {
     private StatModifier _speedMod;
     private StatModifier _damageMod;
+    private AssistedEffect _data;
     private int _currentStack = 0;
-    private const int MAX_STACK = 25; // 4% * 25 = 100%
+    private int maxStack;
 
     public override void OnStart(EntityStats target, EntityStats source)
     {
+        _data = (AssistedEffect)Data;
+        maxStack = _data.maxStack;
         if (target is PlayerStats player)
         {
             _currentStack = 0;
@@ -22,7 +25,7 @@ public class AssistedActiveEffect : ActiveEffect
 
     private void HandleAttackHit(PlayerStats player, EntityStats target, int damage)
     {
-        if (_currentStack < MAX_STACK)
+        if (_currentStack < maxStack)
         {
             _currentStack++;
             UpdateModifiers(player);
@@ -36,14 +39,14 @@ public class AssistedActiveEffect : ActiveEffect
         player.DamageIncreased.RemoveModifiersFromSource(this);
 
         // 2. 공격 속도 수정자 갱신 (중첩당 4%)
-        float speedBonus = _currentStack * 0.04f;
-        _speedMod = new StatModifier("Assisted_Speed", speedBonus, ModifierType.Percent, this);
+        float speedBonus = _currentStack * _data.bonusAttackSpeed;
+        _speedMod = new StatModifier("AssistedAttackSpeed", speedBonus, ModifierType.Percent, this);
         player.AttackSpeed.AddModifier(_speedMod);
 
         // 3. 최대 중첩(100%) 도달 시 모든 피해 50% 증가
-        if (_currentStack >= MAX_STACK)
+        if (_currentStack >= maxStack)
         {
-            _damageMod = new StatModifier("Assisted_MaxBonus", 0.5f, ModifierType.Percent, this);
+            _damageMod = new StatModifier("AssistedDamageIncreased_MaxBonus", _data.bonusDamageIncreased, ModifierType.Percent, this);
             player.DamageIncreased.AddModifier(_damageMod);
             Debug.Log("<color=red>[조준보조]</color> 최대 중첩 달성! 모든 피해 50% 증가!");
         }

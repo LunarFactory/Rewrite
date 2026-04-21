@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: MutualEmpathyCore
   m_EditorClassIdentifier: Assembly-CSharp::Item.MutualEmpathyCore
   itemName: "\uC0C1\uD638 \uACF5\uAC10 \uCF54\uC5B4"
-  description: 
+  description: "\uD0C4\uD658\uC744 \uB9C9\uB294 \uB4DC\uB860\uC744 2\uB300 \uD68D\uB4DD\uD569\uB2C8\uB2E4.
+    \uB4DC\uB860 \uACC4\uC5F4 \uC544\uC774\uD15C \uD53C\uD574\uB7C9\uC774 2\uBC30
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
   icon: {fileID: 1076473699, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 3
   damageMultiplier: 2

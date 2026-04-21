@@ -10,7 +10,7 @@ namespace Item
     [CreateAssetMenu(fileName = "RecurrentNeuralNetwork", menuName = "Items/Uncommon/Recurrent Neural Network")]
     public class RecurrentNeuralNetworkItem : PassiveItemData // 부모를 상속받음
     {
-        [Header("Heal Settings")]
+        [Header("Ricochet Settings")]
         public int ricochetCount = 2;
 
         public override void OnApply(PlayerStats player)
@@ -36,7 +36,6 @@ namespace Item
 
             _mod = new StatModifier("RecurrentNeuralNetworkRicochet", ricochetCount, ModifierType.Flat, this);
             _player.Ricochet.AddModifier(_mod);
-            Debug.Log($"현재 도탄 가능 횟수 : {_player.Ricochet.GetValue()}");
         }
 
 

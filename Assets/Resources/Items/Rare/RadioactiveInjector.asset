@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbcbdbaa2476c1f4eb9503fe4f7fc5f4, type: 3}
+  m_Name: RadioactiveInjector
+  m_EditorClassIdentifier: Assembly-CSharp::Item.RadioactiveInjectorItem
+  itemName: "\uBC29\uC0AC\uB2A5 \uC8FC\uC785\uAE30"
+  description: "\uAC19\uC740 \uC801\uC5D0\uAC8C \uACF5\uACA9\uC774 4\uD68C \uC801\uC911\uD560
+    \uB54C\uB9C8\uB2E4 \uCD08\uB2F9 100%\uC758 \uC9C0\uC18D \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4.
+    \uD574\uB2F9 \uD6A8\uACFC\uB294 \uBB34\uD55C\uD788 \uC911\uCCA9\uB429\uB2C8\uB2E4."
+  icon: {fileID: 1624667362681672846, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 2
+  maxStack: 4
+  radioactiveTriggerData: {fileID: 11400000, guid: b01b5498a30582c4fbc8e9e1d570ffee, type: 2}

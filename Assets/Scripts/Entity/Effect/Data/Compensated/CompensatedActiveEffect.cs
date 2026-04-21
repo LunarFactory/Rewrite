@@ -13,7 +13,7 @@ public class CompensatedActiveEffect : ActiveEffect
         if (stats != null)
         {
             // 1. 수정자 생성 (Source는 이 효과 객체인 this)
-            _mod = new StatModifier("Compensated", data.bonusDamage, ModifierType.Flat, this);
+            _mod = new StatModifier("CompensatedAttackDamage", data.bonusDamage, ModifierType.Flat, this);
             
             // 2. 공격력 추가
             stats.AttackDamage.AddModifier(_mod);

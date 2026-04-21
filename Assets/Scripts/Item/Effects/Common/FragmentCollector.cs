@@ -30,10 +30,10 @@ namespace Item
             _player = player;
             _healPercent = healPercent;
 
-            _player.OnKill += HandleItemEffect;
+            _player.OnKill  += HandleItemEffect;
         }
 
-        private void HandleItemEffect()
+        private void HandleItemEffect(Entity.EntityStats entity)
         {
             _player.Heal(Mathf.RoundToInt(_player.maxHealth * _healPercent));
         }

@@ -45,8 +45,6 @@ namespace Item
             // 2. 적에게 BuffManager가 있는지 확인
             if (target.TryGetComponent(out BuffManager buffManager))
             {
-                // 3. 인스펙터에서 할당한 EMP 트리거 데이터로 스택 1 추가
-                // 이 스택이 10개가 되면 EMPEffectSO에 등록된 실제 기절 효과가 발동됩니다.
                 if (!target.isStunned)
                 {
                     buffManager.AddStack(_laserTriggerData, 1, _player);

@@ -11,7 +11,7 @@ namespace Item
     public class OverchargedBatteryItem : PassiveItemData // 부모를 상속받음
     {
         [Header("Heal Settings")]
-        public float damagePercent = 3f;
+        public float damageMultiplier = 3f;
 
         public override void OnApply(PlayerStats player)
         {
@@ -19,7 +19,7 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<OverchargedBatteryTracker>();
-                tracker.Initialize(player, damagePercent);
+                tracker.Initialize(player, damageMultiplier);
             }
         }
     }
@@ -27,12 +27,12 @@ namespace Item
     public class OverchargedBatteryTracker : MonoBehaviour
     {
         private PlayerStats _player;
-        private float _damagePercent;
+        private float _damageMultiplier;
 
-        public void Initialize(PlayerStats player, float damagePercent)
+        public void Initialize(PlayerStats player, float damageMultiplier)
         {
             _player = player;
-            _damagePercent = damagePercent;
+            _damageMultiplier = damageMultiplier;
 
             _player.OnPlayerApplyHardCC += HandleItemEffect;
         }
@@ -41,7 +41,7 @@ namespace Item
         {
             if (target is EnemyStats enemy)
             {
-                enemy.TakeDamage(attacker, Mathf.RoundToInt(attacker.AttackDamage.GetValue() * _damagePercent), Color.gold);
+                enemy.TakeDamage(attacker, Mathf.RoundToInt(attacker.DamageIncreased.GetValue(attacker.baseAttackDamage * _damageMultiplier)), Color.gold);
             }
         }
 

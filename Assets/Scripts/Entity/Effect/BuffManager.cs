@@ -32,7 +32,7 @@ public class BuffManager : MonoBehaviour
         }
     }
 
-    public void ApplyEffect(StatusEffectData data, float duration, EntityStats source)
+    public void ApplyEffect(StatusEffectData data, float duration, EntityStats source, bool infinity = false)
     {
         // 중복 체크 및 시간 갱신 로직
         ActiveEffect existingEffect = _activeEffects.Find(e =>
@@ -40,6 +40,10 @@ public class BuffManager : MonoBehaviour
 
         if (existingEffect != null)
         {
+            if (data.stackable)
+            {
+                existingEffect.AddStack();
+            }
             existingEffect.ResetTime(duration);
         }
         else
@@ -47,7 +51,7 @@ public class BuffManager : MonoBehaviour
             ActiveEffect newEffect = data.CreateEffect();
             if (newEffect != null)
             {
-                newEffect.Initialize(data, duration, source);
+                newEffect.Initialize(data, duration, source, infinity);
                 newEffect.OnStart(_stats, source);
                 _activeEffects.Add(newEffect);
                 if (data.isHard)

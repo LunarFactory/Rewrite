@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aed84944ac3bc474fa90546c96dff989, type: 3}
+  m_Name: OpticalCamouflage
+  m_EditorClassIdentifier: Assembly-CSharp::Item.OpticalCamouflageItem
+  itemName: "\uAD11\uD559\uBBF8\uCC44"
+  description: "\uC2A4\uD154\uC2A4 \uC0C1\uD0DC\uC5D0\uC11C \uC774\uB3D9 \uC18D\uB3C4\uAC00
+    \uB300\uD3ED \uC99D\uAC00\uD569\uB2C8\uB2E4. \uB2E4\uC74C 1\uD68C \uACF5\uACA9\uC774
+    \uCD94\uAC00\uB85C 500% \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
+  icon: {fileID: 737999703, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 3
+  damageMultiplier: 5
+  moveSpeed: 0.3

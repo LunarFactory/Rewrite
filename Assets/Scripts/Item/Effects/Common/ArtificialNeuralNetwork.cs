@@ -68,7 +68,7 @@ namespace Item
                 if (currentTarget == null || currentTarget.isDead) break;
 
                 // A. 데미지 적용 (플레이어 기본 공격력의 일정 비율)
-                int chainDamage = Mathf.RoundToInt(player.AttackDamage.GetValue() * _synapticDamageMult);
+                int chainDamage = Mathf.RoundToInt(player.DamageIncreased.GetValue(player.AttackDamage.GetValue() * _synapticDamageMult));
                 currentTarget.TakeDamage(player, chainDamage, Color.cyan);
                 Debug.Log($"연쇄 번개 발사됨 : {chainDamage}");
                 activatedNodes.Add(currentTarget);

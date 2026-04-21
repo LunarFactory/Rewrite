@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5520a93ed6e268d498042ffcddb4c18c, type: 3}
+  m_Name: LaserHeater
+  m_EditorClassIdentifier: Assembly-CSharp::Item.LaserHeaterItem
+  itemName: "\uB808\uC774\uC800 \uAC00\uC5F4\uAE30"
+  description: "30\uCD08\uB9C8\uB2E4 \uB2E4\uC74C \uACF5\uACA9\uC774 \uB300\uC0C1\uC5D0\uAC8C
+    3\uCD08\uAC04 \uCD08\uB2F9 \uAE30\uBCF8 \uACF5\uACA9\uB825\uC758 1000%\uB9CC\uD07C
+    \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
+  icon: {fileID: -6435044860868182668, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 2
+  heatedEffect: {fileID: 11400000, guid: 4c495b99d3e44bc47bca1baa762c0aad, type: 2}
+  heatedDuration: 3
+  heatedDamagePercent: 0.6
+  cooldown: 30

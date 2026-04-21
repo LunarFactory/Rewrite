@@ -7,12 +7,23 @@ public abstract class ActiveEffect
     public StatusEffectData Data { get; private set; }
     public float RemainingTime { get; private set; }
     public EntityStats Source { get; private set; }
+    public bool Infinite;
+    public int stacks = 1;
 
-    public void Initialize(StatusEffectData data, float duration, EntityStats source)
+    public void Initialize(StatusEffectData data, float duration, EntityStats source, bool infinity = false)
     {
         Data = data;
-        RemainingTime = duration;
+        if (infinity) {
+            Infinite = true;
+            RemainingTime = 0;
+        }
+        else RemainingTime = duration;
         Source = source;
+    }
+
+    public virtual void AddStack()
+    {
+        stacks++;
     }
     public void ResetTime(float duration)
     {
@@ -25,11 +36,12 @@ public abstract class ActiveEffect
     }
 
     public virtual void OnStart(EntityStats target, EntityStats source) { }
-    public virtual void OnUpdate(EntityStats target, float deltaTime, EntityStats source) 
+    public virtual void OnUpdate(EntityStats target, float deltaTime, EntityStats source)
     {
-        RemainingTime -= deltaTime;
+        if (Infinite) return;
+        else RemainingTime -= deltaTime;
     }
     public virtual void OnEnd(EntityStats target, EntityStats source) { }
 
-    public bool IsFinished => RemainingTime <= 0;
+    public bool IsFinished => !Infinite && RemainingTime <= 0;
 }

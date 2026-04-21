@@ -11,7 +11,7 @@ namespace Item
     public class IonMotorItem : PassiveItemData // 부모를 상속받음
     {
         [Header("Ion Boost Settings")]
-        [SerializeField] private StatusEffectData buffData;
+        [SerializeField] private IonBoostEffect buffData;
         public float cooldown = 15f;
 
         public override void OnApply(PlayerStats player)
@@ -28,11 +28,11 @@ namespace Item
     public class IonMotorTracker : MonoBehaviour
     {
         private PlayerStats _player;
-        private StatusEffectData _buffData;
+        private IonBoostEffect _buffData;
         private float _cooldown;
         private bool _isCooldown = false;
 
-        public void Initialize(PlayerStats player, StatusEffectData buffData, float cooldown)
+        public void Initialize(PlayerStats player, IonBoostEffect buffData, float cooldown)
         {
             _player = player;
             _buffData = buffData;

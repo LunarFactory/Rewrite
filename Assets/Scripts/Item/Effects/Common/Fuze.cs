@@ -8,7 +8,7 @@ namespace Item
     [CreateAssetMenu(fileName = "Fuze", menuName = "Items/Common/Fuze")]
     public class FuzeItem : PassiveItemData
     {
-        public StatusEffectData effectToTrigger;
+        public StunEffect effectToTrigger;
         public float range = 6f;
         public float stunDuration = 2f;
         public float threshold = 0.5f;
@@ -30,14 +30,14 @@ namespace Item
     public class FuzeTracker : MonoBehaviour
     {
         private PlayerStats _player;
-        private StatusEffectData _effectToTrigger;
+        private StunEffect _effectToTrigger;
         private float _range;
         private float _stunDuration;
         private float _threshold;
         private float _cooldown;
         private bool _isCooldown = false;
 
-        public void Initialize(PlayerStats player, StatusEffectData effectToTrigger, float range, float stunDuration, float threshold, float cooldown)
+        public void Initialize(PlayerStats player, StunEffect effectToTrigger, float range, float stunDuration, float threshold, float cooldown)
         {
             _player = player;
             _effectToTrigger = effectToTrigger;

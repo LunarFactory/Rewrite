@@ -11,8 +11,9 @@ namespace Item
     public class ShootingAssistantItem : PassiveItemData // 부모를 상속받음
     {
         [Header("Assisted Settings")]
-        [SerializeField] private StatusEffectData buffData;
+        [SerializeField] private AssistedEffect buffData;
         public float bonusAttackSpeed = 0.04f;
+        public float bonusDamageIncreased = 0.5f;
         public int maxStack = 25;
 
         public override void OnApply(PlayerStats player)
@@ -21,7 +22,7 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<ShootingAssistantTracker>();
-                tracker.Initialize(player, buffData, bonusAttackSpeed, maxStack);
+                tracker.Initialize(player, buffData, bonusAttackSpeed, bonusDamageIncreased, maxStack);
             }
         }
     }
@@ -30,14 +31,14 @@ namespace Item
     {
         private PlayerStats _player;
         private AssistedEffect _buffData;
-        private int _maxStack;
 
-        public void Initialize(PlayerStats player, StatusEffectData buffData, float bonusAttackSpeed, int maxStack)
+        public void Initialize(PlayerStats player, AssistedEffect buffData, float bonusAttackSpeed, float bonusDamageIncreased, int maxStack)
         {
             _player = player;
-            _buffData = (AssistedEffect)buffData;
-            _maxStack = maxStack;
+            _buffData = buffData;
+            _buffData.maxStack = maxStack;
             _buffData.bonusAttackSpeed = bonusAttackSpeed;
+            _buffData.bonusDamageIncreased = bonusDamageIncreased;
 
             _player.OnPlayerAttackHit += HandleItemEffect;
         }
@@ -48,7 +49,7 @@ namespace Item
             {
                 if (_buffData != null)
                 {
-                    _buffData.setCurrentStack(Mathf.Min(_buffData.getCurrentStack() + 1, _maxStack));
+                    _buffData.setCurrentStack(Mathf.Min(_buffData.getCurrentStack() + 1, _buffData.maxStack));
                     buffManager.ApplyEffect(_buffData, 3, attacker);
                 }
             }

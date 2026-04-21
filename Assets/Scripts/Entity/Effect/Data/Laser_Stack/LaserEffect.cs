@@ -7,17 +7,16 @@ using Enemy;
 public class LaserEffect : StatusEffectData
 {
     [Header("Result Effect")]
-    public float damagePercent = 2.5f;
+    public float damageMultiplier = 2.5f;
     public int maxStack = 3;
-    // EMP만의 특화 수치가 필요하다면 여기에 추가 (예: 기절 시 추가 데미지 등)
     public override void OnStackFull(BuffManager manager, EntityStats source)
     {
         EnemyStats _entity = manager.GetComponent<EnemyStats>();
         if (source is PlayerStats player)
         {
-            _entity.TakeDamage(player, Mathf.RoundToInt(player.GetWeaponBaseAttackDamage() * damagePercent), Color.magenta);
+            _entity.TakeDamage(player, Mathf.RoundToInt(player.DamageIncreased.GetValue(player.GetWeaponBaseAttackDamage() * damageMultiplier)), Color.magenta);
         }
-        else _entity.TakeDamage(source, Mathf.RoundToInt(source.AttackDamage.GetValue() * damagePercent), Color.magenta);
+        else _entity.TakeDamage(source, Mathf.RoundToInt(source.AttackDamage.GetValue() * damageMultiplier), Color.magenta);
         CreateLaserVisual(source.transform.position, _entity.transform.position);
     }
     private void CreateLaserVisual(Vector3 start, Vector3 end)

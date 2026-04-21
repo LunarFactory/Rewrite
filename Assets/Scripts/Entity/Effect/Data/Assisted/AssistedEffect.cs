@@ -5,6 +5,8 @@ public class AssistedEffect : StatusEffectData
 {
     private int stack = 0;
     public float bonusAttackSpeed;
+    public float bonusDamageIncreased;
+    public int maxStack;
 
     public override ActiveEffect CreateEffect() => new AssistedActiveEffect();
 

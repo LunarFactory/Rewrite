@@ -19,6 +19,7 @@ namespace Enemy
         private GameObject player;
         private Player.PlayerStats stat;
         public event Action<EnemyStats, EntityStats, int> OnEnemyAttackHit;
+        public event Action<EnemyStats, EntityStats, int> OnEnemyPostAttackHit;
         public event Action<EnemyStats, EntityStats> OnEnemyApplyHardCC;
 
         protected override void Awake()
@@ -100,9 +101,16 @@ namespace Enemy
         }
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)
         {
-            if (attacker is EnemyStats)
+            if (attacker is EnemyStats attack)
             {
-                OnEnemyAttackHit?.Invoke((EnemyStats)attacker, target, damage);
+                OnEnemyAttackHit?.Invoke(attack, target, damage);
+            }
+        }
+        public override void NotifyPostAttackHit(EntityStats attacker, EntityStats target, int damage)
+        {
+            if (attacker is EnemyStats attack)
+            {
+                OnEnemyPostAttackHit?.Invoke(attack, target, damage);
             }
         }
         public override void NotifyHardCC(EntityStats attacker, EntityStats target)

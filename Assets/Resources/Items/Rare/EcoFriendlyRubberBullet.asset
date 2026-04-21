@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b89b2f1981d3549ab0b91cdb0aa32f, type: 3}
+  m_Name: EcoFriendlyRubberBullet
+  m_EditorClassIdentifier: Assembly-CSharp::Item.EcoFriendlyRubberBulletItem
+  itemName: "\uCE5C\uD658\uACBD \uACE0\uBB34 \uD0C4\uD658"
+  description: "\uD0C4\uD658\uC774 2\uD68C \uCD94\uAC00\uB85C \uBCBD\uC5D0 \uD295\uAE41\uB2C8\uB2E4.
+    \uD295\uAE38 \uB54C\uB9C8\uB2E4 \uD0C4\uD658\uC758 \uD53C\uD574\uB7C9, \uD06C\uAE30\uC640
+    \uD604\uC7AC \uC18D\uB3C4\uAC00 20%\uC529 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  icon: {fileID: 4723048642802968650, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 2
+  ricochetCount: 2
+  damagePercent: 1.2
+  projectileScale: 1.2
+  projectileSpeed: 1.2

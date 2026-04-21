@@ -44,17 +44,17 @@ namespace Entity
             if (isDead) return;
             int totalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
             currentHealth -= totalDamage;
-            Debug.Log($"대상 체력이 {totalDamage} 만큼 까였습니다. ㄹㅇ루다가.");
             if (currentHealth <= 0)
             {
                 currentHealth = 0;
-                attacker.NotifyKill();
+                attacker.NotifyKill(this);
                 Die();
             }
         }
 
         public virtual void NotifyAttackHit(EntityStats attacker, EntityStats entity, int damage) { }
-        public virtual void NotifyKill() { }
+        public virtual void NotifyPostAttackHit(EntityStats attacker, EntityStats entity, int damage) { }
+        public virtual void NotifyKill(EntityStats entity) { }
         public virtual void NotifyHardCC(EntityStats attacker, EntityStats target) { }
 
         public virtual void Heal(int amount)

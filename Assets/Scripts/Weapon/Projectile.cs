@@ -26,13 +26,22 @@ namespace Weapon
     {
         private Rigidbody2D rb;
         private int damage;
+        public int Damage
+        {
+            set { damage = value; }
+            get { return damage; }
+        }
         private bool isInitialized = false;
         private Vector2 moveVelocity;
         private int pierceCount;
         private int ricochetCount;
         private float decelerationRate;
-        public float scale;
         private float currentSpeed;
+        public float CurrentSpeed
+        {
+            set { currentSpeed = value; }
+            get { return currentSpeed; }
+        }
         private float minSpeed;
 
         private bool isHoming = false;
@@ -48,6 +57,7 @@ namespace Weapon
             set { homingStrength = value; }
             get { return homingStrength; }
         }
+        public bool forceNoHoming = false;
         private Transform _target;
 
         private HashSet<EntityId> _hitTargets = new HashSet<EntityId>();
@@ -66,7 +76,7 @@ namespace Weapon
             }
         }
 
-        public void Initialize(Vector2 direction, ProjectileInfo proj, EntityStats stats)
+        public void Initialize(Vector2 direction, ProjectileInfo proj, EntityStats stats, bool noHoming = false)
         {
             if (rb == null) rb = GetComponent<Rigidbody2D>();
 
@@ -79,19 +89,21 @@ namespace Weapon
             this.homingRange = proj.homingRange;
             this.homingStrength = proj.homingStrength;
             this.decelerationRate = proj.decelerationRate;
-            this.scale = proj.scale;
             this.currentSpeed = proj.speed;
             this.minSpeed = proj.minSpeed;
 
+            this.transform.localScale *= proj.scale;
+
             this.isInitialized = true;
+            this.forceNoHoming = noHoming;
             UpdateVelocityAndRotation();
-            Destroy(gameObject, 3f);
         }
 
         private void FixedUpdate()
         {
             if (homingRange > 0 && homingStrength > 0) isHoming = true;
             else isHoming = false;
+            if (forceNoHoming) isHoming = false;
             if (!isInitialized || rb == null) return;
 
             // 1. 유도 대상 찾기 (기존 코드 유지)
@@ -197,6 +209,7 @@ namespace Weapon
                 _hitTargets.Add(targetID);
                 _target = null;
                 stats.NotifyAttackHit(stats, target, damage);
+                stats.NotifyPostAttackHit(stats, target, damage);
                 target.TakeDamage(stats, damage);
                 HandlePierce();
             }
@@ -211,14 +224,17 @@ namespace Weapon
 
         private void HandlePierce()
         {
-            // 관통 수치를 깎습니다.
-            pierceCount--;
-
-            // 관통 횟수가 다 떨어졌을 때만 파괴합니다.
-            // 관통 1이면 두 명을 맞힐 수 있습니다. (첫 번째 맞고 생존, 두 번째 맞고 파괴)
-            if (pierceCount < 0)
+            if (pierceCount != -1)
             {
-                Destroy(gameObject);
+                // 관통 수치를 깎습니다.
+                pierceCount--;
+
+                // 관통 횟수가 다 떨어졌을 때만 파괴합니다.
+                // 관통 1이면 두 명을 맞힐 수 있습니다. (첫 번째 맞고 생존, 두 번째 맞고 파괴)
+                if (pierceCount < 0)
+                {
+                    Destroy(gameObject);
+                }
             }
         }
 
@@ -245,6 +261,11 @@ namespace Weapon
                 }
             }
             return closest;
+        }
+
+        public void ResetOnWallHit()
+        {
+            _hitTargets.Clear();
         }
     }
 }

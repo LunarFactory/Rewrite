@@ -23,6 +23,11 @@ public class CharacterStat
         this.BaseValue = value;
     }
 
+    public void UpdateModifierByName(string name, StatModifier mod)
+    {
+        
+    }
+
     public float GetValue()
     {
         float finalValue = BaseValue;
