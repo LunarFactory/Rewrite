@@ -223,6 +223,12 @@ namespace UI
             int wave = WaveManager.Instance != null ? WaveManager.Instance.CurrentWave : 1;
             int bolts = PlayerStats.LocalPlayer != null ? PlayerStats.LocalPlayer.GetBolts() : 0;
 
+            // 층별 크레딧 차등 지급 (1층:50, 2층:60, 3층:70, 4층:80, 5층+:100)
+            int earnedCredits = GetCreditsByFloor(floor);
+            int currentCredits = PlayerPrefs.GetInt("LobbyCredits", 0);
+            PlayerPrefs.SetInt("LobbyCredits", currentCredits + earnedCredits);
+            PlayerPrefs.Save();
+
             // Reflection으로 Log 데이터 꺼내오기
             float apm = 0f;
             float accuracy = 0f;
@@ -253,8 +259,21 @@ namespace UI
                     $"도달 웨이브  : <color=#aaffaa>Wave {wave}</color>\n" +
                     $"수집한 볼트  : <color=#00ccff>{bolts} Bolts</color>\n" +
                     $"최종 APM       : <color=#dddddd>{apm:F1}</color>\n" +
-                    $"명중률           : <color=#dddddd>{accuracy:F1}%</color>";
+                    $"명중률           : <color=#dddddd>{accuracy:F1}%</color>\n\n" +
+                    $"<color=#ffd700>+ {earnedCredits} 크레딧 획득!</color>";
             }
+        }
+
+        private int GetCreditsByFloor(int floor)
+        {
+            return floor switch
+            {
+                1 => 50,
+                2 => 60,
+                3 => 70,
+                4 => 80,
+                _ => 100
+            };
         }
 
         private string GetBossQuote()

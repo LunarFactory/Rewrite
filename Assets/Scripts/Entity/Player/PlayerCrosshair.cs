@@ -45,6 +45,13 @@ namespace Player
 
         private void LateUpdate()
         {
+            // 타임스케일이 0일 때 (UI 활성화/일시정지 중)에는 시스템 커서를 보여줌
+            if (Time.timeScale == 0f)
+            {
+                SetVisibility(false);
+                return;
+            }
+
             // 1. 플레이어 존재 확인 (없으면 숨기기)
             if (_targetPlayer == null)
             {
