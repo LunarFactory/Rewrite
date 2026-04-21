@@ -33,7 +33,7 @@ public class InventoryManager : MonoBehaviour
         items.Add(newItem);
         Debug.Log($"{newItem.itemName} 획득!");
 
-        newItem.OnApply(_playerStats.gameObject, _playerStats);
+        newItem.OnApply(_playerStats);
 
         // 스탯 재계산 및 UI 업데이트 알림
         OnItemAdded?.Invoke();

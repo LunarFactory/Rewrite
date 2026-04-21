@@ -4,7 +4,7 @@ using Entity;
 
 public class BuffManager : MonoBehaviour
 {
-    private EntityStatus _stats;
+    private EntityStats _stats;
 
     // 1. 현재 쌓이고 있는 스택들
     public Dictionary<StatusEffectData, int> _stackCounters = new Dictionary<StatusEffectData, int>();
@@ -14,10 +14,10 @@ public class BuffManager : MonoBehaviour
 
     private void Awake()
     {
-        _stats = gameObject.GetComponent<EntityStatus>();
+        _stats = gameObject.GetComponent<EntityStats>();
     }
 
-    public void AddStack(StatusEffectData data, int amount)
+    public void AddStack(StatusEffectData data, int amount, EntityStats source)
     {
         if (data == null) return;
 
@@ -28,11 +28,11 @@ public class BuffManager : MonoBehaviour
         if (_stackCounters[data] >= data.GetMaxStack())
         {
             _stackCounters[data] = 0;
-            data.OnStackFull(this);
+            data.OnStackFull(this, source);
         }
     }
 
-    public void ApplyEffect(StatusEffectData data, float duration)
+    public void ApplyEffect(StatusEffectData data, float duration, EntityStats source)
     {
         // 중복 체크 및 시간 갱신 로직
         ActiveEffect existingEffect = _activeEffects.Find(e =>
@@ -47,8 +47,8 @@ public class BuffManager : MonoBehaviour
             ActiveEffect newEffect = data.CreateEffect();
             if (newEffect != null)
             {
-                newEffect.Initialize(data, duration);
-                newEffect.OnStart(_stats);
+                newEffect.Initialize(data, duration, source);
+                newEffect.OnStart(_stats, source);
                 _activeEffects.Add(newEffect);
             }
         }
@@ -59,11 +59,11 @@ public class BuffManager : MonoBehaviour
         for (int i = _activeEffects.Count - 1; i >= 0; i--)
         {
             var effect = _activeEffects[i];
-            effect.OnUpdate(_stats, Time.deltaTime);
+            effect.OnUpdate(_stats, Time.deltaTime, effect.Source);
 
             if (effect.IsFinished)
             {
-                effect.OnEnd(_stats);
+                effect.OnEnd(_stats, effect.Source);
                 _activeEffects.RemoveAt(i);
             }
         }

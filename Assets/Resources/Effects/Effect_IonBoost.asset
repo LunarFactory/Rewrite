@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec75f5b137c845745bb52d05780cb50d, type: 3}
+  m_Name: Effect_IonBoost
+  m_EditorClassIdentifier: Assembly-CSharp::IonBoostEffect
+  effectName: "\uC774\uC628 \uBD80\uC2A4\uD2B8"
+  icon: {fileID: -4750374645057194261, guid: 1d915c0de8e36b34a8da5de69cf24341, type: 3}
+  bonusAttackSpeed: 0.5

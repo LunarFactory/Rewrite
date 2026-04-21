@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3b5229b5d290c14da82262fd803dbfa, type: 3}
+  m_Name: ShootingAssistant
+  m_EditorClassIdentifier: Assembly-CSharp::Item.ShootingAssistantItem
+  itemName: "\uC0AC\uACA9 \uBCF4\uC870 \uC720\uB2DB"
+  description: 
+  icon: {fileID: 625385944, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 3
+  buffData: {fileID: 11400000, guid: ab5b170b283de7e489229dbd6179a232, type: 2}
+  bonusAttackSpeed: 0.04
+  maxStack: 25

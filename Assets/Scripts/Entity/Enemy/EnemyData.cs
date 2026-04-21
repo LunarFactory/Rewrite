@@ -14,6 +14,10 @@ namespace Enemy
         public float baseMoveSpeed = 2f;
         [Tooltip("공격 피해")]
         public int baseAttackDamage = 10;
+        public float baseDamageIncreasedFlat = 0f;
+        public float baseDamageIncreasedPercent = 0f;
+        public float baseDamageTakenFlat = 0f;
+        public float baseDamageTakenPercent = 0f;
         [Tooltip("피격 시 경직 시간")]
         public float hitstunDuration = 0.15f;
         [Tooltip("발사 딜레이")]

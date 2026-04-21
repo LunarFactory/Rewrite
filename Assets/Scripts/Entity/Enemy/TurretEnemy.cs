@@ -1,8 +1,9 @@
 using UnityEngine;
+using Entity;
 
 namespace Enemy
 {
-    public class TurretEnemy : EnemyBase
+    public class TurretEnemy : EnemyStats
     {
         private enum State { Rest, Aim, Fire }
         private State _currentState = State.Rest;
@@ -124,7 +125,7 @@ namespace Enemy
             GameObject bullet = Instantiate(data.bulletPrefab, transform.position, Quaternion.identity);
             if (bullet.TryGetComponent(out Weapons.Projectile proj))
             {
-                proj.Initialize(_aimDirection, data.bulletSpeed, data.bulletSpeed, Mathf.RoundToInt(AttackDamage.GetValue()), 0, false, null);
+                proj.Initialize(_aimDirection, data.bulletSpeed, data.bulletSpeed, Mathf.RoundToInt(AttackDamage.GetValue()), 0, (EntityStats)this);
             }
         }
     }

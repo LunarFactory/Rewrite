@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: Dummy
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: 
-  maxHealth: 30
-  moveSpeed: 0
-  attackDamage: 10
+  maxHealth: 100000
+  baseMoveSpeed: 2
+  baseAttackDamage: 10
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
   hitstunDuration: 0.15
   shootDelay: 0.5
   animationFrames:
   - {fileID: -4010617647764655359, guid: c73828e89c7f5cf408296522de3d218d, type: 3}
   defaultFPS: 10
-  isInvincible: 1
+  isInvincible: 0
   moveDuration: 2
   bulletPrefab: {fileID: 0}
   bulletSpeed: 10
@@ -29,3 +33,5 @@ MonoBehaviour:
   restDuration: 2
   aimDuration: 0
   fireDelay: 0.3
+  targetingMarkerSprite: {fileID: 0}
+  markerSortingOrder: -1

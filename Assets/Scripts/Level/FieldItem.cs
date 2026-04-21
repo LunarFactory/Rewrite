@@ -15,6 +15,8 @@ namespace Level
         private SpriteRenderer spriteRenderer;
         private Vector3 _basePosition;
 
+        public bool isBossReward = false;
+
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -72,6 +74,8 @@ namespace Level
             }
             else
             {
+                // 2. 무료 아이템(일반 보상)일 때
+                if (isBossReward) DestroyOtherBossRewards();
                 GetItem();
             }
             if (itemData == null) return;
@@ -86,6 +90,24 @@ namespace Level
         {
             InventoryManager.Instance.AddItem(itemData);
             Destroy(gameObject);
+        }
+        private void DestroyOtherBossRewards()
+        {
+            // 현재 씬에 있는 모든 FieldItem을 찾습니다.
+            // Unity 2023 이상이라면 FindObjectsByType을 사용하고, 이전 버전이라면 FindObjectsOfType을 사용하세요.
+            FieldItem[] allItems = Object.FindObjectsByType<FieldItem>();
+
+            foreach (var item in allItems)
+            {
+                // 자기 자신은 제외하고, 다른 보스 보상 아이템들만 파괴합니다.
+                if (item != this && item.isBossReward)
+                {
+                    // 화려한 연출을 원한다면 여기에 파티클 생성을 추가할 수 있습니다.
+                    Destroy(item.gameObject);
+                }
+            }
+
+            Debug.Log("다른 보스 보상이 소멸되었습니다.");
         }
     }
 }

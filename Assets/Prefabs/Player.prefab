@@ -51,6 +51,7 @@ GameObject:
   - component: {fileID: 6566512962458825340}
   - component: {fileID: 5894004677875960011}
   - component: {fileID: 476352381844101484}
+  - component: {fileID: 4427591115460292244}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -280,11 +281,19 @@ MonoBehaviour:
     BaseValue: 0
   MoveSpeed:
     BaseValue: 0
+  DamageIncreased:
+    BaseValue: 0
+  DamageTaken:
+    BaseValue: 0
   isDead: 0
   isStunned: 0
   baseAttackDamage: 10
   baseAttackSpeed: 1
   baseMoveSpeed: 5
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
   AttackSpeed:
     BaseValue: 0
 --- !u!61 &5498667811757821503
@@ -374,6 +383,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 702ba29cc4681b34484637771b36a01c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuffManager
+--- !u!114 &4427591115460292244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3447314826207853295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc13df1241dd7a499725b763aab85d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Drone.DroneManager
+  projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
+  globalDroneDamageMultiplier: 1
+  hasDefense: 0
+  hasAttack: 0
+  hasLaser: 0
 --- !u!1 &4785257334050668402
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,7 +449,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.WeaponBase
   weaponData: {fileID: 11400000, guid: 19d58b4a4633848439eadebb983b270e, type: 2}
   firePoint: {fileID: 8835398890804912518}
-  isPlayerWeapon: 1
   finalFireRate: 0
 --- !u!114 &2123846632919973463
 MonoBehaviour:

@@ -44,8 +44,6 @@ namespace Core
             }
             foreach (var item in allItems)
             {
-                // 보스 아이템은 일반 풀에서 제외
-                if (item.tier == ItemTier.Boss) continue;
                 _itemPool[item.tier].Add(item);
             }
             Debug.Log($"[RunManager] 아이템 데이터베이스 구축 완료. 총 {allItems.Length}개 로드.");
@@ -90,6 +88,49 @@ namespace Core
                     PassiveItemData picked = validPool[Random.Range(0, validPool.Count)];
                     resultList.Add(picked);
                     pickedInThisSet.Add(picked); // 중복 방지 목록에 추가
+                }
+            }
+
+            Random.state = originalState;
+            return resultList;
+        }
+        public List<PassiveItemData> GetTierItemSet(ItemTier targetTier, int count, int wave)
+        {
+            Random.State originalState = Random.state;
+            // 기존 시드 로직 유지 (결과의 일관성 보장)
+            int uniqueSeed = CurrentSeed + (CurrentFloor * 1000) + (wave * 100);
+            Random.InitState(uniqueSeed);
+
+            List<PassiveItemData> resultList = new List<PassiveItemData>();
+            HashSet<PassiveItemData> pickedInThisSet = new HashSet<PassiveItemData>();
+
+            // 해당 티어의 전체 풀 가져오기
+            List<PassiveItemData> fullPool = _itemPool[targetTier];
+
+            for (int i = 0; i < count; i++)
+            {
+                // 1. 현재 풀에서 유효한 아이템 필터링 (중복 제외 + 미보유)
+                List<PassiveItemData> validPool = fullPool.FindAll(item =>
+                    !pickedInThisSet.Contains(item) &&
+                    !InventoryManager.Instance.HasItem(item)
+                );
+
+                // 2. 만약 해당 티어의 아이템이 다 떨어졌다면? (하위 티어에서 보충)
+                if (validPool.Count == 0)
+                {
+                    // 한 단계 아래 티어 혹은 Common에서 남은 거라도 찾아옵니다.
+                    ItemTier fallbackTier = (targetTier > ItemTier.Common) ? targetTier - 1 : ItemTier.Common;
+                    validPool = _itemPool[fallbackTier].FindAll(item =>
+                        !pickedInThisSet.Contains(item) &&
+                        !InventoryManager.Instance.HasItem(item)
+                    );
+                }
+
+                if (validPool.Count > 0)
+                {
+                    PassiveItemData picked = validPool[Random.Range(0, validPool.Count)];
+                    resultList.Add(picked);
+                    pickedInThisSet.Add(picked);
                 }
             }
 

@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: Drone
   maxHealth: 30
-  moveSpeed: 2
-  attackDamage: 10
+  baseMoveSpeed: 2
+  baseAttackDamage: 10
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
   hitstunDuration: 0.15
   shootDelay: 0.5
   animationFrames:

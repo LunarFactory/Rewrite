@@ -36,9 +36,24 @@ public class FDTManager : MonoBehaviour
 
         // 1. FDT 객체 생성 (실제로는 Object Pool을 쓰는 것이 좋습니다.)
         FDTObject newFdt = Instantiate(fdtPrefab, position, Quaternion.identity, transform);
-        
+
         // 2. 색상 결정 및 초기화
         Color damageColor = color;
         newFdt.Initialize(damage, defaultDuration, damageColor);
+    }
+    public void SpawnText(Vector3 position, string text, Color color)
+    {
+        if (fdtPrefab == null)
+        {
+            Debug.LogError("FDTManager: fdtPrefab이 할당되지 않았습니다!");
+            return;
+        }
+
+        // 1. FDT 객체 생성 (실제로는 Object Pool을 쓰는 것이 좋습니다.)
+        FDTObject newFdt = Instantiate(fdtPrefab, position, Quaternion.identity, transform);
+
+        // 2. 색상 결정 및 초기화
+        Color damageColor = color;
+        newFdt.Initialize(text, defaultDuration, damageColor);
     }
 }

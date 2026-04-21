@@ -3,7 +3,7 @@ using Entity;
 
 public class StunActiveEffect : ActiveEffect 
 {
-    public override void OnStart(EntityStatus target) 
+    public override void OnStart(EntityStats target, EntityStats source) 
     {
         // 기존 StunRoutine의 시작 부분
         target.isStunned = true;
@@ -15,7 +15,7 @@ public class StunActiveEffect : ActiveEffect
         Debug.Log($"{target.gameObject.name} 기절 시작 (버프 시스템)");
     }
 
-    public override void OnEnd(EntityStatus target) 
+    public override void OnEnd(EntityStats target, EntityStats source) 
     {
         // 기존 StunRoutine의 종료 부분
         target.isStunned = false;

@@ -108,8 +108,13 @@ namespace Core
             activeEnemyCount--;
             if (activeEnemyCount <= 0)
             {
+                if (GetWaveType(CurrentWave) == WaveType.Boss)
+                {
+                    SpawnBossRewards();
+                    SpawnExitPortal(); // 보상을 다 보고 나갈 수 있게 포탈 소환
+                }
+                else CompleteCurrentWave();
                 // 모든 적 처치 시 다음 웨이브 포탈 소환 또는 즉시 완료
-                CompleteCurrentWave();
             }
         }
         private void SpawnShop()
@@ -168,6 +173,26 @@ namespace Core
             {
                 RunManager.Instance.AdvanceFloor();
             }
+        }
+        private void SpawnBossRewards()
+        {
+            // 1. 보스 보상용 아이템 3개 가져오기 (보스니까 더 좋은 티어 확률을 높여도 좋습니다)
+            List<PassiveItemData> rewards = RunManager.Instance.GetTierItemSet(ItemTier.Boss, CurrentWave, 3);
+
+            for (int i = 0; i < rewards.Count; i++)
+            {
+                // 보상 아이템들 위치 선정 (가운데 정렬)
+                Vector2 pos = new Vector2(-2f + (i * 2f), 1f);
+                GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity);
+
+                if (itemObj.TryGetComponent(out Level.FieldItem fieldItem))
+                {
+                    fieldItem.itemData = rewards[i];
+                    fieldItem.price = 0; // 보상은 무료
+                    fieldItem.isBossReward = true; // [중요] 하나 먹으면 나머지 사라지는 플래그
+                }
+            }
+            Debug.Log("[WaveManager] 보스 보상 아이템 3개가 소환되었습니다.");
         }
 
         private WaveType GetWaveType(int wave)

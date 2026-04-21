@@ -6,11 +6,13 @@ public abstract class ActiveEffect
 {
     public StatusEffectData Data { get; private set; }
     public float RemainingTime { get; private set; }
+    public EntityStats Source { get; private set; }
 
-    public void Initialize(StatusEffectData data, float duration)
+    public void Initialize(StatusEffectData data, float duration, EntityStats source)
     {
         Data = data;
         RemainingTime = duration;
+        Source = source;
     }
     public void ResetTime(float duration)
     {
@@ -22,12 +24,12 @@ public abstract class ActiveEffect
         }
     }
 
-    public virtual void OnStart(EntityStatus target) { }
-    public virtual void OnUpdate(EntityStatus target, float deltaTime) 
+    public virtual void OnStart(EntityStats target, EntityStats source) { }
+    public virtual void OnUpdate(EntityStats target, float deltaTime, EntityStats source) 
     {
         RemainingTime -= deltaTime;
     }
-    public virtual void OnEnd(EntityStatus target) { }
+    public virtual void OnEnd(EntityStats target, EntityStats source) { }
 
     public bool IsFinished => RemainingTime <= 0;
 }

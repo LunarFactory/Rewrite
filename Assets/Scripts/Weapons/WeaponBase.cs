@@ -1,5 +1,5 @@
 using UnityEngine;
-using Player;
+using Entity;
 using Core;
 
 namespace Weapons
@@ -11,8 +11,8 @@ namespace Weapons
         private SpriteRenderer weaponRenderer; // [추가] 무기 이미지를 보여줄 렌더러
 
         protected float nextFireTime;
-        public bool isPlayerWeapon = true; //
-        private PlayerStats _playerStats;
+        private EntityStats _equippedEntityStats;
+        private Player.PlayerStats _playerStats;
         public float finalFireRate;
 
         private void Awake()
@@ -23,9 +23,10 @@ namespace Weapons
             {
                 firePoint = transform.Find("FirePoint");
             }
-            if (isPlayerWeapon)
+            _equippedEntityStats = GetComponentInParent<EntityStats>();
+            if (_equippedEntityStats is Player.PlayerStats player)
             {
-                _playerStats = GetComponentInParent<PlayerStats>();
+                _playerStats = player;
             }
         }
         // [추가] 외부(PlayerController 등)에서 무기 정보를 주입하는 함수
@@ -44,7 +45,7 @@ namespace Weapons
         public virtual void Fire(Vector2 direction)
         {
             if (weaponData == null || Time.time < nextFireTime) return;
-            if (isPlayerWeapon && _playerStats != null)
+            if (_playerStats != null)
             {
                 // 플레이어 스탯이 반영된 연사 속도
                 finalFireRate = _playerStats.GetCalculatedAttackSpeed();
@@ -85,7 +86,7 @@ namespace Weapons
                 float mspd = spd / 10;
                 int finalDamage;
 
-                if (isPlayerWeapon && _playerStats != null)
+                if (_playerStats != null)
                 {
                     // PlayerStats의 GetCalculatedDamage 호출 (weaponData.Damage를 배수로 사용)
                     finalDamage = Mathf.RoundToInt(_playerStats.GetCalculatedAttackDamage());
@@ -99,7 +100,7 @@ namespace Weapons
                 // 4. [중요] 계산된 finalDirection을 탄환에게 넘겨줍니다.
                 proj.decelerationRate = weaponData.BulletDeceleration;
                 proj.ownerStats = _playerStats;
-                proj.Initialize(finalDirection, spd, mspd, finalDamage, weaponData.PierceCount, isPlayerWeapon, _playerStats);
+                proj.Initialize(finalDirection, spd, mspd, finalDamage, weaponData.PierceCount, _playerStats);
             }
         }
 

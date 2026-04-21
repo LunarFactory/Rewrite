@@ -8,9 +8,13 @@ namespace Level
     {
         public override string GetInteractPrompt()
         {
-            if (Core.WaveManager.Instance != null)
+            if (Core.WaveManager.Instance != null && Core.RunManager.Instance != null)
             {
-                return $"다음 웨이브 진행 [{Core.WaveManager.Instance.CurrentWave + 1} 웨이브]";
+                if (Core.WaveManager.Instance.CurrentWave < 9)
+                {
+                    return $"다음 웨이브 진행 [{Core.WaveManager.Instance.CurrentWave + 1} 웨이브]";
+                }
+                else return $"다음 층 [{Core.RunManager.Instance.CurrentFloor + 1} 층]";
             }
             return "웨이브 데이터가 없습니다.";
         }

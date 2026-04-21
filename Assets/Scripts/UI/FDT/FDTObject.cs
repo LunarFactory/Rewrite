@@ -33,6 +33,22 @@ public class FDTObject : MonoBehaviour
         _velocity = Quaternion.Euler(0, 0, angle) * Vector2.up * speed;
     }
 
+    public void Initialize(string text, float duration, Color color)
+    {
+        _textMesh.text = text;
+        _initialColor = color;
+        _textMesh.color = color;
+
+        // 만약 duration이 0으로 들어오면 1초로 강제 설정 (방어 코드)
+        _maxLifeTime = duration <= 0 ? 1f : duration;
+        _lifeTime = 0f;
+
+        // 초기 속도 설정
+        float angle = Random.Range(-10f, 10f);
+        float speed = Random.Range(3f, 5f);
+        _velocity = Quaternion.Euler(0, 0, angle) * Vector2.up * speed;
+    }
+
     private void Update()
     {
         _lifeTime += Time.deltaTime;

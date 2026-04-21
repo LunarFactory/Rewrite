@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df79baecd57775040b1075267d557583, type: 3}
+  m_Name: SurgeProtector
+  m_EditorClassIdentifier: Assembly-CSharp::Item.SurgeProtectorItem
+  itemName: "\uC11C\uC9C0 \uD504\uB85C\uD14D\uD130"
+  description: "\uB9E4 20\uCD08\uB9C8\uB2E4 \uB2E4\uC74C \uD53C\uACA9\uC744 \uBB34\uD6A8\uD654\uD569\uB2C8\uB2E4."
+  icon: {fileID: -110253057803913907, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
+  tier: 0
+  cooldown: 20

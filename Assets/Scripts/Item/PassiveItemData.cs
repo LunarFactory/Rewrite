@@ -14,6 +14,6 @@ namespace Item
         public ItemTier tier;
 
         // 아이템이 획득되었을 때 실행될 추상 함수
-        public abstract void OnApply(GameObject player, PlayerStats stats);
+        public abstract void OnApply(PlayerStats stats);
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class DroneEnemy : EnemyBase
+    public class DroneEnemy : EnemyStats
     {
         private enum State { Moving, Shooting, Stunned, Staggered }
         private State currentState = State.Moving;
@@ -88,8 +88,7 @@ namespace Enemy
                     minSpeed: data.bulletSpeed,             // 3. 최소 속도 (감속 안 하면 speed와 동일하게)
                     damage: Mathf.RoundToInt(AttackDamage.GetValue()),              // 4. 데미지
                     pierceCount: 0,                         // 5. 관통 횟수 (드론 탄환은 보통 0)
-                    isPlayer: false,                        // 6. 적이 쏜 것이므로 false
-                    stats: null
+                    stats: this
                 );
             }
         }
