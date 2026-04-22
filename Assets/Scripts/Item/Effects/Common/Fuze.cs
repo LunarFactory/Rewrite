@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections;
-using Player;
 using Enemy;
+using Player;
+using UnityEngine;
 
 namespace Item
 {
@@ -22,7 +22,14 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<FuzeTracker>();
-                tracker.Initialize(player, effectToTrigger, range, stunDuration, threshold, cooldown);
+                tracker.Initialize(
+                    player,
+                    effectToTrigger,
+                    range,
+                    stunDuration,
+                    threshold,
+                    cooldown
+                );
             }
         }
     }
@@ -37,7 +44,14 @@ namespace Item
         private float _cooldown;
         private bool _isCooldown = false;
 
-        public void Initialize(PlayerStats player, StunEffect effectToTrigger, float range, float stunDuration, float threshold, float cooldown)
+        public void Initialize(
+            PlayerStats player,
+            StunEffect effectToTrigger,
+            float range,
+            float stunDuration,
+            float threshold,
+            float cooldown
+        )
         {
             _player = player;
             _effectToTrigger = effectToTrigger;
@@ -61,14 +75,11 @@ namespace Item
                     ExecuteCrisisEffect(_player.transform.position);
                     StartCoroutine(CooldownRoutine());
                 }
-
             }
         }
 
         private void ExecuteCrisisEffect(Vector2 center)
         {
-            Debug.Log("<color=red>[위기 관리]</color> 1회성 충격파 발동!");
-
             // 주변의 적 탄환 제거 및 적 기절 로직 (이전과 동일)
             int mask = LayerMask.GetMask("Enemy", "EnemyProjectile");
             Collider2D[] hits = Physics2D.OverlapCircleAll(center, _range, mask);
@@ -99,6 +110,7 @@ namespace Item
             yield return new WaitForSeconds(_cooldown);
             _isCooldown = false;
         }
+
         private void OnDestroy()
         {
             if (_player != null)

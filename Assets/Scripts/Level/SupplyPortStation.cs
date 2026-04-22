@@ -1,5 +1,5 @@
-using UnityEngine;
 using UI; // SupplyPortUI를 찾기 위해 추가
+using UnityEngine;
 
 namespace Level
 {
@@ -13,10 +13,10 @@ namespace Level
 
         public override void OnInteract(GameObject interactEntity)
         {
+            if (UIManager.Instance != null)
             {
-                Debug.LogError("씬에 SupplyPortUI가 없습니다!");
+                UIManager.Instance.RequestStateChange(UIState.Upgrade);
             }
         }
     }
-
 }

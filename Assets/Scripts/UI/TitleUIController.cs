@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro; // TMP 사용을 위해 필수 추가
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -9,7 +9,7 @@ namespace UI
     {
         public TextMeshProUGUI welcomeText;
         public Button startButton;
-        public Button statsButton;   // 통계 버튼
+        public Button statsButton; // 통계 버튼
         public Button settingsButton;
         public Button quitButton;
 
@@ -30,13 +30,13 @@ namespace UI
 
             if (startButton != null)
                 startButton.onClick.AddListener(OnStartClicked);
-            
+
             if (statsButton != null)
                 statsButton.onClick.AddListener(OnStatsClicked);
-            
+
             if (settingsButton != null)
                 settingsButton.onClick.AddListener(OnSettingsClicked);
-            
+
             if (quitButton != null)
                 quitButton.onClick.AddListener(OnQuitClicked);
 
@@ -56,12 +56,6 @@ namespace UI
 
         private void OnStartClicked()
         {
-            Debug.Log("Game Start clicked.");
-            // For now, load SampleScene where TestSetup resides, or GameScene
-            // Looking at the active scene context, we could explicitly load the existing scene.
-            // But let's build logic assuming "SampleScene" or whichever your test scene is called.
-            // Wait, we can specify the name via Unity Build Settings. 
-            // In the workspace, TestSetup is attached to "SampleScene" initially. Let's call it "SampleScene".
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.LoadScene("LobbyScene");
@@ -71,22 +65,21 @@ namespace UI
                 SceneManager.LoadScene("LobbyScene");
             }
         }
+
         private void OnStatsClicked()
         {
-            Debug.Log("통계 (Stats) 오픈.");
             if (mainMenuPanel != null)
                 mainMenuPanel.SetActive(false); // 메인 메뉴 숨기기
-                
+
             if (statsPanel != null)
                 statsPanel.Show();
         }
 
         private void OnSettingsClicked()
         {
-            Debug.Log("환경설정 (Settings) 오픈.");
             if (mainMenuPanel != null)
                 mainMenuPanel.SetActive(false); // 메인 메뉴 숨기기
-                
+
             if (settingsPanel != null)
                 settingsPanel.Show();
         }

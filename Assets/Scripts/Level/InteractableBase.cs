@@ -13,18 +13,21 @@ namespace Level
 
         public void ShowOutline(bool show)
         {
-            if (!isInitialized) InitOutline();
+            if (!isInitialized)
+                InitOutline();
 
             foreach (var sr in outlineSRs)
             {
-                if (sr != null) sr.enabled = show;
+                if (sr != null)
+                    sr.enabled = show;
             }
         }
 
         private void InitOutline()
         {
             SpriteRenderer mainSR = GetComponent<SpriteRenderer>();
-            if (mainSR == null) return;
+            if (mainSR == null)
+                return;
             if (_outlineMaterial == null)
             {
                 Shader shader = Shader.Find("Custom/FlatColor");
@@ -32,13 +35,9 @@ namespace Level
                 {
                     _outlineMaterial = new Material(shader);
                 }
-                else
-                {
-                    Debug.LogError("Custom/FlatColor 셰이더를 찾을 수 없습니다.");
-                    return;
-                }
             }
-            if (_mpb == null) _mpb = new MaterialPropertyBlock();
+            if (_mpb == null)
+                _mpb = new MaterialPropertyBlock();
             _mpb.SetColor("_Color", outlineColor);
             if (GetComponent<UnityEngine.Rendering.SortingGroup>() == null)
             {
@@ -50,11 +49,12 @@ namespace Level
             // 16 PPU 기준 1픽셀 이동 값 (1 / 16 = 0.0625)
             float p = 1f / mainSR.sprite.pixelsPerUnit;
             float zOffset = 0.01f;
-            Vector3[] offsets = {
+            Vector3[] offsets =
+            {
                 new Vector3(0, p, zOffset),
                 new Vector3(0, -p, zOffset),
                 new Vector3(-p, 0, zOffset),
-                new Vector3(p, 0, zOffset)
+                new Vector3(p, 0, zOffset),
             };
 
             for (int i = 0; i < 4; i++)

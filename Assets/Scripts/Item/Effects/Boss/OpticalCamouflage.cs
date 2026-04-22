@@ -1,8 +1,8 @@
-using UnityEngine;
 using System.Collections;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
@@ -46,7 +46,12 @@ namespace Item
 
         private void HandleItemEffect()
         {
-            _moveSpeedMod = new StatModifier("OpticalCamouflageMoveSpeed", _moveSpeed, ModifierType.Percent, this);
+            _moveSpeedMod = new StatModifier(
+                "OpticalCamouflageMoveSpeed",
+                _moveSpeed,
+                ModifierType.Percent,
+                this
+            );
             _player.MoveSpeed.AddModifier(_moveSpeedMod);
             _isNextAttackEmpowered = true;
         }
@@ -63,13 +68,15 @@ namespace Item
                 if (attacker is PlayerStats player && target is EnemyStats enemy)
                 {
                     // 1. 추가 피해 입히기 (이미 들어간 데미지 외에 추가로 가함)
-                    int extraDamage = Mathf.RoundToInt(player.DamageIncreased.GetValue(player.GetWeaponBaseAttackDamage() * _damageMultiplier));
+                    int extraDamage = Mathf.RoundToInt(
+                        player.DamageIncreased.GetValue(
+                            player.GetWeaponBaseAttackDamage() * _damageMultiplier
+                        )
+                    );
                     enemy.TakeDamage(player, extraDamage, Color.gold);
 
                     // 2. 효과 소모
                     _isNextAttackEmpowered = false;
-
-                    Debug.Log("강화 공격 소모!");
                 }
             }
         }

@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using System;
 
 namespace Player
 {
@@ -9,13 +9,16 @@ namespace Player
     {
         [Header("Stealth Settings")]
         [Tooltip("기본 스텔스 지속 시간 (초)")]
-        [SerializeField] private float stealthDuration = 3f;
+        [SerializeField]
+        private float stealthDuration = 3f;
 
         [Tooltip("업그레이드를 통해 늘릴 수 있는 최대 스텔스 지속 시간 (초)")]
-        [SerializeField] private float maxStealthDuration = 5f;
+        [SerializeField]
+        private float maxStealthDuration = 5f;
 
         [Tooltip("스텔스 해제 후 재충전 속도 (1 = 지속 시간과 동일한 속도로 충전)")]
-        [SerializeField] private float rechargeRate = 1f;
+        [SerializeField]
+        private float rechargeRate = 1f;
 
         // ── 공개 상태 프로퍼티 ────────────────────────────────────────
         /// <summary>현재 스텔스 발동 중</summary>
@@ -38,6 +41,7 @@ namespace Player
         private Coroutine activeCoroutine;
 
         private Rigidbody2D rb;
+
         /// <summary>플레이어 본체 + 무기 등 모든 자식 SpriteRenderer</summary>
         private SpriteRenderer[] allRenderers;
 
@@ -51,7 +55,7 @@ namespace Player
 
         private void Awake()
         {
-            rb           = GetComponent<Rigidbody2D>();
+            rb = GetComponent<Rigidbody2D>();
             // 플레이어 본체와 모든 자식(무기 등)의 SpriteRenderer를 한꺼번에 수집
             allRenderers = GetComponentsInChildren<SpriteRenderer>(true);
         }
@@ -66,7 +70,10 @@ namespace Player
             // 스텔스 비활성 상태일 때 게이지 재충전
             if (!IsStealthActive && stealthTimer < stealthDuration)
             {
-                stealthTimer = Mathf.Min(stealthDuration, stealthTimer + Time.deltaTime * rechargeRate);
+                stealthTimer = Mathf.Min(
+                    stealthDuration,
+                    stealthTimer + Time.deltaTime * rechargeRate
+                );
             }
         }
 
@@ -79,8 +86,9 @@ namespace Player
         public void ActivateStealth()
         {
             // 충전이 안 됐거나 이미 활성 중이면 무시
-            if (IsStealthActive || IsRecharging) return;
-            
+            if (IsStealthActive || IsRecharging)
+                return;
+
             OnStealthStart?.Invoke();
             activeCoroutine = StartCoroutine(StealthRoutine());
         }
@@ -88,7 +96,8 @@ namespace Player
         /// <summary>사격 등 외부 이벤트로 스텔스를 즉시 해제합니다.</summary>
         public void CancelStealth()
         {
-            if (!IsStealthActive) return;
+            if (!IsStealthActive)
+                return;
 
             if (activeCoroutine != null)
             {
@@ -104,11 +113,15 @@ namespace Player
         /// <summary>업그레이드로 스텔스 최대 지속 시간을 늘립니다. (최대 maxStealthDuration 까지)</summary>
         public void UpgradeStealthDuration(float additionalSeconds)
         {
-            float newDuration = Mathf.Clamp(stealthDuration + additionalSeconds, 0f, maxStealthDuration);
+            float newDuration = Mathf.Clamp(
+                stealthDuration + additionalSeconds,
+                0f,
+                maxStealthDuration
+            );
             // 기존 비율 유지하며 타이머 조정
             float ratio = StealthRatio;
             stealthDuration = newDuration;
-            stealthTimer    = stealthDuration * ratio;
+            stealthTimer = stealthDuration * ratio;
         }
 
         #endregion
@@ -133,7 +146,7 @@ namespace Player
                 yield return null;
             }
 
-            stealthTimer    = 0f;
+            stealthTimer = 0f;
             activeCoroutine = null;
             EndStealth();
         }
@@ -147,10 +160,12 @@ namespace Player
 
         private void SetAlpha(float alpha)
         {
-            if (allRenderers == null) return;
+            if (allRenderers == null)
+                return;
             foreach (var sr in allRenderers)
             {
-                if (sr == null) continue;
+                if (sr == null)
+                    continue;
                 Color c = sr.color;
                 c.a = alpha;
                 sr.color = c;

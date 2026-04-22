@@ -1,5 +1,5 @@
-using UnityEngine;
 using Player; // PlayerStats가 있는 네임스페이스
+using UnityEngine;
 
 namespace Level
 {
@@ -11,8 +11,8 @@ namespace Level
         public float healPercentage = 25f;
 
         [Header("Visuals")]
-        public Sprite activeSprite;   // 사용 전 이미지
-        public Sprite usedSprite;     // 사용 후 이미지
+        public Sprite activeSprite; // 사용 전 이미지
+        public Sprite usedSprite; // 사용 후 이미지
 
         private SpriteRenderer _sr;
         private bool _isUsed = false;
@@ -28,18 +28,19 @@ namespace Level
 
         public override string GetInteractPrompt()
         {
-            if (_isUsed) return "이미 사용된 키트입니다.";
+            if (_isUsed)
+                return "이미 사용된 키트입니다.";
             return $"체력 회복 [{healPercentage}%]";
         }
 
         public override void OnInteract(GameObject interactEntity)
         {
-            if (_isUsed) return;
+            if (_isUsed)
+                return;
 
             // 1. 플레이어에게서 PlayerStats 컴포넌트를 찾습니다.
             if (interactEntity.TryGetComponent(out PlayerStats stats))
             {
-
                 // 2. 최대 체력 기반으로 회복량 계산
                 int healAmount = Mathf.RoundToInt((stats.maxHealth * healPercentage) / 100);
 
@@ -48,10 +49,9 @@ namespace Level
 
                 // 4. 상태 및 비주얼 업데이트 (1회성)
                 _isUsed = true;
-                if (usedSprite != null) _sr.sprite = usedSprite;
+                if (usedSprite != null)
+                    _sr.sprite = usedSprite;
                 GetComponent<BoxCollider2D>().enabled = false;
-
-                Debug.Log($"[Healkit] 플레이어 {healAmount} 회복 완료!");
             }
         }
     }

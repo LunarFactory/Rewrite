@@ -1,13 +1,16 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
-    [CreateAssetMenu(fileName = "ArtificialNeuralNetwork", menuName = "Items/Common/Artificial Neural Network")]
+    [CreateAssetMenu(
+        fileName = "ArtificialNeuralNetwork",
+        menuName = "Items/Common/Artificial Neural Network"
+    )]
     public class ArtificialNeuralNetworkItem : PassiveItemData // 부모를 상속받음
     {
         [Header("Neural Link Settings")]
@@ -36,7 +39,14 @@ namespace Item
         private float _linkRange;
         private float _synapticDamageMult;
         private bool _isCooldown = false;
-        public void Initialize(PlayerStats player, int maxNodes, float linkRange, float synapticDamageMult, float cooldown)
+
+        public void Initialize(
+            PlayerStats player,
+            int maxNodes,
+            float linkRange,
+            float synapticDamageMult,
+            float cooldown
+        )
         {
             _player = player;
             _maxNodes = maxNodes;
@@ -55,6 +65,7 @@ namespace Item
                 StartCoroutine(CooldownRoutine());
             }
         }
+
         private IEnumerator NeuralChainRoutine(EnemyStats firstTarget, PlayerStats player)
         {
             // 이미 번개에 맞은 적들을 추적 (중복 타격 방지)
@@ -66,12 +77,16 @@ namespace Item
 
             for (int i = 0; i < _maxNodes; i++)
             {
-                if (currentTarget == null || currentTarget.isDead) break;
+                if (currentTarget == null || currentTarget.isDead)
+                    break;
 
                 // A. 데미지 적용 (플레이어 기본 공격력의 일정 비율)
-                int chainDamage = Mathf.RoundToInt(player.DamageIncreased.GetValue(player.AttackDamage.GetValue() * _synapticDamageMult));
+                int chainDamage = Mathf.RoundToInt(
+                    player.DamageIncreased.GetValue(
+                        player.AttackDamage.GetValue() * _synapticDamageMult
+                    )
+                );
                 currentTarget.TakeDamage(player, chainDamage, Color.cyan);
-                Debug.Log($"연쇄 번개 발사됨 : {chainDamage}");
                 activatedNodes.Add(currentTarget);
 
                 // B. 시각 효과 (뉴런 연결선 그리기)
@@ -81,7 +96,8 @@ namespace Item
                 startPos = currentTarget.transform.position; // 이제 현재 적의 위치가 시작점
                 EnemyStats nextTarget = FindClosestNode(startPos, activatedNodes);
 
-                if (nextTarget == null) break; // 주변에 적이 없으면 종료
+                if (nextTarget == null)
+                    break; // 주변에 적이 없으면 종료
 
                 currentTarget = nextTarget;
 
@@ -103,7 +119,8 @@ namespace Item
                 if (col.TryGetComponent(out EnemyStats enemy))
                 {
                     // 이미 맞았거나 죽은 적은 제외
-                    if (excludeList.Contains(enemy) || enemy.isDead) continue;
+                    if (excludeList.Contains(enemy) || enemy.isDead)
+                        continue;
 
                     float dist = Vector3.Distance(origin, enemy.transform.position);
                     if (dist < minDist)

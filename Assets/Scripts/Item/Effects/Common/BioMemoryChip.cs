@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections;
 using Player;
+using UnityEngine;
 
 namespace Item
 {
@@ -21,6 +21,7 @@ namespace Item
             }
         }
     }
+
     public class BioMemoryChipTracker : MonoBehaviour
     {
         private PlayerStats _player;
@@ -43,7 +44,6 @@ namespace Item
             if (_activeCoroutine != null)
             {
                 _player.StopCoroutine(_activeCoroutine);
-                Debug.Log("<color=yellow>[아이템]</color> 회복 타이머 초기화!");
             }
 
             // 2. 새로운 타이머 시작
@@ -66,6 +66,7 @@ namespace Item
             // 코루틴이 끝났으므로 변수 비워주기
             _activeCoroutine = null;
         }
+
         private void OnDestroy()
         {
             if (_player != null)

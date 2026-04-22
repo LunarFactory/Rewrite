@@ -1,5 +1,5 @@
-using UnityEngine;
 using Entity;
+using UnityEngine;
 
 public class RadioactiveActiveEffect : ActiveEffect
 {
@@ -22,10 +22,10 @@ public class RadioactiveActiveEffect : ActiveEffect
         if (_tickTimer >= 1f) // 1초마다 틱 데미지
         {
             _tickTimer -= 1.0f;
-            int totalDamage = Mathf.RoundToInt(source.AttackDamage.GetValue() * _radioactiveEffectData.damagePerStack * stacks);
+            int totalDamage = Mathf.RoundToInt(
+                source.AttackDamage.GetValue() * _radioactiveEffectData.damagePerStack * stacks
+            );
             target.TakeDamage(source, totalDamage);
-
-            Debug.Log($"방사능 피해: {totalDamage} (중첩: {stacks})");
         }
     }
 

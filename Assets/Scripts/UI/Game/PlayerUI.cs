@@ -1,15 +1,18 @@
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using TMPro;
 using Core; // EntityStatus와 Buff 시스템 참조
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace UI
 {
-    public class GameUIController : MonoBehaviour
+    public class PlayerUI : MonoBehaviour
     {
-        public static GameUIController Instance { get; private set; }
+        public static PlayerUI Instance { get; private set; }
 
         [Header("References")]
         private Player.PlayerStats playerStats;
@@ -33,15 +36,21 @@ namespace UI
         private List<Image> buffIconImages = new List<Image>();
         private GameObject buffContainer;
 
-        [Header("Interact UI")]
-        public GameObject interactRoot;       // 텍스트를 담고 있는 부모 오브젝트
-        public TextMeshProUGUI interactText;  // 실제 TMP 컴포넌트
+        private GameObject interactRoot; // 텍스트를 담고 있는 부모 오브젝트
+        private TextMeshProUGUI interactText; // 실제 TMP 컴포넌트
 
         // 보스 HP
         private GameObject bossHPPanel;
         private Slider bossSlider;
         private TextMeshProUGUI bossNameText;
         private TextMeshProUGUI bossSubtitleText;
+
+        // 폰트
+        private TMP_FontAsset font;
+
+        private Sprite crosshairSprite;
+
+        private PlayerInput playerInput;
 
         #region Unity Lifecycle
 
@@ -60,17 +69,54 @@ namespace UI
             }
         }
 
+        #endregion
+
+        // ────────────────────────────────────────────────────────────
+        #region Canvas 생성
+
+        private void BuildCanvas()
+        {
+            // 기존에 이미 같은 이름의 Canvas가 있다면 찾아서 연결 (중복 생성 방지)
+            GameObject existingCanvas = GameObject.Find("GameHUD_Canvas");
+            if (existingCanvas != null)
+            {
+                hudCanvas = existingCanvas.GetComponent<Canvas>();
+                return;
+            }
+            GameObject canvasGo = new GameObject("GameHUD_Canvas");
+            hudCanvas = canvasGo.AddComponent<Canvas>();
+            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            hudCanvas.sortingOrder = 100;
+
+            CanvasScaler scaler = canvasGo.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.matchWidthOrHeight = 0.5f;
+
+            canvasGo.AddComponent<GraphicRaycaster>();
+            canvasGo.transform.SetParent(gameObject.transform, false);
+        }
+
         private void EnsureCanvasExists()
         {
             // Canvas가 없거나, 파괴되었다면 새로 생성
             if (hudCanvas == null)
             {
                 BuildCanvas();
-                // [중요] 생성한 Canvas도 씬 전환 시 파괴되지 않도록 설정
-                DontDestroyOnLoad(hudCanvas.gameObject);
             }
-            if (interactRoot != null)
+        }
+        #endregion
+
+        private void BuildInteract()
+        {
+            if (interactRoot == null)
             {
+                interactRoot = new GameObject("InteractPrompt");
+                interactText = interactRoot.AddComponent<TextMeshProUGUI>();
+                interactText.color = Color.yellow;
+                interactText.font = font;
+                interactText.fontSize = 36;
+                interactText.textWrappingMode = TextWrappingModes.NoWrap;
                 interactRoot.transform.SetParent(hudCanvas.transform, false);
 
                 // 이동 후 스케일이 꼬일 수 있으니 (1,1,1)로 초기화
@@ -78,16 +124,18 @@ namespace UI
             }
         }
 
+        public void SetCrosshairSprite(Sprite sprite)
+        {
+            crosshairSprite = sprite;
+        }
+
+        public void SetPlayerInput(PlayerInput input)
+        {
+            playerInput = input;
+        }
+
         private void Start()
         {
-            // 참조 자동 할당
-
-            BuildCanvas();
-            BuildTopLeftHUD();
-            BuildBuffContainer(); // 버프 UI 생성 추가
-            BuildRightItemSlots();
-            BuildBossHPPanel();
-
             // 인벤토리 매니저 이벤트 구독 (아이템 획득 시 HUD 갱신)
             if (InventoryManager.Instance != null)
             {
@@ -98,7 +146,16 @@ namespace UI
                 BindPlayer(Player.PlayerStats.LocalPlayer);
             }
             DontDestroyOnLoad(gameObject);
+            // 참조 자동 할당
+
+            BuildCanvas();
+            BuildTopLeftHUD();
+            BuildBuffContainer(); // 버프 UI 생성 추가
+            BuildRightItemSlots();
+            BuildBossHPPanel();
+            BuildInteract();
         }
+
         private void OnEnable()
         {
             // 씬 로드 이벤트 구독
@@ -115,7 +172,6 @@ namespace UI
         // 씬이 로드될 때마다 실행됨
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-
             // 씬이 바뀌었으므로 즉시 플레이어를 다시 찾아서 연결
             if (Player.PlayerStats.LocalPlayer != null)
             {
@@ -132,6 +188,11 @@ namespace UI
             playerInteractor.OnInteractableChanged += UpdateInteractUI;
 
             RebuildUIReferences();
+        }
+
+        public void SetFont(TMP_FontAsset font)
+        {
+            this.font = font;
         }
 
         private void RebuildUIReferences()
@@ -169,7 +230,12 @@ namespace UI
         private void HandleInteractUIPosition()
         {
             // 플레이어나 텍스트 객체가 없으면 계산 안 함
-            if (playerStats == null || interactRoot == null || !interactRoot.activeSelf || Camera.main == null)
+            if (
+                playerStats == null
+                || interactRoot == null
+                || !interactRoot.activeSelf
+                || Camera.main == null
+            )
             {
                 return;
             }
@@ -185,7 +251,7 @@ namespace UI
             if (screenPos.z > 0)
             {
                 // 4. [가장 중요] Z값을 0으로 고정하여 캔버스 평면에 붙입니다.
-                // 그리고 이 값을 일반 transform.position에 넣으면 
+                // 그리고 이 값을 일반 transform.position에 넣으면
                 // Screen Space - Overlay 모드에서는 정확하게 꽂힙니다.
                 interactRoot.transform.position = new Vector3(screenPos.x, screenPos.y, 0);
             }
@@ -196,13 +262,12 @@ namespace UI
             }
         }
 
-        #endregion
-
         #region HP & Stealth 로직 (소문자 변수 반영)
 
         private void RefreshHP()
         {
-            if (playerStats == null || hpSlider == null) return;
+            if (playerStats == null || hpSlider == null)
+                return;
 
             // [수정] (float)를 붙여서 강제로 소수점 계산을 하게 만듭니다.
             // 또한 maxHealth가 0일 경우 발생하는 오류(DivideByZero)를 방지하기 위해 0.001f를 더하거나 체크합니다.
@@ -214,16 +279,15 @@ namespace UI
             if (hpText != null)
             {
                 // 수치는 CeilToInt로 깔끔하게 정수로 표시
-                hpText.text = $"{Mathf.CeilToInt(playerStats.currentHealth)} / {Mathf.CeilToInt(playerStats.maxHealth)}";
+                hpText.text =
+                    $"{Mathf.CeilToInt(playerStats.currentHealth)} / {Mathf.CeilToInt(playerStats.maxHealth)}";
             }
-
-            // 디버깅용: 계산된 비율이 정말 0인지 확인해보세요.
-            // Debug.Log($"HP Ratio: {ratio} (Cur: {playerStats.currentHealth} / Max: {playerStats.maxHealth})");
         }
 
         private void RefreshStealth()
         {
-            if (playerStealth == null || stealthSlider == null) return;
+            if (playerStealth == null || stealthSlider == null)
+                return;
 
             // 1. 게이지 비율 반영 (이미 PlayerStealth에서 계산된 값 사용)
             stealthSlider.value = playerStealth.StealthRatio;
@@ -232,9 +296,12 @@ namespace UI
             Image fill = stealthSlider.fillRect?.GetComponent<Image>();
             if (fill != null)
             {
-                if (playerStealth.IsStealthActive) fill.color = Color.cyan; // 사용 중
-                else if (playerStealth.IsRecharging) fill.color = Color.gray; // 충전 중
-                else fill.color = Color.green; // 완충
+                if (playerStealth.IsStealthActive)
+                    fill.color = Color.cyan; // 사용 중
+                else if (playerStealth.IsRecharging)
+                    fill.color = Color.gray; // 충전 중
+                else
+                    fill.color = Color.green; // 완충
             }
 
             // 3. 슬라이더 폭 갱신 (상수 없이 실시간 계산)
@@ -244,7 +311,10 @@ namespace UI
 
                 if (!Mathf.Approximately(stealthSliderRT.sizeDelta.x, targetWidth))
                 {
-                    stealthSliderRT.sizeDelta = new Vector2(targetWidth, stealthSliderRT.sizeDelta.y);
+                    stealthSliderRT.sizeDelta = new Vector2(
+                        targetWidth,
+                        stealthSliderRT.sizeDelta.y
+                    );
                 }
             }
         }
@@ -259,7 +329,8 @@ namespace UI
             EnsureCanvasExists();
 
             // 기존에 이미 Container가 있다면 지우고 새로 만듭니다 (중복 방지)
-            if (buffContainer != null) Destroy(buffContainer);
+            if (buffContainer != null)
+                Destroy(buffContainer);
             buffContainer = CreateUIObject("BuffIcons_Container", hudCanvas.transform);
             RectTransform rt = buffContainer.GetComponent<RectTransform>();
             rt.anchorMin = rt.anchorMax = new Vector2(0, 1);
@@ -283,7 +354,8 @@ namespace UI
 
         private void RefreshBuffs()
         {
-            if (playerBuffManager == null) return;
+            if (playerBuffManager == null)
+                return;
 
             // BuffManager의 활성화된 효과 리스트를 순회하며 아이콘 표시
             var activeEffects = playerBuffManager._activeEffects;
@@ -291,7 +363,8 @@ namespace UI
             for (int i = 0; i < buffIconImages.Count; i++)
             {
                 // [수정] 이 줄을 추가하여 파괴된 UI 객체에 접근하는 것을 방지합니다.
-                if (buffIconImages[i] == null) continue;
+                if (buffIconImages[i] == null)
+                    continue;
                 if (i < activeEffects.Count)
                 {
                     buffIconImages[i].sprite = activeEffects[i].Data.icon;
@@ -311,7 +384,8 @@ namespace UI
 
         private void SyncInventory()
         {
-            if (InventoryManager.Instance == null) return;
+            if (InventoryManager.Instance == null)
+                return;
 
             var items = InventoryManager.Instance.items;
             for (int i = 0; i < itemSlotImages.Count; i++)
@@ -326,33 +400,6 @@ namespace UI
                     itemSlotImages[i].color = Color.clear;
                 }
             }
-        }
-
-        #endregion
-
-        // ────────────────────────────────────────────────────────────
-        #region Canvas 생성
-
-        private void BuildCanvas()
-        {
-            // 기존에 이미 같은 이름의 Canvas가 있다면 찾아서 연결 (중복 생성 방지)
-            GameObject existingCanvas = GameObject.Find("GameHUD_Canvas");
-            if (existingCanvas != null)
-            {
-                hudCanvas = existingCanvas.GetComponent<Canvas>();
-                return;
-            }
-            GameObject canvasGo = new GameObject("GameHUD_Canvas");
-            hudCanvas = canvasGo.AddComponent<Canvas>();
-            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            hudCanvas.sortingOrder = 100;
-
-            CanvasScaler scaler = canvasGo.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
-
-            canvasGo.AddComponent<GraphicRaycaster>();
         }
 
         #endregion
@@ -372,22 +419,46 @@ namespace UI
 
             // HP 라벨
             GameObject hpLabel = CreateUIObject("HP_Label", panel.transform);
-            SetRect(hpLabel, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1),
-                    new Vector2(0, 0), new Vector2(40, 22));
+            SetRect(
+                hpLabel,
+                new Vector2(0, 1),
+                new Vector2(0, 1),
+                new Vector2(0, 1),
+                new Vector2(0, 0),
+                new Vector2(40, 22)
+            );
             TextMeshProUGUI hpLabelText = hpLabel.AddComponent<TextMeshProUGUI>();
-            StyleLabel(hpLabelText, "HP", 14, TextAlignmentOptions.Left, new Color(0.8f, 0.8f, 0.8f));
+            StyleLabel(
+                hpLabelText,
+                "HP",
+                14,
+                TextAlignmentOptions.Left,
+                new Color(0.8f, 0.8f, 0.8f)
+            );
 
             // HP 수치 텍스트
             GameObject hpNumGo = CreateUIObject("HP_Num", panel.transform);
-            SetRect(hpNumGo, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1),
-                    new Vector2(44, 0), new Vector2(200, 22));
+            SetRect(
+                hpNumGo,
+                new Vector2(0, 1),
+                new Vector2(0, 1),
+                new Vector2(0, 1),
+                new Vector2(44, 0),
+                new Vector2(200, 22)
+            );
             hpText = hpNumGo.AddComponent<TextMeshProUGUI>();
             StyleLabel(hpText, "100 / 100", 14, TextAlignmentOptions.Left, Color.white);
             hpText.fontStyle = FontStyles.Bold;
+            hpText.font = font;
 
             // HP 슬라이더
-            hpSlider = BuildSlider(panel.transform, new Vector2(0, -24), new Vector2(320, 12),
-                                   new Color(0.18f, 0.55f, 0.25f), new Color(0.2f, 0.2f, 0.2f));
+            hpSlider = BuildSlider(
+                panel.transform,
+                new Vector2(0, -24),
+                new Vector2(320, 12),
+                new Color(0.18f, 0.55f, 0.25f),
+                new Color(0.2f, 0.2f, 0.2f)
+            );
 
             // 스텔스 슬라이더
             BuildStealthSlider(panel.transform);
@@ -398,8 +469,13 @@ namespace UI
             // 슬라이더 배경 + 전경은 BuildSlider 가 만들어 줌
             // 초기 폭은 기본 지속 시간(3 s) 기준
             float initWidth = StealthDurationToWidth(playerStealth.MaxDuration);
-            stealthSlider = BuildSlider(parent, new Vector2(0, -44), new Vector2(initWidth, 10),
-                                          new Color(0.35f, 0.72f, 0.95f, 0.9f), new Color(0.2f, 0.2f, 0.2f));
+            stealthSlider = BuildSlider(
+                parent,
+                new Vector2(0, -44),
+                new Vector2(initWidth, 10),
+                new Color(0.35f, 0.72f, 0.95f, 0.9f),
+                new Color(0.2f, 0.2f, 0.2f)
+            );
             stealthSliderRT = stealthSlider.GetComponent<RectTransform>();
         }
 
@@ -444,10 +520,23 @@ namespace UI
 
                 // 슬롯 번호
                 GameObject numGo = CreateUIObject($"SlotNum_{i}", slotGo.transform);
-                SetRect(numGo, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1),
-                        new Vector2(3, -2), new Vector2(20, 15));
+                SetRect(
+                    numGo,
+                    new Vector2(0, 1),
+                    new Vector2(0, 1),
+                    new Vector2(0, 1),
+                    new Vector2(3, -2),
+                    new Vector2(20, 15)
+                );
                 TextMeshProUGUI numText = numGo.AddComponent<TextMeshProUGUI>();
-                StyleLabel(numText, (i + 1).ToString(), 10, TextAlignmentOptions.TopLeft, new Color(0.55f, 0.55f, 0.55f));
+                numText.font = font;
+                StyleLabel(
+                    numText,
+                    (i + 1).ToString(),
+                    10,
+                    TextAlignmentOptions.TopLeft,
+                    new Color(0.55f, 0.55f, 0.55f)
+                );
 
                 // 아이템 아이콘
                 GameObject iconGo = CreateUIObject($"ItemIcon_{i}", slotGo.transform);
@@ -476,21 +565,48 @@ namespace UI
             pRT.anchoredPosition = new Vector2(0, 30);
             pRT.sizeDelta = new Vector2(500, 80);
 
-            bossSubtitleText = CreateText("BossSubtitle", bossHPPanel.transform,
-                new Vector2(0, 60), new Vector2(400, 20), "F2 BOSS",
-                11, TextAlignmentOptions.Center, new Color(0.7f, 0.7f, 0.7f));
+            bossSubtitleText = CreateText(
+                "BossSubtitle",
+                bossHPPanel.transform,
+                new Vector2(0, 60),
+                new Vector2(400, 20),
+                "F2 BOSS",
+                11,
+                TextAlignmentOptions.Center,
+                new Color(0.7f, 0.7f, 0.7f)
+            );
 
-            bossNameText = CreateText("BossName", bossHPPanel.transform,
-                new Vector2(0, 36), new Vector2(460, 32), "보스",
-                22, TextAlignmentOptions.Center, Color.white);
+            bossNameText = CreateText(
+                "BossName",
+                bossHPPanel.transform,
+                new Vector2(0, 36),
+                new Vector2(460, 32),
+                "보스",
+                22,
+                TextAlignmentOptions.Center,
+                Color.white
+            );
             bossNameText.fontStyle = FontStyles.Bold;
+            bossNameText.font = font;
 
-            bossSlider = BuildSlider(bossHPPanel.transform, new Vector2(0, 10), new Vector2(460, 14),
-                                     new Color(0.7f, 0.18f, 0.18f), new Color(0.2f, 0.2f, 0.2f));
+            bossSlider = BuildSlider(
+                bossHPPanel.transform,
+                new Vector2(0, 10),
+                new Vector2(460, 14),
+                new Color(0.7f, 0.18f, 0.18f),
+                new Color(0.2f, 0.2f, 0.2f)
+            );
 
-            CreateText("BossHP_Label", bossHPPanel.transform,
-                new Vector2(0, -6), new Vector2(200, 16), "Boss HP",
-                10, TextAlignmentOptions.Center, new Color(0.55f, 0.55f, 0.55f));
+            CreateText(
+                "BossHP_Label",
+                bossHPPanel.transform,
+                new Vector2(0, -6),
+                new Vector2(200, 16),
+                "Boss HP",
+                10,
+                TextAlignmentOptions.Center,
+                new Color(0.55f, 0.55f, 0.55f)
+            );
 
             bossHPPanel.SetActive(false);
         }
@@ -506,9 +622,10 @@ namespace UI
         /// </summary>
         private float StealthDurationToWidth(float currentMax)
         {
-            if (playerStealth == null) return 160f; // 기본 폭
+            if (playerStealth == null)
+                return 160f; // 기본 폭
 
-            // [중요] 
+            // [중요]
             // playerStealth.MaxDuration: 현재 레벨에서의 최대 시간 (예: 3초)
             // playerStealth.AbsoluteMaxDuration: 업그레이드 끝판왕 시간 (예: 5초)
 
@@ -518,8 +635,13 @@ namespace UI
             return Mathf.Lerp(100f, 260f, ratio);
         }
 
-        private Slider BuildSlider(Transform parent, Vector2 anchoredPos, Vector2 size,
-                                   Color fillColor, Color bgColor)
+        private Slider BuildSlider(
+            Transform parent,
+            Vector2 anchoredPos,
+            Vector2 size,
+            Color fillColor,
+            Color bgColor
+        )
         {
             GameObject sliderGo = CreateUIObject("Slider", parent);
             Slider slider = sliderGo.AddComponent<Slider>();
@@ -566,8 +688,16 @@ namespace UI
             return slider;
         }
 
-        private TextMeshProUGUI CreateText(string name, Transform parent, Vector2 anchoredPos, Vector2 size,
-                                string content, int fontSize, TextAlignmentOptions anchor, Color color)
+        private TextMeshProUGUI CreateText(
+            string name,
+            Transform parent,
+            Vector2 anchoredPos,
+            Vector2 size,
+            string content,
+            int fontSize,
+            TextAlignmentOptions anchor,
+            Color color
+        )
         {
             GameObject go = CreateUIObject(name, parent);
             RectTransform rt = go.GetComponent<RectTransform>();
@@ -580,7 +710,13 @@ namespace UI
             return t;
         }
 
-        private void StyleLabel(TextMeshProUGUI t, string content, int fontSize, TextAlignmentOptions anchor, Color color)
+        private void StyleLabel(
+            TextMeshProUGUI t,
+            string content,
+            int fontSize,
+            TextAlignmentOptions anchor,
+            Color color
+        )
         {
             t.text = content;
             t.fontSize = fontSize;
@@ -588,8 +724,14 @@ namespace UI
             t.color = color;
         }
 
-        private void SetRect(GameObject go, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
-                             Vector2 anchoredPos, Vector2 sizeDelta)
+        private void SetRect(
+            GameObject go,
+            Vector2 anchorMin,
+            Vector2 anchorMax,
+            Vector2 pivot,
+            Vector2 anchoredPos,
+            Vector2 sizeDelta
+        )
         {
             RectTransform rt = go.GetComponent<RectTransform>();
             rt.anchorMin = anchorMin;
@@ -606,7 +748,6 @@ namespace UI
             go.AddComponent<RectTransform>();
             return go;
         }
-
 
         #endregion
 

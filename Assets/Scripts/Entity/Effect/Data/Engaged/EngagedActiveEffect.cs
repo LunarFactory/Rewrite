@@ -1,5 +1,5 @@
-using UnityEngine;
 using Entity;
+using UnityEngine;
 
 public class EngagedActiveEffect : ActiveEffect
 {
@@ -14,8 +14,6 @@ public class EngagedActiveEffect : ActiveEffect
         SpriteRenderer sr = target.GetRenderer();
         if (sr != null)
             sr.color = Color.gray;
-
-        Debug.Log($"{target.name}에게 Engaged 효과 시작! (초당 피해: {_engagedData.damage})");
     }
 
     public override void OnUpdate(EntityStats target, float deltaTime, EntityStats source)
@@ -23,7 +21,8 @@ public class EngagedActiveEffect : ActiveEffect
         // 1. 부모의 OnUpdate를 호출하여 RemainingTime을 감소시킵니다.
         base.OnUpdate(target, deltaTime, source);
 
-        if (_engagedData == null) return;
+        if (_engagedData == null)
+            return;
 
         // 2. 타이머에 프레임 시간을 더합니다.
         _tickTimer += deltaTime;
@@ -35,19 +34,17 @@ public class EngagedActiveEffect : ActiveEffect
             _tickTimer -= 1.0f;
 
             // 정해진 초당 데미지를 입힙니다.
-            if (target is Enemy.EnemyStats enemy) enemy.TakeDamage(source, _engagedData.damage, Color.gray);
-            else target.TakeDamage(source, _engagedData.damage);
-
-            Debug.Log($"{target.name}이 Engaged 피해를 입음: {_engagedData.damage} (남은 시간: {RemainingTime:F1}초)");
+            if (target is Enemy.EnemyStats enemy)
+                enemy.TakeDamage(source, _engagedData.damage, Color.gray);
+            else
+                target.TakeDamage(source, _engagedData.damage);
         }
     }
 
     public override void OnEnd(EntityStats target, EntityStats source)
     {
-
         SpriteRenderer sr = target.GetRenderer();
-        if (sr != null) 
+        if (sr != null)
             sr.color = target.GetOriginalColor();
-        Debug.Log($"{target.name}의 Engaged 효과가 만료되었습니다.");
     }
 }

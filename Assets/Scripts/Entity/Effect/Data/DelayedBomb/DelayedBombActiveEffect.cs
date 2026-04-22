@@ -1,8 +1,8 @@
-using UnityEngine;
-using Unity;
-using Entity;
-using Enemy;
 using System.Collections.Generic;
+using Enemy;
+using Entity;
+using Unity;
+using UnityEngine;
 
 public class DelayedBombActiveEffect : ActiveEffect
 {
@@ -22,7 +22,8 @@ public class DelayedBombActiveEffect : ActiveEffect
 
         // 부착 시 시각적 효과 (예: 적 몸에 붉은 점 생성 또는 깜빡임)
         SpriteRenderer sr = target.GetRenderer();
-        if (sr != null) sr.color = Color.orange;
+        if (sr != null)
+            sr.color = Color.orange;
     }
 
     public override void OnEnd(EntityStats target, EntityStats source)
@@ -35,15 +36,22 @@ public class DelayedBombActiveEffect : ActiveEffect
 
         // 색상 복구
         SpriteRenderer sr = target.GetRenderer();
-        if (sr != null) sr.color = target.GetOriginalColor();
+        if (sr != null)
+            sr.color = target.GetOriginalColor();
     }
 
     private void Explode(EntityStats target, EntityStats source)
     {
         // 2. 주변 적 탐색
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(target.transform.position, _explosionRadius, LayerMask.GetMask("Enemy"));
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+            target.transform.position,
+            _explosionRadius,
+            LayerMask.GetMask("Enemy")
+        );
 
-        int finalDamage = Mathf.RoundToInt(source.DamageIncreased.GetValue(source.AttackDamage.GetValue() * _damageMultiplier));
+        int finalDamage = Mathf.RoundToInt(
+            source.DamageIncreased.GetValue(source.AttackDamage.GetValue() * _damageMultiplier)
+        );
 
         foreach (var col in hitEnemies)
         {
@@ -60,6 +68,5 @@ public class DelayedBombActiveEffect : ActiveEffect
 
         // 5. 폭발 이펙트 생성 (VFX)
         // VFXManager.Instance.Play("Explosion_VFX", target.transform.position);
-        Debug.Log($"<color=red>[폭발]</color> {target.name} 주변 적들에게 {finalDamage} 피해 및 기절!");
     }
 }

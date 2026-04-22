@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UnityEngine;
 
 [System.Serializable]
 public class CharacterStat
@@ -12,21 +12,20 @@ public class CharacterStat
     public void AddModifier(StatModifier mod) => _modifiers.Add(mod);
 
     // 특정 아이템이 준 버프만 골라 제거하기 위함
-    public void RemoveModifiersFromSource(object source) => _modifiers.RemoveAll(m => m.Source == source);
+    public void RemoveModifiersFromSource(object source) =>
+        _modifiers.RemoveAll(m => m.Source == source);
 
     public void RemoveModifiersFromName(string name) => _modifiers.RemoveAll(m => m.Name == name);
 
-    public void RemoveModifiers(string name, object source) => _modifiers.RemoveAll(m => m.Name == name && m.Source == source);
+    public void RemoveModifiers(string name, object source) =>
+        _modifiers.RemoveAll(m => m.Name == name && m.Source == source);
 
     public CharacterStat(float value)
     {
         this.BaseValue = value;
     }
 
-    public void UpdateModifierByName(string name, StatModifier mod)
-    {
-        
-    }
+    public void UpdateModifierByName(string name, StatModifier mod) { }
 
     public float GetValue()
     {
@@ -51,6 +50,7 @@ public class CharacterStat
 
         return Mathf.Max(finalValue, 0f);
     }
+
     public float GetValue(float amount)
     {
         float finalValue = amount;

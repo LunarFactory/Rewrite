@@ -1,9 +1,9 @@
+using Core;
+using Log;
 using Unity.Cinemachine; // 시네머신 3.0 네임스페이스
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using Log;
-using Core;
 using Weapon;
 
 namespace Player
@@ -24,16 +24,22 @@ namespace Player
         public Transform weaponPivot;
         private WeaponBase currentWeapon;
 
-        [Tooltip("캐릭터 스프라이트의 시각적 중심. 스프라이트 Pivot이 발치에 있을 경우 Y값을 올려서 맞추세요.")]
-        [SerializeField] private Vector2 aimCenterOffset = new Vector2(0f, 0.25f);
+        [Tooltip(
+            "캐릭터 스프라이트의 시각적 중심. 스프라이트 Pivot이 발치에 있을 경우 Y값을 올려서 맞추세요."
+        )]
+        [SerializeField]
+        private Vector2 aimCenterOffset = new Vector2(0f, 0.25f);
 
         [Header("Combat")]
         private bool isAttacking;
         private bool isStealth;
 
         [Header("Input Action References")]
-        [SerializeField] private InputActionReference attackAction;
-        [SerializeField] private InputActionReference stealthAction;
+        [SerializeField]
+        private InputActionReference attackAction;
+
+        [SerializeField]
+        private InputActionReference stealthAction;
 
         private PlayerStealth stealth;
 
@@ -71,18 +77,22 @@ namespace Player
             }
             currentWeapon.Initialize(currentWeapon.weaponData);
         }
+
         private void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
+
         private void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             var vcam = FindAnyObjectByType<CinemachineCamera>();
-            if (vcam == null) return;
+            if (vcam == null)
+                return;
 
             var targetGroup = FindAnyObjectByType<CinemachineTargetGroup>();
 
@@ -97,22 +107,26 @@ namespace Player
 
             // 2. [수정] 리스트에 직접 Target 데이터 추가하기
             // 플레이어 추가
-            targetGroup.Targets.Add(new CinemachineTargetGroup.Target
-            {
-                Object = this.transform,
-                Weight = 0.7f,
-                Radius = 1f
-            });
+            targetGroup.Targets.Add(
+                new CinemachineTargetGroup.Target
+                {
+                    Object = this.transform,
+                    Weight = 0.7f,
+                    Radius = 1f,
+                }
+            );
 
             // 크로스헤어 추가
             if (Crosshair.Instance != null)
             {
-                targetGroup.Targets.Add(new CinemachineTargetGroup.Target
-                {
-                    Object = Crosshair.Instance.transform,
-                    Weight = 0.3f,
-                    Radius = 1f
-                });
+                targetGroup.Targets.Add(
+                    new CinemachineTargetGroup.Target
+                    {
+                        Object = Crosshair.Instance.transform,
+                        Weight = 0.3f,
+                        Radius = 1f,
+                    }
+                );
             }
 
             vcam.Target.TrackingTarget = targetGroup.transform;
@@ -147,7 +161,8 @@ namespace Player
 
         private void HandleMovement()
         {
-            if (stats.isStunned) return;
+            if (stats.isStunned)
+                return;
             // Compatibility for 2023+ (velocity or linearVelocity)
             rb.linearVelocity = moveInput.normalized * stats.MoveSpeed.GetValue();
         }
@@ -155,7 +170,8 @@ namespace Player
         private void HandleAiming()
         {
             // 1. 크로스헤어 위치 가져오기 (싱글톤 활용)
-            if (Crosshair.Instance == null) return;
+            if (Crosshair.Instance == null)
+                return;
             Vector3 targetPos = Crosshair.Instance.transform.position;
 
             // 2. 방향 계산 (목표 지점 - 내 위치)
@@ -171,7 +187,8 @@ namespace Player
 
         private void HandleActions()
         {
-            if (stats.isStunned) return;
+            if (stats.isStunned)
+                return;
             // 1. 공격 (연사형): 버튼을 '누르고 있는 동안' 계속 실행
             // InputActionReference의 .IsPressed()를 쓰면 떼는 순간 즉시 정지합니다.
             if (attackAction.action.IsPressed())
@@ -198,9 +215,11 @@ namespace Player
                 stealth.ActivateStealth(); // 이제 굴러가는 동안 한 번만 호출됨
             }
         }
+
         private void ApplyWeaponData()
         {
-            if (currentWeapon == null || currentWeapon.weaponData == null) return;
+            if (currentWeapon == null || currentWeapon.weaponData == null)
+                return;
 
             // 여기서 무기의 스프라이트를 바꾸거나, 초기화 로직을 실행합니다.
             Debug.Log($"[Player] {currentWeapon.weaponData.weaponName} 데이터 적용 완료!");

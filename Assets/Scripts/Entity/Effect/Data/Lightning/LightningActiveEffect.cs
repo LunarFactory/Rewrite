@@ -1,7 +1,7 @@
-using UnityEngine;
 using System;
-using Entity;
 using Enemy;
+using Entity;
+using UnityEngine;
 
 public class LightningActiveEffect : ActiveEffect
 {
@@ -14,11 +14,13 @@ public class LightningActiveEffect : ActiveEffect
         _lightningData = Data as LightningEffect;
 
         // 부착되는 순간 즉시 3000% 피해 (아이템 설명 참고)
-        int damage = Mathf.RoundToInt(source.DamageIncreased.GetValue(source.AttackDamage.GetValue() * _lightningData.damageMultiplier));
+        int damage = Mathf.RoundToInt(
+            source.DamageIncreased.GetValue(
+                source.AttackDamage.GetValue() * _lightningData.damageMultiplier
+            )
+        );
         enemy = target as EnemyStats;
         enemy.TakeDamage(source, damage, Color.yellow);
-
-        Debug.Log($"{target.name}에게 유도 번개가 부착되었습니다!");
     }
 
     public override void OnEnd(EntityStats target, EntityStats source)
@@ -34,18 +36,26 @@ public class LightningActiveEffect : ActiveEffect
     private void ChainToNextTarget(EntityStats currentTarget, EntityStats source)
     {
         // 1. 주변 적 탐색
-        Collider2D[] cols = Physics2D.OverlapCircleAll(currentTarget.transform.position, _lightningData.searchRange, LayerMask.GetMask("Enemy"));
+        Collider2D[] cols = Physics2D.OverlapCircleAll(
+            currentTarget.transform.position,
+            _lightningData.searchRange,
+            LayerMask.GetMask("Enemy")
+        );
 
         EntityStats closest = null;
         float minDist = Mathf.Infinity;
 
         foreach (var col in cols)
         {
-            if (col.gameObject == currentTarget.gameObject) continue; // 자기 자신 제외
+            if (col.gameObject == currentTarget.gameObject)
+                continue; // 자기 자신 제외
 
             if (col.TryGetComponent(out EntityStats enemy) && !enemy.isDead)
             {
-                float dist = Vector2.Distance(currentTarget.transform.position, enemy.transform.position);
+                float dist = Vector2.Distance(
+                    currentTarget.transform.position,
+                    enemy.transform.position
+                );
                 if (dist < minDist)
                 {
                     minDist = dist;
@@ -68,6 +78,7 @@ public class LightningActiveEffect : ActiveEffect
             }
         }
     }
+
     private void CreateLightningVisual(Vector3 start, Vector3 end)
     {
         GameObject lineObj = new("Lightning_Rod_Line");

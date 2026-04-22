@@ -1,7 +1,7 @@
-using UnityEngine;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 public class MeltedActiveEffect : ActiveEffect
 {
@@ -22,19 +22,24 @@ public class MeltedActiveEffect : ActiveEffect
 
         if (source is PlayerStats player && target is EnemyStats enemy)
         {
-            _moveSpeedMod = new StatModifier("MeltedMoveSpeed", _data.moveSpeed, ModifierType.Percent, this);
+            _moveSpeedMod = new StatModifier(
+                "MeltedMoveSpeed",
+                _data.moveSpeed,
+                ModifierType.Percent,
+                this
+            );
             enemy.MoveSpeed.AddModifier(_moveSpeedMod);
             _currentStack = 0;
             // 1. 공격 적중 이벤트 구독
             player.OnPlayerAttackHit -= HandleAttackHit;
             player.OnPlayerAttackHit += HandleAttackHit;
-            Debug.Log("<color=orange>[융해]</color> 효과 시작! 이동 속도가 감소하고 받는 피해가 증가합니다.");
         }
     }
 
     private void HandleAttackHit(PlayerStats player, EntityStats target, int damage)
     {
-        if (target != _ownerTarget) return;
+        if (target != _ownerTarget)
+            return;
         _currentStack++;
         UpdateModifiers();
     }
@@ -46,11 +51,13 @@ public class MeltedActiveEffect : ActiveEffect
 
         // 2. 공격 속도 수정자 갱신 (중첩당 4%)
         float damageTaken = _currentStack * _data.damageTaken;
-        _damageTakenMod = new StatModifier("MeltedDamageTaken", damageTaken, ModifierType.Percent, this);
+        _damageTakenMod = new StatModifier(
+            "MeltedDamageTaken",
+            damageTaken,
+            ModifierType.Percent,
+            this
+        );
         _ownerTarget.DamageTaken.AddModifier(_damageTakenMod);
-
-        // 디버그용 (필요 없으면 삭제)
-        Debug.Log($"[융해] {_currentStack}중첩 (받는 피해량 +{damageTaken * 100}%)");
     }
 
     public override void OnEnd(EntityStats target, EntityStats source)
@@ -69,8 +76,6 @@ public class MeltedActiveEffect : ActiveEffect
             SpriteRenderer sr = target.GetRenderer();
             if (sr != null)
                 sr.color = target.GetOriginalColor();
-
-            Debug.Log("[융해] 효과 종료.");
         }
     }
 }

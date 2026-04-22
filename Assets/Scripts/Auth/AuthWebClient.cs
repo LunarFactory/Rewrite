@@ -22,6 +22,7 @@ namespace Auth
         public string userId;
         public string accessToken;
     }
+
     public class AuthWebClient : MonoBehaviour
     {
         public static AuthWebClient Instance { get; private set; }
@@ -31,20 +32,41 @@ namespace Auth
 
         private void Awake()
         {
-            if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
-            else Destroy(gameObject);
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+                Destroy(gameObject);
         }
 
         // [회원가입]
-        public IEnumerator SignUp(string id, string pw, string email, System.Action<bool, string> callback)
+        public IEnumerator SignUp(
+            string id,
+            string pw,
+            string email,
+            System.Action<bool, string> callback
+        )
         {
-            var data = new SignUpRequest { userId = id, password = pw, email = email };
+            var data = new SignUpRequest
+            {
+                userId = id,
+                password = pw,
+                email = email,
+            };
             string json = JsonUtility.ToJson(data);
 
-            yield return StartCoroutine(PostRequest("/signup", json, (success, response) =>
-            {
-                callback?.Invoke(success, success ? "회원가입 성공!" : response);
-            }));
+            yield return StartCoroutine(
+                PostRequest(
+                    "/signup",
+                    json,
+                    (success, response) =>
+                    {
+                        callback?.Invoke(success, success ? "회원가입 성공!" : response);
+                    }
+                )
+            );
         }
 
         // [로그인]
@@ -53,23 +75,33 @@ namespace Auth
             var data = new { userId = id, password = pw }; // 익명 객체 사용 시 JsonUtility는 지원 안 할 수 있음 (별도 DTO 권장)
             string json = $"{{\"userId\":\"{id}\", \"password\":\"{pw}\"}}";
 
-            yield return StartCoroutine(PostRequest("/login", json, (success, response) =>
-            {
-                if (success)
-                {
-                    var res = JsonUtility.FromJson<TokenResponse>(response);
-                    PlayerPrefs.SetString("AuthToken", res.accessToken); // JWT 토큰 저장
-                    callback?.Invoke(true, res.userId);
-                }
-                else
-                {
-                    callback?.Invoke(false, response);
-                }
-            }));
+            yield return StartCoroutine(
+                PostRequest(
+                    "/login",
+                    json,
+                    (success, response) =>
+                    {
+                        if (success)
+                        {
+                            var res = JsonUtility.FromJson<TokenResponse>(response);
+                            PlayerPrefs.SetString("AuthToken", res.accessToken); // JWT 토큰 저장
+                            callback?.Invoke(true, res.userId);
+                        }
+                        else
+                        {
+                            callback?.Invoke(false, response);
+                        }
+                    }
+                )
+            );
         }
 
         // [공통 POST 요청 메서드]
-        private IEnumerator PostRequest(string endpoint, string json, System.Action<bool, string> callback)
+        private IEnumerator PostRequest(
+            string endpoint,
+            string json,
+            System.Action<bool, string> callback
+        )
         {
             using (UnityWebRequest request = new UnityWebRequest(baseUrl + endpoint, "POST"))
             {
@@ -81,7 +113,10 @@ namespace Auth
                 // 로그인 후의 요청이라면 토큰을 헤더에 담아야 함 (예: 로그아웃)
                 if (PlayerPrefs.HasKey("AuthToken"))
                 {
-                    request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString("AuthToken"));
+                    request.SetRequestHeader(
+                        "Authorization",
+                        "Bearer " + PlayerPrefs.GetString("AuthToken")
+                    );
                 }
 
                 yield return request.SendWebRequest();

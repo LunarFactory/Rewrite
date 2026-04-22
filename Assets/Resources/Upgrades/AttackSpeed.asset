@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06b81d313f90f942bb99cca917e96be, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b709b0884567554895251d08be86c14, type: 3}
   m_Name: AttackSpeed
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerUpgradeData
-  id: attackspeedupgrade
-  upgradeName: "\uACF5\uACA9 \uC18D\uB3C4 \uAC15\uD654"
-  icon: {fileID: 0}
-  description: 
+  id: upgrade_attackspeed
+  upgradeName: "\uACF5\uACA9 \uC18D\uB3C4 \uC99D\uAC00"
+  icon: {fileID: -7511911463232200389, guid: 8a0ffc761fcdc3f438151f7dc1ae7e07, type: 3}
+  description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   statOffsets:
   - 15
   - 30

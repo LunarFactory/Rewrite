@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections;
 using Entity;
 using Player;
+using UnityEngine;
 
 namespace Item
 {
@@ -33,7 +33,8 @@ namespace Item
 
         private void HandleItemEffect(ref int damage)
         {
-            if (_isSpent) return;
+            if (_isSpent)
+                return;
 
             // 이번 데미지를 입으면 죽는지 체크
             if (_player.currentHealth - _player.DamageTaken.GetValue(damage) <= 0)
@@ -51,13 +52,11 @@ namespace Item
             _isSpent = true; // 아이템 비활성화
 
             // 1. 체력 100% 회복
-            _player.Heal(_player.maxHealth); 
+            _player.Heal(_player.maxHealth);
 
             // 2. 3초간 무적 상태 돌입
             StartCoroutine(InvincibilityRoutine(3f));
 
-            Debug.Log("<color=pink>[연인의 편지]</color> 당신을 향한 마음이 죽음을 거부했습니다!");
-            
             // (선택) 아이템 UI를 비활성화(회색)로 바꾸는 알림 전송
             // InventoryManager.Instance.DisableItemUI("LoverLetter");
         }
@@ -66,7 +65,12 @@ namespace Item
         {
             // 기존에 만든 StatModifier 시스템 활용
             // 받는 피해량을 -100%로 만들어 데미지를 0으로 고정
-            var invinceMod = new StatModifier("LoverLetter_Invince", -1.0f, ModifierType.Percent, this);
+            var invinceMod = new StatModifier(
+                "LoverLetter_Invince",
+                -1.0f,
+                ModifierType.Percent,
+                this
+            );
             _player.DamageTaken.AddModifier(invinceMod);
 
             // 시각적 연출 (깜빡임 등)

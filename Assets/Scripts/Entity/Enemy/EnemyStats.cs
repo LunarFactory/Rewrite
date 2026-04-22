@@ -1,7 +1,7 @@
-using UnityEngine;
-using Core;
 using System;
+using Core;
 using Entity;
+using UnityEngine;
 
 namespace Enemy
 {
@@ -40,11 +40,43 @@ namespace Enemy
                 ProjectileScale = new CharacterStat(data.baseProjectileScale);
                 ProjectileSpeed = new CharacterStat(data.baseProjectileSpeed);
                 DamageIncreased = new CharacterStat(0);
-                if (data.baseDamageIncreasedFlat != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedFlat", data.baseDamageIncreasedFlat, ModifierType.Flat, this));
-                if (data.baseDamageIncreasedPercent != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedPercent", data.baseDamageIncreasedPercent, ModifierType.Percent, this));
+                if (data.baseDamageIncreasedFlat != 0)
+                    DamageIncreased.AddModifier(
+                        new StatModifier(
+                            "baseDamageIncreasedFlat",
+                            data.baseDamageIncreasedFlat,
+                            ModifierType.Flat,
+                            this
+                        )
+                    );
+                if (data.baseDamageIncreasedPercent != 0)
+                    DamageIncreased.AddModifier(
+                        new StatModifier(
+                            "baseDamageIncreasedPercent",
+                            data.baseDamageIncreasedPercent,
+                            ModifierType.Percent,
+                            this
+                        )
+                    );
                 DamageTaken = new CharacterStat(0);
-                if (data.baseDamageTakenFlat != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenFlat", data.baseDamageTakenFlat, ModifierType.Flat, this));
-                if (data.baseDamageTakenPercent != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenPercent", data.baseDamageTakenPercent, ModifierType.Percent, this));
+                if (data.baseDamageTakenFlat != 0)
+                    DamageTaken.AddModifier(
+                        new StatModifier(
+                            "baseDamageTakenFlat",
+                            data.baseDamageTakenFlat,
+                            ModifierType.Flat,
+                            this
+                        )
+                    );
+                if (data.baseDamageTakenPercent != 0)
+                    DamageTaken.AddModifier(
+                        new StatModifier(
+                            "baseDamageTakenPercent",
+                            data.baseDamageTakenPercent,
+                            ModifierType.Percent,
+                            this
+                        )
+                    );
                 ReduceHeal = new CharacterStat(0);
             }
         }
@@ -56,22 +88,27 @@ namespace Enemy
 
             player = GameObject.FindGameObjectWithTag("Player");
             stat = player.GetComponent<Player.PlayerStats>();
-            if (player != null) playerTarget = player.transform;
+            if (player != null)
+                playerTarget = player.transform;
         }
 
         protected virtual void Update()
         {
-            if (staggerTimer > 0f) staggerTimer -= Time.deltaTime;
+            if (staggerTimer > 0f)
+                staggerTimer -= Time.deltaTime;
             _animator.UpdateAnimation(Time.deltaTime);
-            if (stat.isStealth()) playerTarget = null;
-            else playerTarget = player.transform;
+            if (stat.isStealth())
+                playerTarget = null;
+            else
+                playerTarget = player.transform;
         }
 
         private void FixedUpdate()
         {
             if (isStunned)
             {
-                if (_rb.bodyType != RigidbodyType2D.Static) _rb.linearVelocity = Vector2.zero;
+                if (_rb.bodyType != RigidbodyType2D.Static)
+                    _rb.linearVelocity = Vector2.zero;
                 return;
             }
             OnFixedUpdate();
@@ -81,27 +118,39 @@ namespace Enemy
 
         public override void TakeDamage(EntityStats attacker, int damage)
         {
-            if (data == null || data.isInvincible) return;
+            if (data == null || data.isInvincible)
+                return;
             base.TakeDamage(attacker, damage); // 부모의 체력 감소 로직 실행
             staggerTimer = data.hitstunDuration;
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
-                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, Mathf.RoundToInt(DamageTaken.GetValue(damage)), Color.white);
+                FDTManager.Instance.SpawnText(
+                    transform.position + Vector3.up * 0.5f,
+                    Mathf.RoundToInt(DamageTaken.GetValue(damage)),
+                    Color.white
+                );
             }
         }
+
         public void TakeDamage(EntityStats attacker, int damage, Color color)
         {
-            if (data == null || data.isInvincible) return;
+            if (data == null || data.isInvincible)
+                return;
             int finalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
             base.TakeDamage(attacker, finalDamage); // 부모의 체력 감소 로직 실행
             staggerTimer = data.hitstunDuration;
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
-                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, finalDamage, color);
+                FDTManager.Instance.SpawnText(
+                    transform.position + Vector3.up * 0.5f,
+                    finalDamage,
+                    color
+                );
             }
         }
+
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)
         {
             if (attacker is EnemyStats attack)
@@ -109,13 +158,19 @@ namespace Enemy
                 OnEnemyAttackHit?.Invoke(attack, target, damage);
             }
         }
-        public override void NotifyPostAttackHit(EntityStats attacker, EntityStats target, int damage)
+
+        public override void NotifyPostAttackHit(
+            EntityStats attacker,
+            EntityStats target,
+            int damage
+        )
         {
             if (attacker is EnemyStats attack)
             {
                 OnEnemyPostAttackHit?.Invoke(attack, target, damage);
             }
         }
+
         public override void NotifyHardCC(EntityStats attacker, EntityStats target)
         {
             if (attacker is EnemyStats)

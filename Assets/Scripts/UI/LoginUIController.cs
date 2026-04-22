@@ -1,9 +1,9 @@
 using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using TMPro; // TMP 사용을 위해 필수 추가
 using Auth;
+using TMPro; // TMP 사용을 위해 필수 추가
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -50,7 +50,8 @@ namespace UI
 
         private void SafeFixClearBackground(Button btn)
         {
-            if (btn == null) return;
+            if (btn == null)
+                return;
             var img = btn.GetComponent<Image>();
             if (img != null && img.color.a < 0.05f)
             {
@@ -59,7 +60,8 @@ namespace UI
 
             // [수정] 자식 중에서 TMP 텍스트를 찾아 레이캐스트 설정을 켭니다.
             var txt = btn.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt != null) txt.raycastTarget = true;
+            if (txt != null)
+                txt.raycastTarget = true;
         }
 
         private void BindButtons()
@@ -70,10 +72,14 @@ namespace UI
             {
                 foreach (var b in canvas.GetComponentsInChildren<Button>(true))
                 {
-                    if (b.name == "SignupSubmitBtn") signupSubmitBtn = b;
-                    if (b.name == "SignupBackBtn") signupBackBtn = b;
-                    if (b.name == "RecoverSubmitBtn") recoverSubmitBtn = b;
-                    if (b.name == "RecoverBackBtn") recoverBackBtn = b;
+                    if (b.name == "SignupSubmitBtn")
+                        signupSubmitBtn = b;
+                    if (b.name == "SignupBackBtn")
+                        signupBackBtn = b;
+                    if (b.name == "RecoverSubmitBtn")
+                        recoverSubmitBtn = b;
+                    if (b.name == "RecoverBackBtn")
+                        recoverBackBtn = b;
                 }
             }
 
@@ -85,34 +91,46 @@ namespace UI
             CleanButton(recoverSubmitBtn);
             CleanButton(recoverBackBtn);
 
-            if (loginBtn != null) loginBtn.onClick.AddListener(OnLoginClicked);
-            if (toSignupBtn != null) toSignupBtn.onClick.AddListener(ShowSignup);
-            if (toRecoverBtn != null) toRecoverBtn.onClick.AddListener(ShowRecover);
+            if (loginBtn != null)
+                loginBtn.onClick.AddListener(OnLoginClicked);
+            if (toSignupBtn != null)
+                toSignupBtn.onClick.AddListener(ShowSignup);
+            if (toRecoverBtn != null)
+                toRecoverBtn.onClick.AddListener(ShowRecover);
 
-            if (signupSubmitBtn != null) signupSubmitBtn.onClick.AddListener(OnSignupClicked);
-            if (signupBackBtn != null) signupBackBtn.onClick.AddListener(ShowLogin);
+            if (signupSubmitBtn != null)
+                signupSubmitBtn.onClick.AddListener(OnSignupClicked);
+            if (signupBackBtn != null)
+                signupBackBtn.onClick.AddListener(ShowLogin);
 
-            if (recoverSubmitBtn != null) recoverSubmitBtn.onClick.AddListener(OnRecoverClicked);
-            if (recoverBackBtn != null) recoverBackBtn.onClick.AddListener(ShowLogin);
-
-            Debug.Log("[LoginUIController] TMP 기반 모든 버튼 바인딩 완료!");
+            if (recoverSubmitBtn != null)
+                recoverSubmitBtn.onClick.AddListener(OnRecoverClicked);
+            if (recoverBackBtn != null)
+                recoverBackBtn.onClick.AddListener(ShowLogin);
         }
 
         private void CleanButton(Button btn)
         {
-            if (btn == null) return;
+            if (btn == null)
+                return;
             btn.onClick.RemoveAllListeners();
         }
 
         // ─── 패널 전환 ────────────────────────────────────────────────
         private void ClearAllInputs()
         {
-            if (signupIdInput != null) signupIdInput.text = "";
-            if (signupPwInput != null) signupPwInput.text = "";
-            if (signupEmailInput != null) signupEmailInput.text = "";
-            if (recoverEmailInput != null) recoverEmailInput.text = "";
-            if (loginIdInput != null) loginIdInput.text = "";
-            if (loginPwInput != null) loginPwInput.text = "";
+            if (signupIdInput != null)
+                signupIdInput.text = "";
+            if (signupPwInput != null)
+                signupPwInput.text = "";
+            if (signupEmailInput != null)
+                signupEmailInput.text = "";
+            if (recoverEmailInput != null)
+                recoverEmailInput.text = "";
+            if (loginIdInput != null)
+                loginIdInput.text = "";
+            if (loginPwInput != null)
+                loginPwInput.text = "";
         }
 
         public void ShowLogin()
@@ -144,13 +162,16 @@ namespace UI
 
         private void SetPanelActive(GameObject panel, bool active)
         {
-            if (panel != null) panel.SetActive(active);
+            if (panel != null)
+                panel.SetActive(active);
         }
 
         // ─── 로그인 로직 ──────────────────────────────────────────────
         private void OnLoginClicked()
         {
-            if (string.IsNullOrEmpty(loginIdInput?.text) || string.IsNullOrEmpty(loginPwInput?.text))
+            if (
+                string.IsNullOrEmpty(loginIdInput?.text) || string.IsNullOrEmpty(loginPwInput?.text)
+            )
             {
                 SetStatus("ID와 Password를 입력하세요.", Color.red);
                 return;
@@ -162,7 +183,8 @@ namespace UI
         private IEnumerator LoginRoutine()
         {
             var task = AuthManager.Instance.Login(loginIdInput.text, loginPwInput.text);
-            while (!task.IsCompleted) yield return null;
+            while (!task.IsCompleted)
+                yield return null;
 
             if (task.Result.Success)
             {
@@ -179,9 +201,11 @@ namespace UI
         // ─── 회원가입 로직 ────────────────────────────────────────────
         private void OnSignupClicked()
         {
-            if (string.IsNullOrEmpty(signupIdInput?.text) ||
-                string.IsNullOrEmpty(signupPwInput?.text) ||
-                string.IsNullOrEmpty(signupEmailInput?.text))
+            if (
+                string.IsNullOrEmpty(signupIdInput?.text)
+                || string.IsNullOrEmpty(signupPwInput?.text)
+                || string.IsNullOrEmpty(signupEmailInput?.text)
+            )
             {
                 SetStatus("모든 정보를 입력하세요.", Color.red);
                 return;
@@ -192,8 +216,13 @@ namespace UI
 
         private IEnumerator SignupRoutine()
         {
-            var task = AuthManager.Instance.Signup(signupIdInput.text, signupPwInput.text, signupEmailInput.text);
-            while (!task.IsCompleted) yield return null;
+            var task = AuthManager.Instance.Signup(
+                signupIdInput.text,
+                signupPwInput.text,
+                signupEmailInput.text
+            );
+            while (!task.IsCompleted)
+                yield return null;
 
             if (task.Result.Success)
             {
@@ -222,7 +251,8 @@ namespace UI
         private IEnumerator RecoverRoutine()
         {
             var task = AuthManager.Instance.RecoverAccount(recoverEmailInput.text);
-            while (!task.IsCompleted) yield return null;
+            while (!task.IsCompleted)
+                yield return null;
 
             if (task.Result.Success)
                 SetStatus(task.Result.Message, Color.green);
@@ -253,13 +283,17 @@ namespace UI
 
         private void ClearStatus()
         {
-            if (statusText != null) statusText.text = "";
+            if (statusText != null)
+                statusText.text = "";
         }
 
         private void Update()
         {
 #if ENABLE_INPUT_SYSTEM
-            if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (
+                UnityEngine.InputSystem.Keyboard.current != null
+                && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame
+            )
             {
                 ShowLogin();
             }

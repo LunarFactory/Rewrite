@@ -1,6 +1,6 @@
-using UnityEngine;
 using Entity;
 using Player;
+using UnityEngine;
 
 public class AssistedActiveEffect : ActiveEffect
 {
@@ -19,7 +19,6 @@ public class AssistedActiveEffect : ActiveEffect
             _currentStack = 0;
             // 1. 공격 적중 이벤트 구독
             player.OnPlayerAttackHit += HandleAttackHit;
-            Debug.Log("<color=orange>[조준보조]</color> 효과 시작! 공격 시 속도가 증가합니다.");
         }
     }
 
@@ -46,13 +45,16 @@ public class AssistedActiveEffect : ActiveEffect
         // 3. 최대 중첩(100%) 도달 시 모든 피해 50% 증가
         if (_currentStack >= maxStack)
         {
-            _damageMod = new StatModifier("AssistedDamageIncreased_MaxBonus", _data.bonusDamageIncreased, ModifierType.Percent, this);
+            _damageMod = new StatModifier(
+                "AssistedDamageIncreased_MaxBonus",
+                _data.bonusDamageIncreased,
+                ModifierType.Percent,
+                this
+            );
             player.DamageIncreased.AddModifier(_damageMod);
-            Debug.Log("<color=red>[조준보조]</color> 최대 중첩 달성! 모든 피해 50% 증가!");
         }
 
         // 디버그용 (필요 없으면 삭제)
-        Debug.Log($"[조준보조] {_currentStack}중첩 (공속 +{speedBonus * 100}%)");
     }
 
     public override void OnEnd(EntityStats target, EntityStats source)
@@ -67,7 +69,6 @@ public class AssistedActiveEffect : ActiveEffect
             player.DamageIncreased.RemoveModifiersFromSource(this);
 
             _currentStack = 0;
-            Debug.Log("[조준보조] 효과 종료.");
         }
     }
 }

@@ -497,16 +497,6 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2efe5c210191fc720800000000000000
-      internalID: 2868539044483428322
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    outline: []
     customData: 
     physicsShape: []
     bones: []
@@ -521,6 +511,13 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       wall_1: 9000001
+      wall_10: 9000010
+      wall_11: 9000011
+      wall_12: 9000012
+      wall_13: 9000013
+      wall_14: 9000014
+      wall_15: 9000015
+      wall_16: 9000016
       wall_2: 9000002
       wall_3: 9000003
       wall_4: 9000004
@@ -529,13 +526,6 @@ TextureImporter:
       wall_7: 9000007
       wall_8: 9000008
       wall_9: 9000009
-      wall_10: 9000010
-      wall_11: 9000011
-      wall_12: 9000012
-      wall_13: 9000013
-      wall_14: 9000014
-      wall_15: 9000015
-      wall_16: 9000016
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

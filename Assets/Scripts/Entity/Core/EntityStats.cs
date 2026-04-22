@@ -1,7 +1,7 @@
-using UnityEngine;
-using Core;
 using System;
 using System.ComponentModel;
+using Core;
+using UnityEngine;
 
 namespace Entity
 {
@@ -38,12 +38,14 @@ namespace Entity
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rb = GetComponent<Rigidbody2D>();
             _rb.gravityScale = 0f;
-            if (_spriteRenderer != null) _originalColor = _spriteRenderer.color;
+            if (_spriteRenderer != null)
+                _originalColor = _spriteRenderer.color;
         }
 
         public virtual void TakeDamage(EntityStats attacker, int damage)
         {
-            if (isDead) return;
+            if (isDead)
+                return;
             currentHealth -= damage;
             if (currentHealth <= 0)
             {
@@ -54,18 +56,34 @@ namespace Entity
             }
         }
 
-        public virtual void NotifyAttackHit(EntityStats attacker, EntityStats entity, int damage) { }
-        public virtual void NotifyPostAttackHit(EntityStats attacker, EntityStats entity, int damage) { }
+        public virtual void NotifyAttackHit(
+            EntityStats attacker,
+            EntityStats entity,
+            int damage
+        ) { }
+
+        public virtual void NotifyPostAttackHit(
+            EntityStats attacker,
+            EntityStats entity,
+            int damage
+        ) { }
+
         public virtual void NotifyKill(EntityStats entity) { }
+
         public virtual void NotifyHardCC(EntityStats attacker, EntityStats target) { }
+
         public virtual void NotifyPreHeal(EntityStats target, ref int amount) { }
+
         public virtual void NotifyHeal(EntityStats target, int amount) { }
+
         public virtual void NotifyOverHeal(EntityStats target, int amount) { }
+
         public virtual void NotifyPostHeal(EntityStats target, int amount) { }
 
         public virtual void Heal(int amount)
         {
-            if (isDead) return;
+            if (isDead)
+                return;
             int healAmount = (int)ReduceHeal.GetValue(amount);
             NotifyPreHeal(this, ref healAmount);
             if (healAmount > maxHealth - currentHealth)
@@ -78,7 +96,11 @@ namespace Entity
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
-                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, healAmount, Color.green);
+                FDTManager.Instance.SpawnText(
+                    transform.position + Vector3.up * 0.5f,
+                    healAmount,
+                    Color.green
+                );
             }
             NotifyPostHeal(this, healAmount);
         }

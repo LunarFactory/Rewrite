@@ -1,10 +1,10 @@
-using UnityEngine;
+using System;
 using System.Collections;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
-using System;
 using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Item
 {
@@ -13,6 +13,7 @@ namespace Item
     {
         public float damageMultiplier = 8f;
         public float laserbladeRadius = 3.5f;
+
         public override void OnApply(PlayerStats player)
         {
             var tracker = player.GetComponent<LaserBladeTracker>();
@@ -43,10 +44,18 @@ namespace Item
 
         private void HandleItemEffect()
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_player.transform.position, _laserbladeRadius, LayerMask.GetMask("Enemy"));
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+                _player.transform.position,
+                _laserbladeRadius,
+                LayerMask.GetMask("Enemy")
+            );
 
             // 데미지 계산: 현재 공격력 * 30 (3000%)
-            int finalDamage = Mathf.RoundToInt(_player.DamageIncreased.GetValue(_player.AttackDamage.GetValue() * _damageMultiplier));
+            int finalDamage = Mathf.RoundToInt(
+                _player.DamageIncreased.GetValue(
+                    _player.AttackDamage.GetValue() * _damageMultiplier
+                )
+            );
 
             foreach (var col in hitEnemies)
             {
@@ -57,8 +66,6 @@ namespace Item
                     // (선택 사항) 충격파 연출이나 파티클을 여기서 생성하면 좋습니다.
                 }
             }
-
-            Debug.Log($"[광선검] 플레이어 주변 {_laserbladeRadius} 범위에 {finalDamage}의 피해!");
         }
 
         private void OnDestroy()

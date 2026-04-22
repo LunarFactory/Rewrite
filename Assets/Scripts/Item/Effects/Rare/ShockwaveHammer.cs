@@ -1,8 +1,8 @@
-using UnityEngine;
 using System.Collections.Generic;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
@@ -22,7 +22,14 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<ShockwaveHammerTracker>();
-                tracker.Initialize(player, data, damageMultiplier, shockwaveRadius, damageTaken, duration);
+                tracker.Initialize(
+                    player,
+                    data,
+                    damageMultiplier,
+                    shockwaveRadius,
+                    damageTaken,
+                    duration
+                );
             }
         }
     }
@@ -36,7 +43,14 @@ namespace Item
         private float _damageTaken; // 받는 피해 50% 증가 (예시)
         private float _duration;
 
-        public void Initialize(PlayerStats player, ShockedEffect data, float damageMultiplier, float shockwaveRadius, float damageTaken, float duration)
+        public void Initialize(
+            PlayerStats player,
+            ShockedEffect data,
+            float damageMultiplier,
+            float shockwaveRadius,
+            float damageTaken,
+            float duration
+        )
         {
             _player = player;
             _data = data;
@@ -50,10 +64,18 @@ namespace Item
 
         private void HandleItemEffect(PlayerStats attacker, EntityStats target)
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(target.transform.position, _shockwaveRadius, LayerMask.GetMask("Enemy"));
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+                target.transform.position,
+                _shockwaveRadius,
+                LayerMask.GetMask("Enemy")
+            );
 
             // 데미지 계산: 현재 공격력 * 30 (3000%)
-            int finalDamage = Mathf.RoundToInt(attacker.DamageIncreased.GetValue(attacker.AttackDamage.GetValue() * _damageMultiplier));
+            int finalDamage = Mathf.RoundToInt(
+                attacker.DamageIncreased.GetValue(
+                    attacker.AttackDamage.GetValue() * _damageMultiplier
+                )
+            );
 
             foreach (var col in hitEnemies)
             {
@@ -68,8 +90,6 @@ namespace Item
                     // (선택 사항) 충격파 연출이나 파티클을 여기서 생성하면 좋습니다.
                 }
             }
-
-            Debug.Log($"[충격파 해머] {target.name} 주변 {_shockwaveRadius} 범위에 {finalDamage}의 피해!");
         }
 
         private void OnDestroy()

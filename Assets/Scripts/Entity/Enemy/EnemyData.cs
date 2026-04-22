@@ -8,10 +8,13 @@ namespace Enemy
         [Header("Stats")]
         [Tooltip("개체 이름")]
         public string enemyName;
+
         [Tooltip("최대 체력")]
         public int maxHealth = 30;
+
         [Tooltip("이동 속도")]
         public float baseMoveSpeed = 2f;
+
         [Tooltip("공격 피해")]
         public int baseAttackDamage = 10;
         public int baseRicochet = 0;
@@ -25,8 +28,10 @@ namespace Enemy
         public float baseDamageIncreasedPercent = 0f;
         public float baseDamageTakenFlat = 0f;
         public float baseDamageTakenPercent = 0f;
+
         [Tooltip("피격 시 경직 시간")]
         public float hitstunDuration = 0.15f;
+
         [Tooltip("발사 딜레이")]
         public float shootDelay = 0.5f;
 
@@ -47,10 +52,10 @@ namespace Enemy
         public Sprite[] directionalSprites;
 
         [Header("Turret Settings")]
-        public float restDuration = 2f;    // 휴식 시간 (바라만 봄)
-        public float aimDuration = 1.5f;   // 조준 시간 (추적하며 충전)
-        public float fireDelay = 0.3f;     // 발사 직전 고정 시간
+        public float restDuration = 2f; // 휴식 시간 (바라만 봄)
+        public float aimDuration = 1.5f; // 조준 시간 (추적하며 충전)
+        public float fireDelay = 0.3f; // 발사 직전 고정 시간
         public Sprite targetingMarkerSprite; // 표식으로 쓸 이미지 (Sprite)
-        public int markerSortingOrder = -1;  // 발사 직전 고정 시간
+        public int markerSortingOrder = -1; // 발사 직전 고정 시간
     }
 }

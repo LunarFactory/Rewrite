@@ -1,7 +1,7 @@
-using UnityEngine;
-using Core;
 using System;
+using Core;
 using Entity;
+using UnityEngine;
 using Weapon;
 
 namespace Player
@@ -28,7 +28,6 @@ namespace Player
 
         private WeaponBase currentWeapon;
 
-
         // 이벤트들
         public delegate void PreDamageHandler(ref int damage);
         public event PreDamageHandler OnPreDamage;
@@ -44,6 +43,7 @@ namespace Player
         public static event Action<PlayerStats> OnPlayerReady;
         public event Action<PlayerStats, EntityStats, int> OnPlayerAttackHit;
         public event Action<PlayerStats, EntityStats, int> OnPlayerPostAttackHit;
+
         // 현재 활성화된 플레이어를 즉시 참조하기 위한 스태틱 변수
         public static PlayerStats LocalPlayer { get; private set; }
 
@@ -57,9 +57,6 @@ namespace Player
             currentHealth = maxHealth;
             stealth = GetComponent<PlayerStealth>();
 
-            if (GameManager.Instance != null)
-                GameManager.Instance.RegisterPlayer(this);
-
             AttackDamage = new CharacterStat(baseAttackDamage); // 기본값
             AttackSpeed = new CharacterStat(baseAttackSpeed);
             MoveSpeed = new CharacterStat(baseMoveSpeed);
@@ -71,11 +68,43 @@ namespace Player
             ProjectileScale = new CharacterStat(baseProjectileScale);
             ProjectileSpeed = new CharacterStat(baseProjectileSpeed);
             DamageIncreased = new CharacterStat(0);
-            if (baseDamageIncreasedFlat != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedFlat", baseDamageIncreasedFlat, ModifierType.Flat, this));
-            if (baseDamageIncreasedPercent != 0) DamageIncreased.AddModifier(new StatModifier("baseDamageIncreasedPercent", baseDamageIncreasedPercent, ModifierType.Percent, this));
+            if (baseDamageIncreasedFlat != 0)
+                DamageIncreased.AddModifier(
+                    new StatModifier(
+                        "baseDamageIncreasedFlat",
+                        baseDamageIncreasedFlat,
+                        ModifierType.Flat,
+                        this
+                    )
+                );
+            if (baseDamageIncreasedPercent != 0)
+                DamageIncreased.AddModifier(
+                    new StatModifier(
+                        "baseDamageIncreasedPercent",
+                        baseDamageIncreasedPercent,
+                        ModifierType.Percent,
+                        this
+                    )
+                );
             DamageTaken = new CharacterStat(0);
-            if (baseDamageTakenFlat != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenFlat", baseDamageTakenFlat, ModifierType.Flat, this));
-            if (baseDamageTakenPercent != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenPercent", baseDamageTakenPercent, ModifierType.Percent, this));
+            if (baseDamageTakenFlat != 0)
+                DamageTaken.AddModifier(
+                    new StatModifier(
+                        "baseDamageTakenFlat",
+                        baseDamageTakenFlat,
+                        ModifierType.Flat,
+                        this
+                    )
+                );
+            if (baseDamageTakenPercent != 0)
+                DamageTaken.AddModifier(
+                    new StatModifier(
+                        "baseDamageTakenPercent",
+                        baseDamageTakenPercent,
+                        ModifierType.Percent,
+                        this
+                    )
+                );
             ReduceHeal = new CharacterStat(0);
 
             currentWeapon = GetComponentInChildren<WeaponBase>();
@@ -83,20 +112,26 @@ namespace Player
 
         public override void TakeDamage(EntityStats attacker, int damage)
         {
-            if (stealth != null && stealth.IsStealthActive) return;
+            if (stealth != null && stealth.IsStealthActive)
+                return;
             int finalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
 
             if (finalDamage > 0)
             {
                 OnPreDamage?.Invoke(ref finalDamage);
-                if (finalDamage < 0) return;
+                if (finalDamage < 0)
+                    return;
             }
 
             base.TakeDamage(attacker, finalDamage); // 부모 로직 실행 (currentHealth 감소 및 Die 체크)
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
-                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, finalDamage, Color.red);
+                FDTManager.Instance.SpawnText(
+                    transform.position + Vector3.up * 0.5f,
+                    finalDamage,
+                    Color.red
+                );
             }
             OnHealthChanged?.Invoke(currentHealth);
             OnPostDamage?.Invoke(finalDamage);
@@ -104,14 +139,15 @@ namespace Player
 
         public int GetWeaponBaseAttackDamage()
         {
-            return Mathf.RoundToInt(AttackDamage.GetValue() * currentWeapon.weaponData.damageMultiplier);
+            return Mathf.RoundToInt(
+                AttackDamage.GetValue() * currentWeapon.weaponData.damageMultiplier
+            );
         }
 
         public float GetWeaponBaseAttackSpeed()
         {
             return AttackSpeed.GetValue() * currentWeapon.weaponData.fireRate;
         }
-
 
         public override void Heal(int amount)
         {
@@ -121,9 +157,10 @@ namespace Player
 
         protected override void Die() // 추상 메서드 구현
         {
-            Debug.LogError("Player Died!");
-            GameManager.Instance?.ChangeState(GameManager.GameState.MainMenu);
-            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+            GameManager.Instance?.ChangeState(GameState.MainMenu);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
+            );
         }
 
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)
@@ -133,21 +170,29 @@ namespace Player
                 OnPlayerAttackHit?.Invoke((PlayerStats)attacker, target, damage);
             }
         }
-        public override void NotifyPostAttackHit(EntityStats attacker, EntityStats target, int damage)
+
+        public override void NotifyPostAttackHit(
+            EntityStats attacker,
+            EntityStats target,
+            int damage
+        )
         {
             if (attacker is PlayerStats)
             {
                 OnPlayerPostAttackHit?.Invoke((PlayerStats)attacker, target, damage);
             }
         }
+
         public override void NotifyHeal(EntityStats target, int amount)
         {
             OnHeal?.Invoke(target, amount);
         }
+
         public override void NotifyOverHeal(EntityStats target, int amount)
         {
             OnOverHeal?.Invoke(target, amount);
         }
+
         public override void NotifyKill(EntityStats entity)
         {
             AddBolts(100);
@@ -164,12 +209,12 @@ namespace Player
 
         // 경제 및 유틸리티 메서드들...
         public void NotifyWallHit(Projectile proj) => OnWallHit?.Invoke(proj);
+
         public bool AddBolts(int amount)
         {
             if (amount > 0)
             {
                 bolts += amount;
-                Debug.Log($"볼트 획득! 현재 잔액: {bolts}");
                 // 여기에 볼트 UI 업데이트 이벤트를 넣으면 좋습니다.
                 return true;
             }
@@ -183,6 +228,7 @@ namespace Player
                 return false;
             }
         }
+
         public int GetBolts()
         {
             return bolts;

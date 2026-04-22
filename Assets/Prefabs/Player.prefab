@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 5894004677875960011}
   - component: {fileID: 476352381844101484}
   - component: {fileID: 4427591115460292244}
+  - component: {fileID: 4394399168231269122}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -205,6 +206,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerController
   weaponPivot: {fileID: 2142200513355683706}
   aimCenterOffset: {x: 0, y: 0.5}
+  isAttacking: 0
+  isStealth: 0
   attackAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   stealthAction: {fileID: 3065782347376509614, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3070044694485022357
@@ -234,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7210c48738b8ea44a622c587c649953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerSpriteAnimator
-  controller: {fileID: 7558128209491743302}
+  mousePosAction: {fileID: 0}
   idleSheet:
   - {fileID: -5115618752126089108, guid: b5c6a6613518f234b8e01ae54746bb63, type: 3}
   - {fileID: -5050664382621690000, guid: b5c6a6613518f234b8e01ae54746bb63, type: 3}
@@ -281,15 +284,38 @@ MonoBehaviour:
     BaseValue: 0
   MoveSpeed:
     BaseValue: 0
+  Ricochet:
+    BaseValue: 0
+  Pierce:
+    BaseValue: 0
+  HomingRange:
+    BaseValue: 0
+  HomingStrength:
+    BaseValue: 0
+  DecelerationRate:
+    BaseValue: 0
+  ProjectileScale:
+    BaseValue: 0
+  ProjectileSpeed:
+    BaseValue: 0
   DamageIncreased:
     BaseValue: 0
   DamageTaken:
+    BaseValue: 0
+  ReduceHeal:
     BaseValue: 0
   isDead: 0
   isStunned: 0
   baseAttackDamage: 10
   baseAttackSpeed: 1
   baseMoveSpeed: 5
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 1
+  baseProjectileScale: 1
+  baseProjectileSpeed: 1
   baseDamageIncreasedFlat: 0
   baseDamageIncreasedPercent: 0
   baseDamageTakenFlat: 0
@@ -395,11 +421,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc13df1241dd7a499725b763aab85d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Drone.DroneManager
-  projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
+  orbitSpeed: 60
+  orbitDistance: 1.5
   globalDroneDamageMultiplier: 1
   hasDefense: 0
   hasAttack: 0
   hasLaser: 0
+  projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
+--- !u!114 &4394399168231269122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3447314826207853295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb86385ee79502b48a11ee649c8c0f35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.UpgradeManager
+  allUpgrades: []
 --- !u!1 &4785257334050668402
 GameObject:
   m_ObjectHideFlags: 0

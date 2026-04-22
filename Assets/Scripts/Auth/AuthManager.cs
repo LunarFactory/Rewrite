@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using UnityEngine;
 using Auth;
+using UnityEngine;
 
 namespace Auth
 {
@@ -28,18 +28,30 @@ namespace Auth
 
             if (AuthWebClient.Instance == null)
             {
-                return new AuthResult { Success = false, Message = "AuthWebClient가 할당되지 않았습니다." };
+                return new AuthResult
+                {
+                    Success = false,
+                    Message = "AuthWebClient가 할당되지 않았습니다.",
+                };
             }
 
             // AuthWebClient의 코루틴 호출
-            StartCoroutine(AuthWebClient.Instance.Login(id, password, (success, message) =>
-            {
-                tcs.SetResult(new AuthResult 
-                { 
-                    Success = success, 
-                    Message = success ? "로그인 성공" : message 
-                });
-            }));
+            StartCoroutine(
+                AuthWebClient.Instance.Login(
+                    id,
+                    password,
+                    (success, message) =>
+                    {
+                        tcs.SetResult(
+                            new AuthResult
+                            {
+                                Success = success,
+                                Message = success ? "로그인 성공" : message,
+                            }
+                        );
+                    }
+                )
+            );
 
             return await tcs.Task;
         }
@@ -51,18 +63,31 @@ namespace Auth
 
             if (AuthWebClient.Instance == null)
             {
-                return new AuthResult { Success = false, Message = "AuthWebClient가 할당되지 않았습니다." };
+                return new AuthResult
+                {
+                    Success = false,
+                    Message = "AuthWebClient가 할당되지 않았습니다.",
+                };
             }
 
             // AuthWebClient의 코루틴 호출
-            StartCoroutine(AuthWebClient.Instance.SignUp(id, password, email, (success, message) =>
-            {
-                tcs.SetResult(new AuthResult 
-                { 
-                    Success = success, 
-                    Message = success ? "회원가입 성공" : message 
-                });
-            }));
+            StartCoroutine(
+                AuthWebClient.Instance.SignUp(
+                    id,
+                    password,
+                    email,
+                    (success, message) =>
+                    {
+                        tcs.SetResult(
+                            new AuthResult
+                            {
+                                Success = success,
+                                Message = success ? "회원가입 성공" : message,
+                            }
+                        );
+                    }
+                )
+            );
 
             return await tcs.Task;
         }

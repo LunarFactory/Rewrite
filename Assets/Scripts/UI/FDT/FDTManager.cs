@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class FDTManager : MonoBehaviour
 {
@@ -30,7 +30,6 @@ public class FDTManager : MonoBehaviour
     {
         if (fdtPrefab == null)
         {
-            Debug.LogError("FDTManager: fdtPrefab이 할당되지 않았습니다!");
             return;
         }
 
@@ -41,11 +40,11 @@ public class FDTManager : MonoBehaviour
         Color damageColor = color;
         newFdt.Initialize(damage, defaultDuration, damageColor);
     }
+
     public void SpawnText(Vector3 position, string text, Color color)
     {
         if (fdtPrefab == null)
         {
-            Debug.LogError("FDTManager: fdtPrefab이 할당되지 않았습니다!");
             return;
         }
 

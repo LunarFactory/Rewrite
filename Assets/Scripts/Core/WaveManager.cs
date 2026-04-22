@@ -1,9 +1,9 @@
-using UnityEngine;
-using System.Collections.Generic;
-using Item;
-using Enemy;
 using System;
+using System.Collections.Generic;
+using Enemy;
 using Entity;
+using Item;
+using UnityEngine;
 
 namespace Core
 {
@@ -11,17 +11,34 @@ namespace Core
     {
         public static WaveManager Instance { get; private set; }
 
-        public enum WaveType { Mob, Shop, Rest, Boss }
-        [field: SerializeField] public int CurrentWave { get; private set; } = 1;
+        public enum WaveType
+        {
+            Mob,
+            Shop,
+            Rest,
+            Boss,
+        }
+
+        [field: SerializeField]
+        public int CurrentWave { get; private set; } = 1;
 
         // [추가] WaveManager가 직접 관리할 적 프리팹
         [Header("Wave Resources")]
-        [SerializeField] private GameObject itemPrefab;
-        [SerializeField] private GameObject mobPrefab;
-        [SerializeField] private GameObject bossPrefab; // 보스전 대비용 추가
+        [SerializeField]
+        private GameObject itemPrefab;
+
+        [SerializeField]
+        private GameObject mobPrefab;
+
+        [SerializeField]
+        private GameObject bossPrefab; // 보스전 대비용 추가
+
         [Header("Special Prefabs")]
-        [SerializeField] private GameObject exitPortalPrefab; // 다음 웨이브로 가는 포탈
-        [SerializeField] private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
+        [SerializeField]
+        private GameObject exitPortalPrefab; // 다음 웨이브로 가는 포탈
+
+        [SerializeField]
+        private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
         public int activeEnemyCount = 0;
 
         public static event Action OnBossWaveStart;
@@ -32,14 +49,10 @@ namespace Core
             // 씬이 시작되자마자 실행됩니다.
             if (RunManager.Instance != null)
             {
-                Debug.Log("[WaveManager] RunManager를 발견했습니다. 층 데이터 동기화를 시작합니다.");
                 // 현재 RunManager에 저장된 층 번호로 웨이브를 시작합니다.
                 StartFloor(RunManager.Instance.CurrentFloor);
             }
-            else
-            {
-                Debug.LogWarning("[WaveManager] RunManager를 찾을 수 없습니다. 테스트용 모드로 작동하거나 대기합니다.");
-            }
+            else { }
             GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
 
             // 2. 플레이어 객체를 찾아 위치 이동
@@ -71,8 +84,6 @@ namespace Core
             CurrentWave = waveNumber;
             WaveType type = GetWaveType(CurrentWave);
 
-            Debug.Log($"[WaveManager] Wave {CurrentWave} Started - Type: {type}");
-
             Log.PlayerLogManager.Instance?.OnWaveStarted(CurrentWave);
 
             switch (type)
@@ -98,7 +109,6 @@ namespace Core
         {
             if (prefab == null)
             {
-                Debug.LogWarning($"[WaveManager] {prefab?.name} 프리팹이 할당되지 않았습니다!");
                 return;
             }
 
@@ -109,10 +119,12 @@ namespace Core
                 EnemyStats stat = enemy.GetComponent<EnemyStats>();
                 enemy.SetActive(true);
                 stat.isBoss = isBoss;
-                if (isBoss) NotifyBossSummon(stat);
+                if (isBoss)
+                    NotifyBossSummon(stat);
                 activeEnemyCount++;
             }
         }
+
         public void OnEnemyDied()
         {
             activeEnemyCount--;
@@ -130,14 +142,19 @@ namespace Core
                         SpawnExitPortal(); // 보상을 다 보고 나갈 수 있게 포탈 소환
                     }
                 }
-                else CompleteCurrentWave();
+                else
+                    CompleteCurrentWave();
                 // 모든 적 처치 시 다음 웨이브 포탈 소환 또는 즉시 완료
             }
         }
+
         private void SpawnShop()
         {
             // 1. 중복 없는 아이템 세트 3개를 한 번에 가져옴
-            List<PassiveItemData> itemsToSpawn = RunManager.Instance.GetRandomItemSet(CurrentWave, 3);
+            List<PassiveItemData> itemsToSpawn = RunManager.Instance.GetRandomItemSet(
+                CurrentWave,
+                3
+            );
 
             for (int i = 0; i < itemsToSpawn.Count; i++)
             {
@@ -149,21 +166,24 @@ namespace Core
                     fieldItem.itemData = itemsToSpawn[i];
 
                     // 가격 책정 로직...
-                    fieldItem.price = GetPriceByRarity(itemsToSpawn[i].tier) * RunManager.Instance.CurrentFloor;
+                    fieldItem.price =
+                        GetPriceByRarity(itemsToSpawn[i].tier) * RunManager.Instance.CurrentFloor;
                 }
             }
             SpawnExitPortal();
         }
+
         private int GetPriceByRarity(ItemTier rarity)
         {
             return rarity switch
             {
-                ItemTier.Common => 40,   // 커먼: 40, 80, 120...
+                ItemTier.Common => 40, // 커먼: 40, 80, 120...
                 ItemTier.Uncommon => 80, // 언커먼: 80, 160, 240...
-                ItemTier.Rare => 150,   // 레어: 150, 300, 450...
-                _ => 50
+                ItemTier.Rare => 150, // 레어: 150, 300, 450...
+                _ => 50,
             };
         }
+
         private void SpawnRest()
         {
             Instantiate(healthRestorerPrefab, Vector3.zero, Quaternion.identity);
@@ -188,8 +208,6 @@ namespace Core
 
         public void CompleteCurrentWave()
         {
-            Debug.Log($"[WaveManager] Wave {CurrentWave} Completed.");
-
             Log.PlayerLogManager.Instance?.OnWaveCompleted(CurrentWave);
 
             if (CurrentWave < 9)
@@ -201,10 +219,15 @@ namespace Core
                 RunManager.Instance.AdvanceFloor();
             }
         }
+
         private void SpawnBossRewards()
         {
             // 1. 보스 보상용 아이템 3개 가져오기 (보스니까 더 좋은 티어 확률을 높여도 좋습니다)
-            List<PassiveItemData> rewards = RunManager.Instance.GetTierItemSet(ItemTier.Boss, 3, CurrentWave);
+            List<PassiveItemData> rewards = RunManager.Instance.GetTierItemSet(
+                ItemTier.Boss,
+                3,
+                CurrentWave
+            );
 
             for (int i = 0; i < rewards.Count; i++)
             {
@@ -219,14 +242,16 @@ namespace Core
                     fieldItem.isBossReward = true; // [중요] 하나 먹으면 나머지 사라지는 플래그
                 }
             }
-            Debug.Log("[WaveManager] 보스 보상 아이템 3개가 소환되었습니다.");
         }
 
         private WaveType GetWaveType(int wave)
         {
-            if (wave == 4) return WaveType.Shop;
-            if (wave == 8) return WaveType.Rest;
-            if (wave == 9) return WaveType.Boss;
+            if (wave == 4)
+                return WaveType.Shop;
+            if (wave == 8)
+                return WaveType.Rest;
+            if (wave == 9)
+                return WaveType.Boss;
             return WaveType.Mob;
         }
     }

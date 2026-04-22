@@ -21,18 +21,16 @@ namespace Auth
         public string Token;
         public string UserId;
 
-        public static AuthResult Succeeded(string userId, string token = "") => new AuthResult 
-        { 
-            Success = true, 
-            Message = "Success", 
-            UserId = userId, 
-            Token = token 
-        };
+        public static AuthResult Succeeded(string userId, string token = "") =>
+            new AuthResult
+            {
+                Success = true,
+                Message = "Success",
+                UserId = userId,
+                Token = token,
+            };
 
-        public static AuthResult Failed(string message) => new AuthResult 
-        { 
-            Success = false, 
-            Message = message 
-        };
+        public static AuthResult Failed(string message) =>
+            new AuthResult { Success = false, Message = message };
     }
 }

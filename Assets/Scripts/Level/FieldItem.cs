@@ -1,7 +1,7 @@
-using UnityEngine;
+using Core;
 using Item; // ItemData가 있는 네임스페이스
 using Level; // IInteractable이 있는 네임스페이스
-using Core;
+using UnityEngine;
 
 namespace Level
 {
@@ -47,9 +47,12 @@ namespace Level
         // [IInteractable 구현] 상호작용 시 출력될 텍스트
         public override string GetInteractPrompt()
         {
-            if (itemData == null) return "";
+            if (itemData == null)
+                return "";
             // 가격이 있으면 가격 표시, 없으면 이름만 표시
-            return price > 0 ? $"{itemData.itemName} 구매 ({price} 볼트)" : $"{itemData.itemName} 획득";
+            return price > 0
+                ? $"{itemData.itemName} 구매 ({price} 볼트)"
+                : $"{itemData.itemName} 획득";
         }
 
         // [IInteractable 구현] E키를 눌렀을 때 실행될 로직
@@ -67,7 +70,6 @@ namespace Level
                     }
                     else
                     {
-                        Debug.Log("볼트가 부족합니다!");
                         return;
                     }
                 }
@@ -75,22 +77,23 @@ namespace Level
             else
             {
                 // 2. 무료 아이템(일반 보상)일 때
-                if (isBossReward) DestroyOtherBossRewards();
+                if (isBossReward)
+                    DestroyOtherBossRewards();
                 GetItem();
             }
-            if (itemData == null) return;
-
-            // 2. 획득 로그 출력 (선택 사항)
-            Debug.Log($"아이템 획득: {itemData.itemName}");
+            if (itemData == null)
+                return;
 
             // 3. 필드에서 제거
             Destroy(gameObject);
         }
+
         private void GetItem()
         {
             InventoryManager.Instance.AddItem(itemData);
             Destroy(gameObject);
         }
+
         private void DestroyOtherBossRewards()
         {
             // 현재 씬에 있는 모든 FieldItem을 찾습니다.
@@ -106,8 +109,6 @@ namespace Level
                     Destroy(item.gameObject);
                 }
             }
-
-            Debug.Log("다른 보스 보상이 소멸되었습니다.");
         }
     }
 }

@@ -1,7 +1,7 @@
-using UnityEngine;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Drone
 {
@@ -15,15 +15,13 @@ namespace Drone
 
         private void Awake()
         {
-            // 1. 컴포넌트가 붙었는지 로그로 확인
-            Debug.Log($"{gameObject.name}에 레이저 모듈 장착 완료!");
-
             // 2. 레이어 마스크가 0이면 자동으로 "Enemy" 레이어 잡기
             enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
 
             // 3. 라인 렌더러 설정
             _line = GetComponent<LineRenderer>();
-            if (_line == null) _line = gameObject.AddComponent<LineRenderer>();
+            if (_line == null)
+                _line = gameObject.AddComponent<LineRenderer>();
 
             _line.positionCount = 2;
             _line.startWidth = 0.1f;
@@ -38,7 +36,8 @@ namespace Drone
         private void Update()
         {
             // 플레이어가 없으면 작동 안 함
-            if (PlayerStats.LocalPlayer == null) return;
+            if (PlayerStats.LocalPlayer == null)
+                return;
 
             FindClosestTarget();
 
@@ -54,13 +53,21 @@ namespace Drone
             _line.SetPosition(1, _currentTarget.position);
 
             // 데미지 (초당 50%)
-            float dps = Mathf.RoundToInt(PlayerStats.LocalPlayer.DamageIncreased.GetValue(PlayerStats.LocalPlayer.AttackDamage.GetValue() * 0.5f * DroneManager.Instance.globalDroneDamageMultiplier));
+            float dps = Mathf.RoundToInt(
+                PlayerStats.LocalPlayer.DamageIncreased.GetValue(
+                    PlayerStats.LocalPlayer.AttackDamage.GetValue()
+                        * 0.5f
+                        * DroneManager.Instance.globalDroneDamageMultiplier
+                )
+            );
             _damageAccumulator += dps * Time.deltaTime;
 
             if (_damageAccumulator >= 1f)
             {
                 int intDmg = Mathf.FloorToInt(_damageAccumulator);
-                _currentTarget.GetComponent<EnemyStats>()?.TakeDamage(PlayerStats.LocalPlayer, intDmg, Color.magenta);
+                _currentTarget
+                    .GetComponent<EnemyStats>()
+                    ?.TakeDamage(PlayerStats.LocalPlayer, intDmg, Color.magenta);
                 _damageAccumulator -= intDmg;
             }
         }
@@ -69,7 +76,11 @@ namespace Drone
         {
             // range가 0이면 아무것도 못 찾음. 여기서 강제로 8 할당
             float currentRange = (range <= 0) ? 8f : range;
-            Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, currentRange, enemyLayer);
+            Collider2D[] enemies = Physics2D.OverlapCircleAll(
+                transform.position,
+                currentRange,
+                enemyLayer
+            );
 
             Transform closest = null;
             float minDistance = float.MaxValue;
@@ -77,9 +88,12 @@ namespace Drone
             foreach (var enemyCollider in enemies)
             {
                 var stats = enemyCollider.GetComponent<EntityStats>();
-                if (stats != null && stats.isDead) continue;
+                if (stats != null && stats.isDead)
+                    continue;
 
-                float distSqr = (enemyCollider.transform.position - transform.position).sqrMagnitude;
+                float distSqr = (
+                    enemyCollider.transform.position - transform.position
+                ).sqrMagnitude;
                 if (distSqr < minDistance)
                 {
                     minDistance = distSqr;

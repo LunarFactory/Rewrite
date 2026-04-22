@@ -1,6 +1,6 @@
-using UnityEngine;
-using Player;
 using Drone;
+using Player;
+using UnityEngine;
 
 namespace Item
 {
@@ -23,8 +23,6 @@ namespace Item
                 drone.SetCenter(player.transform, Random.Range(0, 360f));
                 DroneManager.Instance.RegisterDrone(drone);
             }
-
-            Debug.Log("상호 공감 코어 활성화: 드론 피해량 2배 및 추가 드론 생성");
         }
     }
 }

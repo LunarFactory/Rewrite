@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections;
-using Player;
 using Entity;
+using Player;
+using UnityEngine;
 
 namespace Item
 {
@@ -22,17 +22,34 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<DynamiteTracker>();
-                tracker.Initialize(player, delayedBombData, damageMultiplier, delayTime, explosionRadius, stunEffect, stunTime);
+                tracker.Initialize(
+                    player,
+                    delayedBombData,
+                    damageMultiplier,
+                    delayTime,
+                    explosionRadius,
+                    stunEffect,
+                    stunTime
+                );
             }
         }
     }
+
     public class DynamiteTracker : MonoBehaviour
     {
         private PlayerStats _player;
         private DelayedBombEffect _delayedBombData;
         private float _delayTime;
 
-        public void Initialize(PlayerStats player, DelayedBombEffect delayedBombData, float damageMultiplier, float delayTime, float explosionRadius, StunEffect stunEffect, float stunTime)
+        public void Initialize(
+            PlayerStats player,
+            DelayedBombEffect delayedBombData,
+            float damageMultiplier,
+            float delayTime,
+            float explosionRadius,
+            StunEffect stunEffect,
+            float stunTime
+        )
         {
             _player = player;
             _delayedBombData = delayedBombData;
