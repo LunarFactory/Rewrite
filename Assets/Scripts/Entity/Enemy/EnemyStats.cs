@@ -12,6 +12,7 @@ namespace Enemy
         protected EnemySpriteAnimationModule _animator = new EnemySpriteAnimationModule();
 
         protected float staggerTimer;
+        public bool isBoss;
         protected Transform playerTarget;
 
         public bool isStaggered => staggerTimer > 0f;
@@ -44,6 +45,7 @@ namespace Enemy
                 DamageTaken = new CharacterStat(0);
                 if (data.baseDamageTakenFlat != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenFlat", data.baseDamageTakenFlat, ModifierType.Flat, this));
                 if (data.baseDamageTakenPercent != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenPercent", data.baseDamageTakenPercent, ModifierType.Percent, this));
+                ReduceHeal = new CharacterStat(0);
             }
         }
 
@@ -91,12 +93,13 @@ namespace Enemy
         public void TakeDamage(EntityStats attacker, int damage, Color color)
         {
             if (data == null || data.isInvincible) return;
-            base.TakeDamage(attacker, damage); // 부모의 체력 감소 로직 실행
+            int finalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
+            base.TakeDamage(attacker, finalDamage); // 부모의 체력 감소 로직 실행
             staggerTimer = data.hitstunDuration;
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
-                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, Mathf.RoundToInt(DamageTaken.GetValue(damage)), color);
+                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, finalDamage, color);
             }
         }
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)
@@ -123,9 +126,6 @@ namespace Enemy
 
         protected override void Die() // 추상 메서드 구현
         {
-            if (isDead) return;
-            isDead = true;
-
             if (WaveManager.Instance != null)
             {
                 WaveManager.Instance.OnEnemyDied();

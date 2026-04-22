@@ -1,6 +1,7 @@
 using UnityEngine;
 using Core;
 using System;
+using System.ComponentModel;
 
 namespace Entity
 {
@@ -22,6 +23,7 @@ namespace Entity
         public CharacterStat ProjectileSpeed;
         public CharacterStat DamageIncreased;
         public CharacterStat DamageTaken;
+        public CharacterStat ReduceHeal;
 
         [Header("Common Components")]
         protected SpriteRenderer _spriteRenderer;
@@ -42,10 +44,10 @@ namespace Entity
         public virtual void TakeDamage(EntityStats attacker, int damage)
         {
             if (isDead) return;
-            int totalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
-            currentHealth -= totalDamage;
+            currentHealth -= damage;
             if (currentHealth <= 0)
             {
+                isDead = true;
                 currentHealth = 0;
                 attacker.NotifyKill(this);
                 Die();
@@ -56,17 +58,29 @@ namespace Entity
         public virtual void NotifyPostAttackHit(EntityStats attacker, EntityStats entity, int damage) { }
         public virtual void NotifyKill(EntityStats entity) { }
         public virtual void NotifyHardCC(EntityStats attacker, EntityStats target) { }
+        public virtual void NotifyPreHeal(EntityStats target, ref int amount) { }
+        public virtual void NotifyHeal(EntityStats target, int amount) { }
+        public virtual void NotifyOverHeal(EntityStats target, int amount) { }
+        public virtual void NotifyPostHeal(EntityStats target, int amount) { }
 
         public virtual void Heal(int amount)
         {
             if (isDead) return;
-            int healAmount = Mathf.Min(amount, maxHealth - currentHealth);
+            int healAmount = (int)ReduceHeal.GetValue(amount);
+            NotifyPreHeal(this, ref healAmount);
+            if (healAmount > maxHealth - currentHealth)
+            {
+                NotifyOverHeal(this, amount);
+                healAmount = maxHealth - currentHealth;
+            }
             currentHealth += healAmount;
+            NotifyHeal(this, healAmount);
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
                 FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, healAmount, Color.green);
             }
+            NotifyPostHeal(this, healAmount);
         }
 
         // 죽는 방식은 플레이어와 적이 완전히 다르므로 추상 메서드로 선언

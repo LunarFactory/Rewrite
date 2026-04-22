@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Item;
+using Enemy;
+using System;
+using Entity;
 
 namespace Core
 {
@@ -20,6 +23,9 @@ namespace Core
         [SerializeField] private GameObject exitPortalPrefab; // 다음 웨이브로 가는 포탈
         [SerializeField] private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
         public int activeEnemyCount = 0;
+
+        public static event Action OnBossWaveStart;
+        public static event Action<EntityStats> OnBossSummon;
 
         private void Start()
         {
@@ -81,13 +87,14 @@ namespace Core
                     SpawnRest();
                     break;
                 case WaveType.Boss:
-                    SpawnEnemies(bossPrefab, 1);
+                    NotifyBossWaveStart();
+                    SpawnEnemies(bossPrefab, 1, true);
                     break;
             }
         }
 
         // [개선] 소환 로직을 별도 메서드로 분리하여 중복 제거 및 의존성 고립
-        private void SpawnEnemies(GameObject prefab, int count)
+        private void SpawnEnemies(GameObject prefab, int count, bool isBoss = false)
         {
             if (prefab == null)
             {
@@ -99,7 +106,10 @@ namespace Core
             {
                 Vector2 randomPos = UnityEngine.Random.insideUnitCircle * 8f;
                 GameObject enemy = Instantiate(prefab, randomPos, Quaternion.identity);
+                EnemyStats stat = enemy.GetComponent<EnemyStats>();
                 enemy.SetActive(true);
+                stat.isBoss = isBoss;
+                if (isBoss) NotifyBossSummon(stat);
                 activeEnemyCount++;
             }
         }
@@ -164,6 +174,16 @@ namespace Core
         {
             // 플레이어 근처나 맵 중앙에 포탈 생성
             Instantiate(exitPortalPrefab, new Vector2(0.5f, 3.5f), Quaternion.identity);
+        }
+
+        private void NotifyBossWaveStart()
+        {
+            OnBossWaveStart?.Invoke();
+        }
+
+        private void NotifyBossSummon(EntityStats boss)
+        {
+            OnBossSummon?.Invoke(boss);
         }
 
         public void CompleteCurrentWave()

@@ -9,6 +9,7 @@ public class LaserEffect : StatusEffectData
     [Header("Result Effect")]
     public float damageMultiplier = 2.5f;
     public int maxStack = 3;
+    private static Material _sharedLightningMaterial;
     public override void OnStackFull(BuffManager manager, EntityStats source)
     {
         EnemyStats _entity = manager.GetComponent<EnemyStats>();
@@ -23,9 +24,13 @@ public class LaserEffect : StatusEffectData
     {
         GameObject lineObj = new GameObject("Laser_Line");
         LineRenderer lr = lineObj.AddComponent<LineRenderer>();
+        if (_sharedLightningMaterial == null)
+        {
+            _sharedLightningMaterial = new Material(Shader.Find("Sprites/Default"));
+        }
 
         // 머티리얼 및 색상 설정
-        lr.material = new Material(Shader.Find("Sprites/Default"));
+        lr.material = _sharedLightningMaterial;
         lr.startColor = Color.red; // 신경망 느낌의 민트색
         lr.endColor = Color.white;
         lr.startWidth = 0.08f;

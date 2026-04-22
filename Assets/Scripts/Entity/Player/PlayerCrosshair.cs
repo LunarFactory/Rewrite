@@ -13,7 +13,6 @@ namespace Player
         private Camera _mainCam;
         private PlayerController _targetPlayer;
         private SpriteRenderer _dot;
-        private LineRenderer[] _lines;
 
         private void Awake()
         {
@@ -23,7 +22,6 @@ namespace Player
                 DontDestroyOnLoad(gameObject);
 
                 _dot = GetComponentInChildren<SpriteRenderer>();
-                _lines = GetComponentsInChildren<LineRenderer>();
             }
             else
             {
@@ -88,8 +86,6 @@ namespace Player
         private void SetVisibility(bool visible)
         {
             Cursor.visible = !visible;
-            if (_dot != null) _dot.enabled = visible;
-            foreach (var line in _lines) if (line != null) line.enabled = visible;
         }
     }
 }

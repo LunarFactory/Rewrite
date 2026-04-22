@@ -32,7 +32,9 @@ namespace Player
         // 이벤트들
         public delegate void PreDamageHandler(ref int damage);
         public event PreDamageHandler OnPreDamage;
-        public event Action<int> OnHealthChanged; // float으로 변경 권장
+        public event Action<int> OnHealthChanged;
+        public event Action<EntityStats, int> OnHeal;
+        public event Action<EntityStats, int> OnOverHeal;
         public event Action<int> OnPostDamage;
         public event Action<Projectile> OnWallHit;
         public event Action<EntityStats> OnKill;
@@ -74,6 +76,7 @@ namespace Player
             DamageTaken = new CharacterStat(0);
             if (baseDamageTakenFlat != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenFlat", baseDamageTakenFlat, ModifierType.Flat, this));
             if (baseDamageTakenPercent != 0) DamageTaken.AddModifier(new StatModifier("baseDamageTakenPercent", baseDamageTakenPercent, ModifierType.Percent, this));
+            ReduceHeal = new CharacterStat(0);
 
             currentWeapon = GetComponentInChildren<WeaponBase>();
         }
@@ -81,21 +84,22 @@ namespace Player
         public override void TakeDamage(EntityStats attacker, int damage)
         {
             if (stealth != null && stealth.IsStealthActive) return;
+            int finalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
 
-            if (damage > 0)
+            if (finalDamage > 0)
             {
-                OnPreDamage?.Invoke(ref damage);
-                if (damage <= 0) return;
+                OnPreDamage?.Invoke(ref finalDamage);
+                if (finalDamage < 0) return;
             }
 
-            base.TakeDamage(attacker, damage); // 부모 로직 실행 (currentHealth 감소 및 Die 체크)
+            base.TakeDamage(attacker, finalDamage); // 부모 로직 실행 (currentHealth 감소 및 Die 체크)
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
-                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, Mathf.RoundToInt(damage), Color.red);
+                FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, finalDamage, Color.red);
             }
             OnHealthChanged?.Invoke(currentHealth);
-            OnPostDamage?.Invoke(damage);
+            OnPostDamage?.Invoke(finalDamage);
         }
 
         public int GetWeaponBaseAttackDamage()
@@ -135,6 +139,14 @@ namespace Player
             {
                 OnPlayerPostAttackHit?.Invoke((PlayerStats)attacker, target, damage);
             }
+        }
+        public override void NotifyHeal(EntityStats target, int amount)
+        {
+            OnHeal?.Invoke(target, amount);
+        }
+        public override void NotifyOverHeal(EntityStats target, int amount)
+        {
+            OnOverHeal?.Invoke(target, amount);
         }
         public override void NotifyKill(EntityStats entity)
         {

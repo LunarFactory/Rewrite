@@ -41,7 +41,7 @@ namespace Item
         {
             if (!_isCooldown)
             {
-                damage = 0;
+                damage = -1;
                 if (FDTManager.Instance != null)
                 {
                     FDTManager.Instance.SpawnText(transform.position + Vector3.up * 0.5f, "방어!", Color.gold);

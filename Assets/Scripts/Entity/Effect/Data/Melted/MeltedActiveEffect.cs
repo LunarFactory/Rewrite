@@ -9,10 +9,12 @@ public class MeltedActiveEffect : ActiveEffect
     private StatModifier _damageTakenMod;
     private MeltedEffect _data;
     private int _currentStack = 0;
+    private EntityStats _ownerTarget;
 
     public override void OnStart(EntityStats target, EntityStats source)
     {
         _data = (MeltedEffect)Data;
+        _ownerTarget = target;
 
         SpriteRenderer sr = target.GetRenderer();
         if (sr != null)
@@ -24,6 +26,7 @@ public class MeltedActiveEffect : ActiveEffect
             enemy.MoveSpeed.AddModifier(_moveSpeedMod);
             _currentStack = 0;
             // 1. 공격 적중 이벤트 구독
+            player.OnPlayerAttackHit -= HandleAttackHit;
             player.OnPlayerAttackHit += HandleAttackHit;
             Debug.Log("<color=orange>[융해]</color> 효과 시작! 이동 속도가 감소하고 받는 피해가 증가합니다.");
         }
@@ -31,19 +34,20 @@ public class MeltedActiveEffect : ActiveEffect
 
     private void HandleAttackHit(PlayerStats player, EntityStats target, int damage)
     {
+        if (target != _ownerTarget) return;
         _currentStack++;
-        UpdateModifiers((EnemyStats)target);
+        UpdateModifiers();
     }
 
-    private void UpdateModifiers(EnemyStats enemy)
+    private void UpdateModifiers()
     {
         // 기존 수정자 제거 (Source 기반)
-        enemy.DamageTaken.RemoveModifiersFromSource(this);
+        _ownerTarget.DamageTaken.RemoveModifiersFromSource(this);
 
         // 2. 공격 속도 수정자 갱신 (중첩당 4%)
         float damageTaken = _currentStack * _data.damageTaken;
         _damageTakenMod = new StatModifier("MeltedDamageTaken", damageTaken, ModifierType.Percent, this);
-        enemy.DamageTaken.AddModifier(_damageTakenMod);
+        _ownerTarget.DamageTaken.AddModifier(_damageTakenMod);
 
         // 디버그용 (필요 없으면 삭제)
         Debug.Log($"[융해] {_currentStack}중첩 (받는 피해량 +{damageTaken * 100}%)");
