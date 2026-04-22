@@ -586,7 +586,6 @@ namespace UI
             t.fontSize = fontSize;
             t.alignment = anchor;
             t.color = color;
-            t.font = Resources.Load<TMP_FontAsset>("Fonts/Galmuri9");
         }
 
         private void SetRect(GameObject go, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
