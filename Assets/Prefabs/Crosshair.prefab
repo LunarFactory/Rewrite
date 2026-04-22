@@ -104,4 +104,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76974eaaca44d743b93888b4943297d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Crosshair
-  mousePosAction: {fileID: -1654692200621890270, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  mousePosAction: {fileID: 4754256263637877104, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

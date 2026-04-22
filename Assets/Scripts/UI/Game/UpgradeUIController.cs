@@ -13,7 +13,7 @@ namespace UI
 
         private GameObject _uiCanvas;
         private GameObject _mainPanel;
-        
+
         private Transform _cardsContainer;
         private TextMeshProUGUI _creditDisplay;
 
@@ -26,25 +26,33 @@ namespace UI
         {
             Time.timeScale = 0f;
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            var playerInput = FindAnyObjectByType<PlayerInput>();
+            if (playerInput != null)
+            {
+                playerInput.SwitchCurrentActionMap("UI");
+            }
 
             if (_uiCanvas == null)
             {
                 BuildUI();
             }
-            
+
             _uiCanvas.SetActive(true);
             RefreshUI();
         }
 
         public void Close()
         {
-            if (_uiCanvas != null)
-                _uiCanvas.SetActive(false);
+            if (_uiCanvas != null) _uiCanvas.SetActive(false);
+            var playerInput = FindAnyObjectByType<PlayerInput>();
+            if (playerInput != null)
+            {
+                // 3. 다시 게임으로 돌아갈 때 "Player" 조작으로 복구합니다.
+                playerInput.SwitchCurrentActionMap("Player");
+            }
 
             Time.timeScale = 1f;
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void BuildUI()
@@ -61,7 +69,7 @@ namespace UI
             // 1. 캔버스 생성
             _uiCanvas = new GameObject("SupplyPortCanvas");
             DontDestroyOnLoad(_uiCanvas); // 로비 씬 내내 유지
-            
+
             var canvas = _uiCanvas.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 999;
@@ -84,7 +92,7 @@ namespace UI
             var panelRect = _mainPanel.GetComponent<RectTransform>();
             panelRect.sizeDelta = new Vector2(1000, 700);
             panelRect.anchoredPosition = Vector2.zero;
-            
+
             var panelImg = _mainPanel.AddComponent<Image>();
             panelImg.color = new Color(0.1f, 0.1f, 0.12f, 1f);
 
@@ -101,7 +109,7 @@ namespace UI
             var containerRect = containerGo.GetComponent<RectTransform>();
             containerRect.sizeDelta = new Vector2(900, 400);
             containerRect.anchoredPosition = new Vector2(0, -30);
-            
+
             var hl = containerGo.AddComponent<HorizontalLayoutGroup>();
             hl.childAlignment = TextAnchor.MiddleCenter;
             hl.spacing = 30;
@@ -159,7 +167,7 @@ namespace UI
             string stars = "";
             for (int i = 0; i < maxLevel; i++)
                 stars += i < level ? "<color=#ffd700>★</color> " : "<color=#555555>★</color> ";
-            
+
             var levelTmp = CreateText("Level", card.transform, new Vector2(0, 90), new Vector2(240, 40), stars.TrimEnd(), 28, Color.white, FontStyles.Normal);
             levelTmp.alignment = TextAlignmentOptions.Center;
 
@@ -172,8 +180,8 @@ namespace UI
                 _ => "스탯"
             };
 
-            string descText = level < maxLevel 
-                ? $"다음 레벨 효과:\n<color=#aaffaa>{statName} +{data.statOffsets[level]}</color>" 
+            string descText = level < maxLevel
+                ? $"다음 레벨 효과:\n<color=#aaffaa>{statName} +{data.statOffsets[level]}</color>"
                 : "<color=#ffd700>최고 레벨에 도달했습니다.</color>";
 
             var descTmp = CreateText("Desc", card.transform, new Vector2(0, 0), new Vector2(220, 100), descText, 18, new Color(0.8f, 0.8f, 0.8f), FontStyles.Normal);
@@ -283,15 +291,6 @@ namespace UI
                     if (Keyboard.current.escapeKey.wasPressedThisFrame)
                     {
                         Close();
-                    }
-
-                    // 디버그: F12 누르면 크레딧 +1000
-                    if (Keyboard.current.f12Key.wasPressedThisFrame)
-                    {
-                        int current = UpgradeManager.Instance.GetCredits();
-                        UpgradeManager.Instance.SetCredits(current + 1000);
-                        RefreshUI(); // 화면 즉시 갱신
-                        Debug.Log("[Cheat] F12를 눌러 1000 크레딧을 획득했습니다.");
                     }
                 }
             }
