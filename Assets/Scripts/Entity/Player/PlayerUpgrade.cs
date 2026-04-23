@@ -17,6 +17,35 @@ namespace Player
         public int[] costs = new int[3]; // 레벨별 구매 비용
 
         public StatType statType; // 어떤 스탯을 올릴 것인가?
+
+        public void ApplyUpgradeTo(PlayerStats stats, int level)
+        {
+            if (level <= 0)
+                return;
+
+            int index = Mathf.Clamp(level - 1, 0, statOffsets.Length - 1);
+            float offsetValue = statOffsets[index] / 100f; // 퍼센트 수치 적용
+
+            StatModifier modifier = new StatModifier(
+                $"Meta_{id}",
+                offsetValue,
+                ModifierType.Percent,
+                this
+            );
+
+            switch (statType)
+            {
+                case StatType.Damage:
+                    stats.AttackDamage.AddModifier(modifier);
+                    break;
+                case StatType.AttackSpeed:
+                    stats.AttackSpeed.AddModifier(modifier);
+                    break;
+                case StatType.MoveSpeed:
+                    stats.MoveSpeed.AddModifier(modifier);
+                    break;
+            }
+        }
     }
 
     public enum StatType

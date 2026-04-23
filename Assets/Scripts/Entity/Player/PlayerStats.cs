@@ -52,8 +52,6 @@ namespace Player
         {
             base.Awake();
             LocalPlayer = this;
-            // 씬이 로드되자마자 "나 여기 있다!"라고 알림
-            OnPlayerReady?.Invoke(this);
             maxHealth = 100; // 또는 데이터 시트 참조
             currentHealth = maxHealth;
             stealth = GetComponent<PlayerStealth>();
@@ -109,6 +107,8 @@ namespace Player
             ReduceHeal = new CharacterStat(0);
 
             currentWeapon = GetComponentInChildren<WeaponBase>();
+            // 씬이 로드되자마자 "나 여기 있다!"라고 알림
+            OnPlayerReady?.Invoke(this);
         }
 
         public override void TakeDamage(EntityStats attacker, int damage)

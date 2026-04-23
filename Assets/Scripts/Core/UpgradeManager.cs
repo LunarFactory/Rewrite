@@ -26,6 +26,25 @@ namespace Core
             LoadUpgrades();
         }
 
+        private void OnEnable()
+        {
+            PlayerStats.OnPlayerReady += ApplyAllUpgradesToPlayer;
+        }
+
+        private void OnDisable()
+        {
+            PlayerStats.OnPlayerReady -= ApplyAllUpgradesToPlayer;
+        }
+
+        private void ApplyAllUpgradesToPlayer(PlayerStats playerStats)
+        {
+            foreach (var upgrade in allUpgrades)
+            {
+                int level = GetLevel(upgrade.id);
+                upgrade.ApplyUpgradeTo(playerStats, level);
+            }
+        }
+
         public int GetLevel(string id) => _upgradeLevels.ContainsKey(id) ? _upgradeLevels[id] : 0;
 
         public int GetCredits() => PlayerPrefs.GetInt("LobbyCredits", 0);
