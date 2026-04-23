@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Turret
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: Turret
-  maxHealth: 1000
+  maxHealth: 100
   baseMoveSpeed: 0
   baseAttackDamage: 40
   baseRicochet: 0
@@ -40,11 +40,13 @@ MonoBehaviour:
   - {fileID: 1325640915, guid: 7517ff96bf962154685948907fd21365, type: 3}
   defaultFPS: 10
   isInvincible: 0
-  tier: 0
-  cost: 0
-  minFloor: 0
-  maxCountInWave: 0
+  tier: 1
+  cost: 3
+  minFloor: 1
+  maxCountInWave: 5
   ComponentName: TurretAI
   colliderOffset: {x: 0, y: 0.25}
   colliderSize: {x: 1, y: 0.5}
-  bulletList: []
+  bulletList:
+  - bulletKey: Normal
+    bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}

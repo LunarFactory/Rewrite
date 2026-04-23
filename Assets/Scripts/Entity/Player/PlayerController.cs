@@ -216,18 +216,6 @@ namespace Player
             }
         }
 
-        private void ApplyWeaponData()
-        {
-            if (currentWeapon == null || currentWeapon.weaponData == null)
-                return;
-
-            // 여기서 무기의 스프라이트를 바꾸거나, 초기화 로직을 실행합니다.
-            Debug.Log($"[Player] {currentWeapon.weaponData.weaponName} 데이터 적용 완료!");
-
-            // 만약 무기에 Visual을 업데이트하는 기능이 있다면 여기서 호출하세요.
-            // currentWeapon.GetComponent<WeaponVisuals>()?.UpdateSprite();
-        }
-
         public WeaponData GetCurrentWeapon()
         {
             return currentWeapon.weaponData;

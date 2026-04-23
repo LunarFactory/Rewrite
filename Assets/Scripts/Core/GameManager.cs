@@ -20,7 +20,6 @@ namespace Core
 
     public enum GameState
     {
-        MainMenu,
         Playing,
         Paused,
         GameOver,
@@ -32,8 +31,6 @@ namespace Core
         public static GameManager Instance { get; private set; }
         private GameState State;
         private PlayerInput playerInputSystem;
-
-        public bool isGameOver = false;
 
         [SerializeField]
         private GameObject playerCrosshairPrefab;
@@ -67,6 +64,7 @@ namespace Core
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            Cursor.lockState = CursorLockMode.Confined;
             State = GameState.Playing; // Default for now
             gameObject.AddComponent<RunManager>();
             gameObject.AddComponent<UIManager>();
@@ -91,16 +89,15 @@ namespace Core
         {
             State = newState;
             // Handle state transitions (e.g., time scale for pause)
-            Time.timeScale = (State == GameState.Paused) ? 0f : 1f;
+            Time.timeScale = (State == GameState.Paused || State == GameState.GameOver) ? 0f : 1f;
         }
 
         // [통합] 모든 스폰은 이 메서드를 통과하여 Setup을 보장함
-        public void ExecuteSpawn(EnemyData data, bool isBoss)
+        public void ExecuteSpawn(EnemyData data, bool isBoss, Vector2 spawnPos)
         {
             if (data == null || enemyBasePrefab == null)
                 return;
 
-            Vector2 spawnPos = UnityEngine.Random.insideUnitCircle * 8f;
             GameObject enemyObj = Instantiate(enemyBasePrefab, spawnPos, Quaternion.identity);
 
             if (enemyObj.TryGetComponent(out EnemyStats stats))

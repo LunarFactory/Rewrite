@@ -61,14 +61,6 @@ namespace UI
 
         private void BuildUI()
         {
-            // 이벤트 시스템이 씬에 없으면 클릭(상호작용)이 안 되므로 강제 주입
-            if (UnityEngine.EventSystems.EventSystem.current == null)
-            {
-                var esGo = new GameObject("EventSystem_Upgrade");
-                esGo.AddComponent<UnityEngine.EventSystems.EventSystem>();
-                esGo.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
-            }
-
             // 1. 캔버스 생성
             _uiCanvas = new GameObject("SupplyPortCanvas");
 

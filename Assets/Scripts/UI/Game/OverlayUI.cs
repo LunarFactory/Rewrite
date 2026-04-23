@@ -142,7 +142,6 @@ namespace UI
         protected virtual void ReturnToLobby()
         {
             Time.timeScale = 1f;
-            GameManager.Instance.isGameOver = false;
 
             // 플레이어 상태 초기화 (인벤토리 클리어)
             if (InventoryManager.Instance != null)
@@ -153,7 +152,7 @@ namespace UI
             // DontDestroyOnLoad 된 싱글톤 매니저들 정리
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.ChangeState(GameState.MainMenu);
+                GameManager.Instance.ChangeState(GameState.Playing);
             }
 
             // 플레이어 즉시 비활성화 (PlayerInteractor.Update()가 이벤트를 발생시키지 못하게)

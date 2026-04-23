@@ -43,9 +43,7 @@ public class BuffManager : MonoBehaviour
     )
     {
         // 중복 체크 및 시간 갱신 로직
-        ActiveEffect existingEffect = _activeEffects.Find(e =>
-            e.Data == data || (e.Data != null && e.Data.effectName == data.effectName)
-        );
+        ActiveEffect existingEffect = HasEffect(data);
 
         if (existingEffect != null)
         {
@@ -68,6 +66,25 @@ public class BuffManager : MonoBehaviour
                     source.NotifyHardCC(source, _stats);
                 }
             }
+        }
+    }
+
+    public ActiveEffect HasEffect(StatusEffectData data)
+    {
+        // 중복 체크 및 시간 갱신 로직
+        ActiveEffect existingEffect = _activeEffects.Find(e =>
+            e.Data == data || (e.Data != null && e.Data.effectName == data.effectName)
+        );
+
+        if (existingEffect != null)
+        {
+            Debug.Log("너 버프 있대");
+            return existingEffect;
+        }
+        else
+        {
+            Debug.Log("너 버프 없대");
+            return null;
         }
     }
 

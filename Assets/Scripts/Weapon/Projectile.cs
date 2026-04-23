@@ -311,12 +311,22 @@ namespace Weapon
             _hitTargets.Clear();
         }
 
-        private void Deactivate()
+        public void Deactivate()
         {
+            // 이미 비활성화된 상태라면 중복 반납 방지
+            if (!gameObject.activeSelf)
+                return;
+
+            // ProjectilePooler(또는 Manager)에 자신을 반납
+            // _originPrefab은 생성 시점에 저장해둔 프리팹 참조입니다.
             if (_originPrefab != null)
+            {
                 ProjectileManager.Instance.Release(_originPrefab, gameObject);
+            }
             else
-                Destroy(gameObject);
+            {
+                gameObject.SetActive(false); // 폴백
+            }
         }
     }
 }

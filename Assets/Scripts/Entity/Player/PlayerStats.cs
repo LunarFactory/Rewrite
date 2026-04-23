@@ -1,6 +1,7 @@
 using System;
 using Core;
 using Entity;
+using UI;
 using UnityEngine;
 using Weapon;
 
@@ -157,10 +158,7 @@ namespace Player
 
         protected override void Die() // 추상 메서드 구현
         {
-            GameManager.Instance?.ChangeState(GameState.MainMenu);
-            UnityEngine.SceneManagement.SceneManager.LoadScene(
-                UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
-            );
+            UIManager.Instance.RequestStateChange(UIState.GameOver);
         }
 
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)

@@ -1,9 +1,10 @@
+using Unity;
 using UnityEngine;
 
 namespace Enemy
 {
     [System.Serializable]
-    public class EnemySpriteAnimationModule
+    public class EnemySpriteAnimationModule : MonoBehaviour
     {
         private SpriteRenderer _sr;
         private Rigidbody2D _rb;
@@ -12,10 +13,14 @@ namespace Enemy
         private float _frameTimer;
         private int _currentFrame;
 
-        public void Initialize(SpriteRenderer sr, Rigidbody2D rb, EnemyData data)
+        private void Awake()
         {
-            _sr = sr;
-            _rb = rb;
+            _sr = GetComponent<SpriteRenderer>();
+            _rb = GetComponent<Rigidbody2D>();
+        }
+
+        public void SetEnemyData(EnemyData data)
+        {
             _data = data;
         }
 

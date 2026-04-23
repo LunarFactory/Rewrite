@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using Weapon;
 
 namespace Core
 {
@@ -38,6 +39,23 @@ namespace Core
                 _pools[prefab].Release(instance);
             else
                 Destroy(instance); // 풀이 없으면 그냥 파괴(예외 처리)
+        }
+
+        public void ClearAllProjectiles()
+        {
+            // 필드에 존재하는 모든 Projectile 컴포넌트를 찾습니다.
+            // (성능이 걱정된다면 리스트로 관리하는 방식도 있지만,
+            // 웨이브 종료 시 한 번만 실행되므로 이 방식이 가장 확실하고 구현이 쉽습니다.)
+            Projectile[] activeProjectiles = FindObjectsByType<Projectile>();
+
+            foreach (Projectile proj in activeProjectiles)
+            {
+                // 각 투사체 내부의 반납 로직(Deactivate 등)을 호출합니다.
+                // 이 메서드는 우리가 앞서 작성했던 'Release' 로직을 포함해야 합니다.
+                proj.Deactivate();
+            }
+
+            Debug.Log("<color=orange>[Manager]</color> 모든 투사체가 제거되었습니다.");
         }
     }
 }

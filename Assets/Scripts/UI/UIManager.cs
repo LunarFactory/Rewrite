@@ -39,18 +39,19 @@ namespace UI
                 return;
             }
             Instance = this;
-        }
-
-        private void Start()
-        {
             // EventSystem이 없으면 버튼 클릭이 안 되므로 보장
             if (UnityEngine.EventSystems.EventSystem.current == null)
             {
-                var esGo = new GameObject("EventSystem_Overlay");
+                var esGo = new GameObject("EventSystem");
                 esGo.AddComponent<UnityEngine.EventSystems.EventSystem>();
                 esGo.AddComponent<InputSystemUIInputModule>();
                 esGo.transform.parent = gameObject.transform;
             }
+        }
+
+        private void Start()
+        {
+            RequestStateChange(UIState.None);
         }
 
         public void LoadUI(PlayerInput input)
@@ -165,8 +166,8 @@ namespace UI
 
                 case UIState.GameOver:
                     mapName = "UI";
-                    _gamestate = GameState.Paused;
-                    _gameoverUI.ToggleUI(true);
+                    _gamestate = GameState.GameOver;
+                    _gameoverUI.GameOver();
                     break;
             }
             SetInputMap(mapName);

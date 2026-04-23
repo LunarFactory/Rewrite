@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Enemy;
-using Entity;
 using Item;
+using Level;
 using UnityEngine;
 
 namespace Core
@@ -117,7 +117,11 @@ namespace Core
                     break;
                 case WaveType.Boss:
                     NotifyBossWaveStart();
-                    gameManager.ExecuteSpawn(bossPool[RunManager.Instance.CurrentFloor - 1], true);
+                    gameManager.ExecuteSpawn(
+                        bossPool[RunManager.Instance.CurrentFloor - 1],
+                        true,
+                        Vector2.zero
+                    );
                     break;
             }
         }
@@ -169,8 +173,7 @@ namespace Core
 
                     if (remainingBudget >= data.cost)
                     {
-                        gameManager.ExecuteSpawn(data, false);
-                        activeEnemyCount++;
+                        ExecuteSpawn(data, false);
                         remainingBudget -= data.cost;
 
                         if (!_spawnTracker.ContainsKey(data))
@@ -183,6 +186,17 @@ namespace Core
                     break;
             }
             return remainingBudget;
+        }
+
+        // WaveManager.cs 내부
+        private void ExecuteSpawn(EnemyData data, bool isBoss)
+        {
+            // 현재 맵에 있는 SpawnZone을 찾아 위치 요청
+            MapSpawnZone zone = MapManager.Instance.CurrentSpawnZone;
+            Vector2 spawnPos = (zone != null) ? zone.GetRandomLocation() : Vector2.zero;
+
+            gameManager.ExecuteSpawn(data, isBoss, spawnPos);
+            activeEnemyCount++;
         }
 
         private void ShuffleList<T>(List<T> list)
@@ -270,7 +284,11 @@ namespace Core
         }
 
         public void CompleteCurrentWave()
-        {
+        { // 1. [추가] 필드의 모든 총알 청소
+            if (ProjectileManager.Instance != null)
+            {
+                ProjectileManager.Instance.ClearAllProjectiles();
+            }
             Log.PlayerLogManager.Instance?.OnWaveCompleted(CurrentWave);
 
             if (CurrentWave < 9)

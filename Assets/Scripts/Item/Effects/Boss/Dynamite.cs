@@ -56,7 +56,7 @@ namespace Item
             _delayedBombData.damageMultiplier = damageMultiplier;
             _delayedBombData.explosionRadius = explosionRadius;
             _delayedBombData.stunEffect = stunEffect;
-            _delayedBombData.stunTime = explosionRadius;
+            _delayedBombData.stunTime = stunTime;
             _delayTime = delayTime;
 
             _player.OnPlayerAttackHit += HandleItemEffect;
@@ -66,7 +66,10 @@ namespace Item
         {
             if (target.TryGetComponent<BuffManager>(out BuffManager buff))
             {
-                buff.ApplyEffect(_delayedBombData, _delayTime, attacker);
+                if (buff.HasEffect(_delayedBombData) == null)
+                {
+                    buff.ApplyEffect(_delayedBombData, _delayTime, attacker);
+                }
             }
         }
 

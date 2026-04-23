@@ -1,3 +1,4 @@
+using Player;
 using UnityEngine;
 
 namespace Enemy
@@ -8,22 +9,38 @@ namespace Enemy
     {
         protected EnemyStats stats;
         protected Rigidbody2D rb;
+        protected SpriteRenderer sr;
+        protected EnemySpriteAnimationModule _animationModule;
+
+        protected PlayerStats playerStat;
+        protected Transform playerTarget;
 
         protected virtual void Awake()
         {
             stats = GetComponent<EnemyStats>();
             rb = GetComponent<Rigidbody2D>();
+            sr = GetComponent<SpriteRenderer>();
+        }
+
+        protected virtual void Start()
+        {
+            _animationModule = GetComponent<EnemySpriteAnimationModule>();
+            if (PlayerStats.LocalPlayer != null)
+            {
+                playerStat = PlayerStats.LocalPlayer;
+                playerTarget = playerStat.transform;
+            }
         }
 
         protected virtual void Update()
         {
+            _animationModule.UpdateAnimation(Time.deltaTime);
             // 경직(Stagger) 중이거나 기절(Stun) 중이면 행동 중단
             if (stats.isStaggered || stats.isStunned)
             {
                 StopBehavior();
                 return;
             }
-
             ExecuteBehavior();
         }
 

@@ -12,9 +12,6 @@ namespace Enemy
         [Header("Enemy Specifics")]
         public EnemyData data;
 
-        [SerializeField]
-        protected EnemySpriteAnimationModule _animationModule = new();
-
         protected float staggerTimer;
         public bool isBoss;
         protected Transform playerTarget;
@@ -32,6 +29,8 @@ namespace Enemy
         protected override void Awake()
         {
             base.Awake(); // EntityStats의 Awake 실행 (SR, RB 참조 및 중력 설정)
+            if (data != null)
+                InitializeFromData(data); // 데이터가 있을 때만 초기화
         }
 
         protected void Start()
@@ -50,9 +49,6 @@ namespace Enemy
             // 1. EntityStats에 정의된 스탯들 초기화
             InitializeFromData(newData);
 
-            // 2. 애니메이션 모듈 초기화
-            _animationModule.Initialize(_spriteRenderer, _rb, data);
-
             // 3. 동적 AI 컴포넌트 부착 (EnemyData의 ComponentName 사용)
             AttachAIComponent(data.ComponentName);
             col = GetComponent<BoxCollider2D>();
@@ -69,6 +65,7 @@ namespace Enemy
                     _bulletDict[entry.bulletKey] = entry.bulletPrefab;
                 }
             }
+            AttachAnimator(data);
         }
 
         private void InitializeFromData(EnemyData d)
@@ -136,13 +133,16 @@ namespace Enemy
             }
         }
 
+        private void AttachAnimator(EnemyData data)
+        {
+            var animator = gameObject.AddComponent<EnemySpriteAnimationModule>();
+            animator.SetEnemyData(data);
+        }
+
         protected virtual void Update()
         {
             if (staggerTimer > 0f)
                 staggerTimer -= Time.deltaTime;
-
-            // 애니메이션 모듈 업데이트 (움직임 방향 전달)
-            _animationModule.UpdateAnimation(Time.deltaTime, _rb.linearVelocity.normalized);
         }
 
         public override void TakeDamage(EntityStats attacker, int damage)

@@ -29,49 +29,15 @@ namespace UI
             _gameOverPanel.SetActive(status);
         }
 
-        private void HandlePreDamage(ref int damage)
+        public void GameOver()
         {
-            var player = PlayerStats.LocalPlayer;
-            if (player == null)
-                return;
-
-            // 게임오버 상태에서는 모든 데미지를 무조건 차단
-            // (안 하면 다음 피격에 Die() → 씬 리로드가 발동되어 게임오버 화면이 사라짐)
-            if (GameManager.Instance.isGameOver)
-            {
-                damage = 0;
-                return;
-            }
-
-            // EntityStats 내부 로직처럼 피해량 미리 계산
-            int totalDamage = Mathf.RoundToInt(player.DamageTaken.GetValue(damage));
-
-            if (player.currentHealth <= totalDamage && player.currentHealth > 0)
-            {
-                damage = 0; // 실제 사망 방지 (OnPreDamage 가로채기)
-                TriggerGameOver();
-            }
-        } // 4. 인풋 이벤트 콜백
-
-        private void OnDestroy()
-        {
-            if (PlayerStats.LocalPlayer != null)
-            {
-                PlayerStats.LocalPlayer.OnPreDamage -= HandlePreDamage;
-            }
+            TriggerGameOver();
         }
 
         private void TriggerGameOver()
         {
-            GameManager.Instance.isGameOver = true;
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.ChangeState(GameState.GameOver);
-                Time.timeScale = 0f; // 완전 정지
-            }
-
-            _gameOverPanel.SetActive(true);
             UpdateGameOverStats();
+            _gameOverPanel.SetActive(true);
         }
 
         private void BuildGameOverPanel(Transform parent)
@@ -222,12 +188,6 @@ namespace UI
                 4 => "우리의 통제를 벗어날 순 없다, 버그 녀석아.",
                 _ => "너의 코드는... 여기까지다.",
             };
-        }
-
-        protected override void ReturnToLobby()
-        {
-            GameManager.Instance.isGameOver = false;
-            base.ReturnToLobby();
         }
     }
 }

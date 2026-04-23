@@ -6,9 +6,11 @@ namespace Player
     public class Crosshair : MonoBehaviour
     {
         public static Crosshair Instance { get; private set; }
+
         [Header("Input Settings")]
         // 인스펙터에서 Player Input Actions의 'Point' 액션을 연결하세요.
-        [SerializeField] private InputActionReference mousePosAction;
+        [SerializeField]
+        private InputActionReference mousePosAction;
 
         private Camera _mainCam;
         private PlayerController _targetPlayer;
@@ -64,27 +66,30 @@ namespace Player
             SetVisibility(true);
 
             // 2. 카메라 캐싱 최적화
-            if (_mainCam == null) _mainCam = Camera.main;
-            if (_mainCam == null) return;
+            if (_mainCam == null)
+                _mainCam = Camera.main;
+            if (_mainCam == null)
+                return;
 
             // 3. [핵심] Input System의 액션에서 직접 값 읽기
             Vector2 screenPos = mousePosAction.action.ReadValue<Vector2>();
-            if (IsMouseOutOfBounds(screenPos)) return;
+            if (IsMouseOutOfBounds(screenPos))
+                return;
 
             // 4. 월드 좌표 변환 (Z값은 카메라와의 거리만큼)
-            Vector3 worldPos = _mainCam.ScreenToWorldPoint(new Vector3(
-                screenPos.x,
-                screenPos.y,
-                Mathf.Abs(_mainCam.transform.position.z)
-            ));
+            Vector3 worldPos = _mainCam.ScreenToWorldPoint(
+                new Vector3(screenPos.x, screenPos.y, Mathf.Abs(_mainCam.transform.position.z))
+            );
 
             worldPos.z = 0f;
             transform.position = worldPos;
         }
+
         private bool IsMouseOutOfBounds(Vector2 pos)
         {
             // 포커스를 잃었을 때 (0,0)으로 튀는 현상 방지
-            if (pos == Vector2.zero) return true;
+            if (pos == Vector2.zero)
+                return true;
 
             // 실제 화면 해상도 밖으로 나갔는지 체크
             return pos.x < 0 || pos.x > Screen.width || pos.y < 0 || pos.y > Screen.height;
