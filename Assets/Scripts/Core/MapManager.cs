@@ -20,6 +20,7 @@ namespace Core
             if (Instance != null && Instance != this)
             {
                 Destroy(Instance.gameObject);
+                Instance = this;
                 return;
             }
             Instance = this;

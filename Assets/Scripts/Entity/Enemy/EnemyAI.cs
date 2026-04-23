@@ -48,7 +48,10 @@ namespace Enemy
 
         protected virtual void StopBehavior() // 행동 중지 시 처리 (예: 속도 0)
         {
-            rb.linearVelocity = Vector2.zero;
+            if (rb.bodyType != RigidbodyType2D.Static)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
         }
     }
 }

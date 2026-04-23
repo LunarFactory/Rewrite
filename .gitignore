@@ -102,4 +102,4 @@ InitTestScene*.unity*
 .agent/
 Documents/
 
-Rewrite.slnx
+/[Aa]ssets/_[Rr]ecovery/*

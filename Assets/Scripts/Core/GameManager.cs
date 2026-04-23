@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Drone;
 using Enemy;
 using Entity;
 using Level;
@@ -7,6 +8,7 @@ using Player;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Core
 {
@@ -123,6 +125,20 @@ namespace Core
         public List<EnemyData> GetBossPool()
         {
             return bossPool;
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.name == "LobbyScene") // 로비 씬 이름 확인
+            {
+                // 1. 드론 청소
+                DroneManager.Instance.ClearAllDrones();
+            }
         }
     }
 }

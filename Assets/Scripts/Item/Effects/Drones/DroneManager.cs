@@ -1,29 +1,36 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Drone
 {
     public class DroneManager : MonoBehaviour
     {
         public static DroneManager Instance { get; private set; }
+
         [Header("Global Orbit")]
         public float orbitSpeed = 60f;
         public float orbitDistance = 2.5f;
         private float _masterRotation; // 모든 드론이 공유하는 마스터 회전 값        public GameObject projectilePrefab; // DroneAttack이 쏠 탄환 프리팹
         public float globalDroneDamageMultiplier = 1f;
 
-        public bool hasDefense, hasAttack, hasLaser;
+        public bool hasDefense,
+            hasAttack,
+            hasLaser;
         private List<DroneBase> _activeDrones = new List<DroneBase>();
 
         public GameObject projectilePrefab;
 
         private void Awake() => Instance = this;
+
         private void Update()
         {
             // 1. 매니저가 마스터 각도를 하나만 계산합니다.
             _masterRotation += orbitSpeed * Time.deltaTime;
         }
-        public float GetMasterRotation() => _masterRotation; public void RegisterDrone(DroneBase drone)
+
+        public float GetMasterRotation() => _masterRotation;
+
+        public void RegisterDrone(DroneBase drone)
         {
             if (!_activeDrones.Contains(drone))
             {
@@ -54,20 +61,42 @@ namespace Drone
                 _activeDrones[i].SetTargetOffset(targetAngle);
             }
         }
+
         public void UnlockAbility(string type)
         {
-            if (type == "Defense") hasDefense = true;
-            if (type == "Attack") hasAttack = true;
-            if (type == "Laser") hasLaser = true;
+            if (type == "Defense")
+                hasDefense = true;
+            if (type == "Attack")
+                hasAttack = true;
+            if (type == "Laser")
+                hasLaser = true;
 
-            foreach (var d in _activeDrones) RefreshAbilities(d);
+            foreach (var d in _activeDrones)
+                RefreshAbilities(d);
         }
 
         private void RefreshAbilities(DroneBase drone)
         {
-            if (hasDefense) drone.AddAbility<Defense>();
-            if (hasAttack) drone.AddAbility<Attack>();
-            if (hasLaser) drone.AddAbility<Laser>();
+            if (hasDefense)
+                drone.AddAbility<Defense>();
+            if (hasAttack)
+                drone.AddAbility<Attack>();
+            if (hasLaser)
+                drone.AddAbility<Laser>();
+        }
+
+        public void ClearAllDrones()
+        {
+            // 현재 필드에 있는 모든 드론을 찾아서 파괴
+            // 'Drone'이라는 태그나 특정 컴포넌트로 찾을 수 있습니다.
+            DroneBase[] activeDrones = FindObjectsByType<DroneBase>();
+
+            foreach (var drone in activeDrones)
+            {
+                Destroy(drone.gameObject);
+            }
+
+            Debug.Log("<color=red>[System]</color> 모든 소환수 드론을 해제했습니다.");
         }
     }
 }

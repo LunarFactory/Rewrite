@@ -154,6 +154,9 @@ namespace Core
             CurrentSeed = Random.Range(1000, 99999);
             CurrentFloor = 1;
             Random.InitState(CurrentSeed);
+
+            UI.UIManager.Instance.LoadScene("GameScene");
+            WaveManager.Instance.StartFloor(1);
         }
 
         public void AdvanceFloor()

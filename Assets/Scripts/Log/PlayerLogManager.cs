@@ -20,7 +20,6 @@ namespace Log
                 return;
             }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         public void OnWaveStarted(int wave)

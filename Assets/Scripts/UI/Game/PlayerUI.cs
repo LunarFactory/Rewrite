@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Core; // EntityStatus와 Buff 시스템 참조
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -28,10 +25,6 @@ namespace UI
         private Slider stealthSlider;
         private RectTransform stealthSliderRT;
 
-        // 아이템 슬롯 (우측)
-        private const int MAX_ITEM_SLOTS = 10;
-        private List<Image> itemSlotImages = new List<Image>();
-
         // 버프 아이콘 (추가)
         private List<Image> buffIconImages = new List<Image>();
         private GameObject buffContainer;
@@ -49,6 +42,25 @@ namespace UI
         private TMP_FontAsset font;
 
         private PlayerInput playerInput;
+
+        // ── 설정값 ──
+        private const float SLOT_SIZE = 52f;
+        private const float SLOT_SPACING = 6f;
+        private const int VISIBLE_SLOT_COUNT = 10; // 한 화면에 보이는 최대 슬롯 수
+        private const float SCROLL_SPEED = 200f;
+
+        // ── 인벤토리 (동적 슬롯) ──
+        private GameObject _inventoryContainer;
+        private GameObject _inventoryViewport;
+        private GameObject _inventoryContent;
+        private ScrollRect _scrollRect;
+        private List<Image> _dynamicSlotImages = new List<Image>();
+        private TextMeshProUGUI _itemCountText; // "12 / 10" 같은 카운터
+
+        // ── 재화 표기 ──
+        private GameObject _currencyPanel;
+        private TextMeshProUGUI _boltText;
+        private TextMeshProUGUI _creditText;
 
         #region Unity Lifecycle
 
@@ -131,11 +143,7 @@ namespace UI
 
         private void Start()
         {
-            // 인벤토리 매니저 이벤트 구독 (아이템 획득 시 HUD 갱신)
-            if (InventoryManager.Instance != null)
-            {
-                InventoryManager.Instance.OnItemAdded += SyncInventory;
-            }
+            // [제거됨] 인벤토리 UI 구독 → PlayerUIExtension에서 처리
             if (Player.PlayerStats.LocalPlayer != null)
             {
                 BindPlayer(Player.PlayerStats.LocalPlayer);
@@ -146,9 +154,19 @@ namespace UI
             BuildCanvas();
             BuildTopLeftHUD();
             BuildBuffContainer(); // 버프 UI 생성 추가
-            BuildRightItemSlots();
+            // [제거됨] BuildRightItemSlots() → PlayerUIExtension에서 동적 생성
             BuildBossHPPanel();
             BuildInteract();
+            BuildDynamicInventory();
+            BuildCurrencyPanel();
+            // 이벤트 구독
+            if (InventoryManager.Instance != null)
+            {
+                InventoryManager.Instance.OnItemAdded += SyncDynamicInventory;
+            }
+
+            // 즉시 한 번 동기화
+            SyncDynamicInventory();
         }
 
         private void OnEnable()
@@ -174,6 +192,16 @@ namespace UI
             }
         }
 
+        private void OnDestroy()
+        {
+            if (InventoryManager.Instance != null)
+            {
+                InventoryManager.Instance.OnItemAdded -= SyncDynamicInventory;
+            }
+            if (Instance == this)
+                Instance = null;
+        }
+
         private void BindPlayer(Player.PlayerStats stats)
         {
             playerStats = stats;
@@ -194,16 +222,15 @@ namespace UI
         {
             // 기존 리스트가 파괴된 객체들을 들고 있다면 비워줍니다.
             buffIconImages.Clear();
-            itemSlotImages.Clear();
 
             // 다시 슬롯들을 생성하는 로직 호출
             BuildBuffContainer();
-            BuildRightItemSlots();
 
-            SyncInventory();
+            // [제거됨] BuildRightItemSlots(), SyncInventory() → PlayerUIExtension에서 처리
             RefreshHP();
             RefreshStealth();
             RefreshBuffs();
+            RefreshCurrency();
         }
 
         private void Update()
@@ -220,6 +247,7 @@ namespace UI
             RefreshStealth();
             RefreshBuffs(); // 버프 아이콘 갱신 추가
             HandleInteractUIPosition();
+            RefreshCurrency();
         }
 
         private void HandleInteractUIPosition()
@@ -375,29 +403,7 @@ namespace UI
 
         #endregion
 
-        #region 인벤토리 동기화
-
-        private void SyncInventory()
-        {
-            if (InventoryManager.Instance == null)
-                return;
-
-            var items = InventoryManager.Instance.items;
-            for (int i = 0; i < itemSlotImages.Count; i++)
-            {
-                if (i < items.Count)
-                {
-                    itemSlotImages[i].sprite = items[i].icon;
-                    itemSlotImages[i].color = Color.white;
-                }
-                else
-                {
-                    itemSlotImages[i].color = Color.clear;
-                }
-            }
-        }
-
-        #endregion
+        // [제거됨] #region 인벤토리 동기화 → PlayerUIExtension.SyncDynamicInventory()로 대체
         // ────────────────────────────────────────────────────────────
         #region 좌상단 HUD (HP + 스텔스)
 
@@ -477,76 +483,7 @@ namespace UI
         #endregion
 
         // ────────────────────────────────────────────────────────────
-        #region 우측 아이템 슬롯
-
-        private void BuildRightItemSlots()
-        {
-            itemSlotImages.Clear();
-
-            const float slotSize = 52f;
-            const float slotSpacing = 6f;
-            float totalH = MAX_ITEM_SLOTS * (slotSize + slotSpacing);
-
-            GameObject container = CreateUIObject("ItemSlots_Container", hudCanvas.transform);
-            RectTransform cRT = container.GetComponent<RectTransform>();
-            cRT.anchorMin = new Vector2(1, 0.5f);
-            cRT.anchorMax = new Vector2(1, 0.5f);
-            cRT.pivot = new Vector2(1, 0.5f);
-            cRT.anchoredPosition = new Vector2(-20, 0);
-            cRT.sizeDelta = new Vector2(slotSize + 16f, totalH);
-
-            for (int i = 0; i < MAX_ITEM_SLOTS; i++)
-            {
-                float yPos = totalH * 0.5f - i * (slotSize + slotSpacing) - slotSize * 0.5f;
-
-                GameObject slotGo = CreateUIObject($"ItemSlot_{i}", container.transform);
-                RectTransform sRT = slotGo.GetComponent<RectTransform>();
-                sRT.anchorMin = sRT.anchorMax = new Vector2(0.5f, 0.5f);
-                sRT.pivot = new Vector2(0.5f, 0.5f);
-                sRT.anchoredPosition = new Vector2(0, yPos);
-                sRT.sizeDelta = new Vector2(slotSize, slotSize);
-
-                Image bgImg = slotGo.AddComponent<Image>();
-                bgImg.color = new Color(0.12f, 0.12f, 0.12f, 0.75f);
-
-                Outline outline = slotGo.AddComponent<Outline>();
-                outline.effectColor = new Color(0.35f, 0.35f, 0.35f, 0.8f);
-                outline.effectDistance = new Vector2(1.5f, -1.5f);
-
-                // 슬롯 번호
-                GameObject numGo = CreateUIObject($"SlotNum_{i}", slotGo.transform);
-                SetRect(
-                    numGo,
-                    new Vector2(0, 1),
-                    new Vector2(0, 1),
-                    new Vector2(0, 1),
-                    new Vector2(3, -2),
-                    new Vector2(20, 15)
-                );
-                TextMeshProUGUI numText = numGo.AddComponent<TextMeshProUGUI>();
-                numText.font = font;
-                StyleLabel(
-                    numText,
-                    (i + 1).ToString(),
-                    10,
-                    TextAlignmentOptions.TopLeft,
-                    new Color(0.55f, 0.55f, 0.55f)
-                );
-
-                // 아이템 아이콘
-                GameObject iconGo = CreateUIObject($"ItemIcon_{i}", slotGo.transform);
-                RectTransform iRT = iconGo.GetComponent<RectTransform>();
-                iRT.anchorMin = Vector2.zero;
-                iRT.anchorMax = Vector2.one;
-                iRT.offsetMin = new Vector2(6, 6);
-                iRT.offsetMax = new Vector2(-6, -6);
-                Image iconImg = iconGo.AddComponent<Image>();
-                iconImg.color = Color.clear;
-                itemSlotImages.Add(iconImg);
-            }
-        }
-
-        #endregion
+        // [제거됨] #region 우측 아이템 슬롯 → PlayerUIExtension.BuildDynamicInventory()로 대체
         // ────────────────────────────────────────────────────────────
         #region 보스 HP 패널
 
@@ -742,6 +679,284 @@ namespace UI
             go.transform.SetParent(parent, false);
             go.AddComponent<RectTransform>();
             return go;
+        }
+
+        #endregion
+        // ────────────────────────────────────────────────────────────
+        #region 동적 인벤토리 UI 구축
+
+        private void BuildDynamicInventory()
+        {
+            float visibleHeight = VISIBLE_SLOT_COUNT * (SLOT_SIZE + SLOT_SPACING);
+
+            // ── 메인 컨테이너 (위치/크기 결정) ──
+            _inventoryContainer = CreateUIObject("ItemSlots_Root", hudCanvas.transform);
+            RectTransform rootRT = _inventoryContainer.GetComponent<RectTransform>();
+            rootRT.anchorMin = new Vector2(1, 0.5f);
+            rootRT.anchorMax = new Vector2(1, 0.5f);
+            rootRT.pivot = new Vector2(1, 0.5f);
+            rootRT.anchoredPosition = new Vector2(-20, 0);
+            rootRT.sizeDelta = new Vector2(SLOT_SIZE + 16f, visibleHeight);
+
+            // ── 아이템 카운트 텍스트 (상단) ──
+            GameObject countGo = CreateUIObject("ItemCount", _inventoryContainer.transform);
+            RectTransform countRT = countGo.GetComponent<RectTransform>();
+            countRT.anchorMin = new Vector2(0.5f, 1);
+            countRT.anchorMax = new Vector2(0.5f, 1);
+            countRT.pivot = new Vector2(0.5f, 0);
+            countRT.anchoredPosition = new Vector2(0, 4);
+            countRT.sizeDelta = new Vector2(60, 18);
+            _itemCountText = countGo.AddComponent<TextMeshProUGUI>();
+            _itemCountText.font = font;
+            _itemCountText.fontSize = 11;
+            _itemCountText.alignment = TextAlignmentOptions.Center;
+            _itemCountText.color = new Color(0.65f, 0.65f, 0.65f);
+            _itemCountText.text = "0";
+
+            // ── Viewport (클리핑 영역) ──
+            _inventoryViewport = CreateUIObject("Viewport", _inventoryContainer.transform);
+            RectTransform vpRT = _inventoryViewport.GetComponent<RectTransform>();
+            vpRT.anchorMin = Vector2.zero;
+            vpRT.anchorMax = Vector2.one;
+            vpRT.offsetMin = Vector2.zero;
+            vpRT.offsetMax = Vector2.zero;
+
+            // Mask + Image (Mask는 Image alpha > 0이어야 동작, showMaskGraphic=false로 시각적으로 숨김)
+            Image vpImg = _inventoryViewport.AddComponent<Image>();
+            vpImg.color = Color.white;
+            Mask vpMask = _inventoryViewport.AddComponent<Mask>();
+            vpMask.showMaskGraphic = false;
+
+            // ── Content (실제 슬롯들이 들어가는 곳, 스크롤됨) ──
+            _inventoryContent = CreateUIObject("Content", _inventoryViewport.transform);
+            RectTransform contentRT = _inventoryContent.GetComponent<RectTransform>();
+            contentRT.anchorMin = new Vector2(0, 1);
+            contentRT.anchorMax = new Vector2(1, 1);
+            contentRT.pivot = new Vector2(0.5f, 1);
+            contentRT.anchoredPosition = Vector2.zero;
+            // 초기 높이는 보이는 영역과 동일 (아이템이 적을 때)
+            contentRT.sizeDelta = new Vector2(0, visibleHeight);
+
+            // ── ScrollRect ──
+            _scrollRect = _inventoryContainer.AddComponent<ScrollRect>();
+            _scrollRect.content = contentRT;
+            _scrollRect.viewport = vpRT;
+            _scrollRect.horizontal = false;
+            _scrollRect.vertical = true;
+            _scrollRect.scrollSensitivity = SCROLL_SPEED;
+            _scrollRect.movementType = ScrollRect.MovementType.Clamped;
+            _scrollRect.inertia = true;
+            _scrollRect.decelerationRate = 0.1f;
+
+            // 스크롤바 없이 사용 (깔끔한 UI)
+            _scrollRect.verticalScrollbar = null;
+            _scrollRect.horizontalScrollbar = null;
+
+            // ── 스크롤 인디케이터 (하단 화살표) ──
+            BuildScrollIndicator();
+        }
+
+        private void BuildScrollIndicator()
+        {
+            // 스크롤 가능할 때 나타나는 하단 화살표 힌트
+            GameObject indicatorGo = CreateUIObject("ScrollHint", _inventoryContainer.transform);
+            RectTransform indRT = indicatorGo.GetComponent<RectTransform>();
+            indRT.anchorMin = new Vector2(0.5f, 0);
+            indRT.anchorMax = new Vector2(0.5f, 0);
+            indRT.pivot = new Vector2(0.5f, 1);
+            indRT.anchoredPosition = new Vector2(0, -2);
+            indRT.sizeDelta = new Vector2(40, 14);
+
+            TextMeshProUGUI hint = indicatorGo.AddComponent<TextMeshProUGUI>();
+            hint.font = font;
+            hint.fontSize = 10;
+            hint.alignment = TextAlignmentOptions.Center;
+            hint.color = new Color(0.5f, 0.5f, 0.5f, 0.6f);
+            hint.text = "▼ ▼ ▼";
+            hint.raycastTarget = false;
+        }
+
+        /// <summary>
+        /// 아이템 수에 맞게 슬롯을 동적으로 생성/제거하고 동기화합니다.
+        /// </summary>
+        private void SyncDynamicInventory()
+        {
+            if (InventoryManager.Instance == null || _inventoryContent == null)
+                return;
+
+            var items = InventoryManager.Instance.items;
+            int itemCount = items.Count;
+
+            // ── 아이템 수만큼만 슬롯 생성 (동적 할당) ──
+            while (_dynamicSlotImages.Count < itemCount)
+            {
+                CreateSlot(_dynamicSlotImages.Count);
+            }
+
+            // ── Content 높이 갱신 (스크롤 영역) ──
+            float totalHeight = itemCount * (SLOT_SIZE + SLOT_SPACING);
+            RectTransform contentRT = _inventoryContent.GetComponent<RectTransform>();
+            contentRT.sizeDelta = new Vector2(contentRT.sizeDelta.x, totalHeight);
+
+            // ── 슬롯 내용 동기화 ──
+            for (int i = 0; i < _dynamicSlotImages.Count; i++)
+            {
+                if (_dynamicSlotImages[i] == null)
+                    continue;
+
+                // 아이템이 있는 슬롯: 아이콘 표시 + 슬롯 활성화
+                if (i < itemCount)
+                {
+                    _dynamicSlotImages[i].transform.parent.gameObject.SetActive(true);
+                    _dynamicSlotImages[i].sprite = items[i].icon;
+                    _dynamicSlotImages[i].color = Color.white;
+                }
+                else
+                {
+                    // 아이템이 제거된 경우를 대비해 초과 슬롯 숨김
+                    _dynamicSlotImages[i].transform.parent.gameObject.SetActive(false);
+                }
+            }
+
+            // 카운트 텍스트 업데이트
+            if (_itemCountText != null)
+            {
+                _itemCountText.text = itemCount > 0 ? $"{itemCount}" : "";
+            }
+
+            // 스크롤 힌트 표시/숨김
+            Transform scrollHint = _inventoryContainer.transform.Find("ScrollHint");
+            if (scrollHint != null)
+                scrollHint.gameObject.SetActive(itemCount > VISIBLE_SLOT_COUNT);
+        }
+
+        private void CreateSlot(int index)
+        {
+            float yPos = -(index * (SLOT_SIZE + SLOT_SPACING));
+
+            GameObject slotGo = CreateUIObject($"Ext_Slot_{index}", _inventoryContent.transform);
+            RectTransform sRT = slotGo.GetComponent<RectTransform>();
+            sRT.anchorMin = new Vector2(0.5f, 1);
+            sRT.anchorMax = new Vector2(0.5f, 1);
+            sRT.pivot = new Vector2(0.5f, 1);
+            sRT.anchoredPosition = new Vector2(0, yPos);
+            sRT.sizeDelta = new Vector2(SLOT_SIZE, SLOT_SIZE);
+
+            // 슬롯 배경
+            Image bgImg = slotGo.AddComponent<Image>();
+            bgImg.color = new Color(0.12f, 0.12f, 0.12f, 0.75f);
+
+            // 아웃라인
+            Outline outline = slotGo.AddComponent<Outline>();
+            outline.effectColor = new Color(0.35f, 0.35f, 0.35f, 0.8f);
+            outline.effectDistance = new Vector2(1.5f, -1.5f);
+
+            // 슬롯 번호
+            GameObject numGo = CreateUIObject($"Ext_SlotNum_{index}", slotGo.transform);
+            RectTransform numRT = numGo.GetComponent<RectTransform>();
+            numRT.anchorMin = new Vector2(0, 1);
+            numRT.anchorMax = new Vector2(0, 1);
+            numRT.pivot = new Vector2(0, 1);
+            numRT.anchoredPosition = new Vector2(3, -2);
+            numRT.sizeDelta = new Vector2(20, 15);
+            TextMeshProUGUI numText = numGo.AddComponent<TextMeshProUGUI>();
+            numText.font = font;
+            numText.text = (index + 1).ToString();
+            numText.fontSize = 10;
+            numText.alignment = TextAlignmentOptions.TopLeft;
+            numText.color = new Color(0.55f, 0.55f, 0.55f);
+            numText.raycastTarget = false;
+
+            // 아이템 아이콘
+            GameObject iconGo = CreateUIObject($"Ext_Icon_{index}", slotGo.transform);
+            RectTransform iRT = iconGo.GetComponent<RectTransform>();
+            iRT.anchorMin = Vector2.zero;
+            iRT.anchorMax = Vector2.one;
+            iRT.offsetMin = new Vector2(6, 6);
+            iRT.offsetMax = new Vector2(-6, -6);
+            Image iconImg = iconGo.AddComponent<Image>();
+            iconImg.color = Color.clear;
+            iconImg.raycastTarget = false;
+            _dynamicSlotImages.Add(iconImg);
+        }
+
+        #endregion
+
+        // ────────────────────────────────────────────────────────────
+        #region 재화 표기 UI
+
+        private void BuildCurrencyPanel()
+        {
+            // ── 패널 루트 (우하단) ──
+            _currencyPanel = CreateUIObject("Ext_Currency_Panel", hudCanvas.transform);
+            RectTransform panelRT = _currencyPanel.GetComponent<RectTransform>();
+            panelRT.anchorMin = new Vector2(1, 0);
+            panelRT.anchorMax = new Vector2(1, 0);
+            panelRT.pivot = new Vector2(1, 0);
+            panelRT.anchoredPosition = new Vector2(-20, 20);
+            panelRT.sizeDelta = new Vector2(180, 56);
+
+            // 반투명 배경
+            Image panelBg = _currencyPanel.AddComponent<Image>();
+            panelBg.color = new Color(0.08f, 0.08f, 0.1f, 0.8f);
+            panelBg.raycastTarget = false;
+
+            // 아웃라인
+            Outline panelOutline = _currencyPanel.AddComponent<Outline>();
+            panelOutline.effectColor = new Color(0.25f, 0.25f, 0.3f, 0.6f);
+            panelOutline.effectDistance = new Vector2(1.5f, -1.5f);
+
+            // ── 볼트 행 ──
+            // 아이콘 대신 컬러 텍스트로 구분
+            GameObject boltRow = CreateUIObject("BoltRow", _currencyPanel.transform);
+            RectTransform boltRT = boltRow.GetComponent<RectTransform>();
+            boltRT.anchorMin = new Vector2(0, 1);
+            boltRT.anchorMax = new Vector2(1, 1);
+            boltRT.pivot = new Vector2(0, 1);
+            boltRT.anchoredPosition = new Vector2(10, -6);
+            boltRT.sizeDelta = new Vector2(-20, 22);
+
+            _boltText = boltRow.AddComponent<TextMeshProUGUI>();
+            _boltText.font = font;
+            _boltText.fontSize = 13;
+            _boltText.alignment = TextAlignmentOptions.Left;
+            _boltText.color = Color.white;
+            _boltText.text = "<sprite=0> 0";
+            _boltText.raycastTarget = false;
+
+            // ── 크레딧 행 ──
+            GameObject creditRow = CreateUIObject("CreditRow", _currencyPanel.transform);
+            RectTransform creditRT = creditRow.GetComponent<RectTransform>();
+            creditRT.anchorMin = new Vector2(0, 1);
+            creditRT.anchorMax = new Vector2(1, 1);
+            creditRT.pivot = new Vector2(0, 1);
+            creditRT.anchoredPosition = new Vector2(10, -28);
+            creditRT.sizeDelta = new Vector2(-20, 22);
+
+            _creditText = creditRow.AddComponent<TextMeshProUGUI>();
+            _creditText.font = font;
+            _creditText.fontSize = 13;
+            _creditText.alignment = TextAlignmentOptions.Left;
+            _creditText.color = Color.white;
+            _creditText.text = "<sprite=1> 0";
+            _creditText.raycastTarget = false;
+        }
+
+        private void RefreshCurrency()
+        {
+            // 볼트 (인게임 재화 — PlayerStats에서)
+            if (_boltText != null)
+            {
+                int bolts = playerStats.GetBolts();
+                _boltText.text = $"<sprite=0> {bolts}";
+            }
+
+            // 크레딧 (영구 재화 — PlayerPrefs에서)
+            if (_creditText != null)
+            {
+                int credits = PlayerPrefs.GetInt("LobbyCredits", 0);
+                _creditText.text = $"<sprite=1> {credits}";
+            }
         }
 
         #endregion
