@@ -156,7 +156,6 @@ namespace Core
             Random.InitState(CurrentSeed);
 
             UI.UIManager.Instance.LoadScene("GameScene");
-            WaveManager.Instance.StartFloor(1);
         }
 
         public void AdvanceFloor()
