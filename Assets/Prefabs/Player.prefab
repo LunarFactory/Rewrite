@@ -206,8 +206,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerController
   weaponPivot: {fileID: 2142200513355683706}
   aimCenterOffset: {x: 0, y: 0.5}
-  isAttacking: 0
-  isStealth: 0
   attackAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   stealthAction: {fileID: 3065782347376509614, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &3070044694485022357
@@ -253,6 +251,8 @@ MonoBehaviour:
   - {fileID: -5844229392406826400, guid: 95b371eb65e494d4b831482d6616908a, type: 3}
   - {fileID: -2270108244896127765, guid: 95b371eb65e494d4b831482d6616908a, type: 3}
   idleSprites:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   runSprites:

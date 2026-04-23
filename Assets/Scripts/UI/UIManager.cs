@@ -29,7 +29,6 @@ namespace UI
         private UIState _currentState = UIState.None;
         public UIState CurrentState => _currentState;
 
-        public Sprite crosshairSprite;
         private bool _isInitialized = false;
 
         private void Awake()
@@ -76,7 +75,6 @@ namespace UI
                 _playerUI = gameObject.AddComponent<PlayerUI>();
             _playerUI.SetFont(_font);
             _playerUI.SetPlayerInput(input);
-            _playerUI.SetCrosshairSprite(crosshairSprite);
             if (_upgradeUI == null)
                 _upgradeUI = gameObject.AddComponent<UpgradeUI>();
             _upgradeUI.SetFont(_font); // UIManager.LoadUI(PlayerInput input) 내부에서...

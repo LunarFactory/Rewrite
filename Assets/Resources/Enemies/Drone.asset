@@ -28,20 +28,21 @@ MonoBehaviour:
   baseDamageTakenFlat: 0
   baseDamageTakenPercent: 0
   hitstunDuration: 0.15
-  shootDelay: 0.5
   animationFrames:
   - {fileID: 9148800814639467426, guid: 3564e5c59e889aa4a8a4624b756b0945, type: 3}
   - {fileID: 5498624604312018247, guid: 3564e5c59e889aa4a8a4624b756b0945, type: 3}
   - {fileID: 3045448774101167736, guid: 3564e5c59e889aa4a8a4624b756b0945, type: 3}
   - {fileID: 2988518329322137845, guid: 3564e5c59e889aa4a8a4624b756b0945, type: 3}
+  directionalSprites: []
   defaultFPS: 10
   isInvincible: 0
-  moveDuration: 2
-  bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}
-  bulletSpeed: 10
-  directionalSprites: []
-  restDuration: 2
-  aimDuration: 1.5
-  fireDelay: 0.3
-  targetingMarkerSprite: {fileID: 0}
-  markerSortingOrder: -1
+  tier: 0
+  cost: 1
+  minFloor: 1
+  maxCountInWave: 300
+  ComponentName: DroneAI
+  colliderSize: {x: 1, y: 1}
+  colliderOffset: {x: 0, y: 0}
+  bulletList:
+  - bulletKey: Normal
+    bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}

@@ -1,8 +1,9 @@
-using UnityEngine;
 using System.Collections.Generic;
+using Core;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Weapon
 {
@@ -45,13 +46,13 @@ namespace Weapon
         private float minSpeed;
 
         private bool isHoming = false;
-        private float homingRange = 0f;      // 유도 인식 범위
+        private float homingRange = 0f; // 유도 인식 범위
         public float HomingRange
         {
             set { homingRange = value; }
             get { return homingRange; }
         }
-        private float homingStrength = 0f;   // 유도 성능 (높을수록 급격하게 꺾임)
+        private float homingStrength = 0f; // 유도 성능 (높을수록 급격하게 꺾임)
         public float HomingStrength
         {
             set { homingStrength = value; }
@@ -60,8 +61,13 @@ namespace Weapon
         public bool forceNoHoming = false;
         private Transform _target;
 
+        private GameObject _originPrefab;
         private HashSet<EntityId> _hitTargets = new HashSet<EntityId>();
-        [HideInInspector] public EntityStats stats;
+
+        [HideInInspector]
+        public EntityStats stats;
+
+        public void SetOriginPrefab(GameObject prefab) => _originPrefab = prefab;
 
         private void Awake()
         {
@@ -76,9 +82,15 @@ namespace Weapon
             }
         }
 
-        public void Initialize(Vector2 direction, ProjectileInfo proj, EntityStats stats, bool noHoming = false)
+        public void Initialize(
+            Vector2 direction,
+            ProjectileInfo proj,
+            EntityStats stats,
+            bool noHoming = false
+        )
         {
-            if (rb == null) rb = GetComponent<Rigidbody2D>();
+            if (rb == null)
+                rb = GetComponent<Rigidbody2D>();
 
             this.moveVelocity = direction.normalized;
             this.stats = stats;
@@ -101,10 +113,14 @@ namespace Weapon
 
         private void FixedUpdate()
         {
-            if (homingRange > 0 && homingStrength > 0) isHoming = true;
-            else isHoming = false;
-            if (forceNoHoming) isHoming = false;
-            if (!isInitialized || rb == null) return;
+            if (homingRange > 0 && homingStrength > 0)
+                isHoming = true;
+            else
+                isHoming = false;
+            if (forceNoHoming)
+                isHoming = false;
+            if (!isInitialized || rb == null)
+                return;
 
             // 1. 유도 대상 찾기 (기존 코드 유지)
             if (isHoming && _target == null)
@@ -114,7 +130,11 @@ namespace Weapon
 
             // 2. 속도 및 소멸 체크 (기존 코드 유지)
             currentSpeed *= (1 - decelerationRate);
-            if (currentSpeed < minSpeed) { Destroy(gameObject); return; }
+            if (currentSpeed < minSpeed)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
             // 3. [추가] 유도 조향 (Steering) 로직
             if (isHoming && _target != null)
@@ -132,7 +152,9 @@ namespace Weapon
                 {
                     Vector2 directionToTarget = (_target.position - transform.position).normalized;
                     // homingStrength(유도 강도)는 약 5~10 정도를 추천합니다.
-                    moveVelocity = Vector2.Lerp(moveVelocity, directionToTarget, homingStrength * Time.fixedDeltaTime).normalized;
+                    moveVelocity = Vector2
+                        .Lerp(moveVelocity, directionToTarget, homingStrength * Time.fixedDeltaTime)
+                        .normalized;
 
                     // 조향 중에도 탄환의 앞방향이 진행 방향을 바라보게 갱신
                     float angle = Mathf.Atan2(moveVelocity.y, moveVelocity.x) * Mathf.Rad2Deg;
@@ -142,11 +164,18 @@ namespace Weapon
 
             // 4. 벽 충돌 검사 (조향된 moveVelocity 기준)
             float moveDistance = currentSpeed * Time.fixedDeltaTime;
-            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.1f, moveVelocity, moveDistance, LayerMask.GetMask("Obstacle"));
+            RaycastHit2D hit = Physics2D.CircleCast(
+                transform.position,
+                0.1f,
+                moveVelocity,
+                moveDistance,
+                LayerMask.GetMask("Obstacle")
+            );
 
             if (hit.collider != null && ricochetCount > 0)
             {
-                if (stats is PlayerStats player) player.NotifyWallHit(this);
+                if (stats is PlayerStats player)
+                    player.NotifyWallHit(this);
 
                 // 1. 벽에 부딪힌 순간, 가장 가까운 적을 즉시 새로 찾습니다.
                 _target = FindClosestEnemy();
@@ -181,8 +210,9 @@ namespace Weapon
             }
             else if (hit.collider != null && ricochetCount <= 0)
             {
-                if (stats is PlayerStats player) player.NotifyWallHit(this);
-                Destroy(gameObject);
+                if (stats is PlayerStats player)
+                    player.NotifyWallHit(this);
+                Deactivate();
             }
             else
             {
@@ -193,18 +223,24 @@ namespace Weapon
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!isInitialized) return;
+            if (!isInitialized)
+                return;
 
             // [변경] 벽(Obstacle) 체크 로직은 FixedUpdate로 옮겼으므로 여기선 Entity만 체크합니다.
-            EntityStats target = collision.GetComponent<EntityStats>() ?? collision.GetComponentInParent<EntityStats>();
+            EntityStats target =
+                collision.GetComponent<EntityStats>()
+                ?? collision.GetComponentInParent<EntityStats>();
 
             if (target != null)
             {
                 EntityId targetID = target.gameObject.GetEntityId();
-                if (_hitTargets.Contains(targetID)) return;
+                if (_hitTargets.Contains(targetID))
+                    return;
 
-                if (target is PlayerStats player && player.isStealth()) return;
-                if (target is EnemyStats enemy && enemy.isDead) return;
+                if (target is PlayerStats player && player.isStealth())
+                    return;
+                if (target is EnemyStats enemy && enemy.isDead)
+                    return;
 
                 _hitTargets.Add(targetID);
                 _target = null;
@@ -233,7 +269,7 @@ namespace Weapon
                 // 관통 1이면 두 명을 맞힐 수 있습니다. (첫 번째 맞고 생존, 두 번째 맞고 파괴)
                 if (pierceCount < 0)
                 {
-                    Destroy(gameObject);
+                    Deactivate();
                 }
             }
         }
@@ -241,17 +277,24 @@ namespace Weapon
         private Transform FindClosestEnemy()
         {
             // 주변 적 레이어만 검색
-            Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, homingRange, LayerMask.GetMask("Enemy"));
+            Collider2D[] enemies = Physics2D.OverlapCircleAll(
+                transform.position,
+                homingRange,
+                LayerMask.GetMask("Enemy")
+            );
 
             Transform closest = null;
             float minStatDistance = Mathf.Infinity;
 
             foreach (var enemy in enemies)
             {
-                EntityStats stats = enemy.GetComponent<EntityStats>() ?? enemy.GetComponentInParent<EntityStats>();
+                EntityStats stats =
+                    enemy.GetComponent<EntityStats>() ?? enemy.GetComponentInParent<EntityStats>();
                 // EnemyStats를 체크해서 죽은 적은 무시 (이전에 만든 기능 활용)
-                if (stats == null || (stats is EnemyStats e && e.isDead)) continue;
-                if (_hitTargets.Contains(enemy.gameObject.GetEntityId())) continue;
+                if (stats == null || (stats is EnemyStats e && e.isDead))
+                    continue;
+                if (_hitTargets.Contains(enemy.gameObject.GetEntityId()))
+                    continue;
 
                 float dist = Vector2.Distance(transform.position, enemy.transform.position);
                 if (dist < minStatDistance)
@@ -266,6 +309,14 @@ namespace Weapon
         public void ResetOnWallHit()
         {
             _hitTargets.Clear();
+        }
+
+        private void Deactivate()
+        {
+            if (_originPrefab != null)
+                ProjectileManager.Instance.Release(_originPrefab, gameObject);
+            else
+                Destroy(gameObject);
         }
     }
 }

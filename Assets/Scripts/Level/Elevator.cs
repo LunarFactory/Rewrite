@@ -1,7 +1,7 @@
+using Core;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UI;
-using Core;
 
 namespace Level
 {
@@ -15,14 +15,13 @@ namespace Level
 
         public override void OnInteract(GameObject interactEntity)
         {
-
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.LoadScene("SampleScene");
+                UIManager.Instance.LoadScene("GameScene");
             }
             else
             {
-                SceneManager.LoadScene("SampleScene");
+                SceneManager.LoadScene("GameScene");
             }
             if (RunManager.Instance != null)
             {

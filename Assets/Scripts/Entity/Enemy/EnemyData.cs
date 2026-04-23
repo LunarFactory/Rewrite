@@ -1,7 +1,22 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Enemy
 {
+    public enum EnemyTier
+    {
+        Normal,
+        Elite,
+        Special,
+    }
+
+    [System.Serializable]
+    public struct BulletEntry
+    {
+        public string bulletKey; // AI가 찾을 이름 (예: "Normal", "Special")
+        public GameObject bulletPrefab;
+    }
+
     [CreateAssetMenu(fileName = "NewEnemyData", menuName = "Enemy/EnemyData")]
     public class EnemyData : ScriptableObject
     {
@@ -32,30 +47,26 @@ namespace Enemy
         [Tooltip("피격 시 경직 시간")]
         public float hitstunDuration = 0.15f;
 
-        [Tooltip("발사 딜레이")]
-        public float shootDelay = 0.5f;
-
         [Header("Visuals")]
         public Sprite[] animationFrames; // 여기에 애니메이션 프레임들을 넣습니다.
+        public Sprite[] directionalSprites; // 8방향 정지 이미지용
         public float defaultFPS = 10f; // 애니메이션도 다를 경우
 
         [Header("Settings")]
         public bool isInvincible = false;
 
-        [Header("Drone Specific")]
-        public float moveDuration = 2f;
-        public GameObject bulletPrefab;
-        public float bulletSpeed = 10f;
+        [Tooltip("생성 설정")]
+        public EnemyTier tier;
+        public int cost;
+        public int minFloor; // 등장 시작 층
+        public int maxCountInWave; // 한 웨이브 최대 소환 수 (0이면 무제한)
+        public string ComponentName;
 
-        [Header("Directional sprite")]
-        [Tooltip("순서: 동(0), 북동(1), 북(2), 북서(3), 서(4), 남서(5), 남(6), 남동(7)")]
-        public Sprite[] directionalSprites;
+        [Header("물리 설정")]
+        public Vector2 colliderOffset = new Vector2(0f, 0f); // 발치에 피벗이 있을 때 유용
+        public Vector2 colliderSize = new Vector2(1f, 1f); // 인스펙터에서 조절 가능
 
-        [Header("Turret Settings")]
-        public float restDuration = 2f; // 휴식 시간 (바라만 봄)
-        public float aimDuration = 1.5f; // 조준 시간 (추적하며 충전)
-        public float fireDelay = 0.3f; // 발사 직전 고정 시간
-        public Sprite targetingMarkerSprite; // 표식으로 쓸 이미지 (Sprite)
-        public int markerSortingOrder = -1; // 발사 직전 고정 시간
+        [Header("탄환 목록")]
+        public List<BulletEntry> bulletList;
     }
 }

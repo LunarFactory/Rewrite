@@ -6,8 +6,8 @@ public class FDTManager : MonoBehaviour
     public static FDTManager Instance { get; private set; }
 
     [Header("Settings")]
-    public FDTObject fdtPrefab; // TextMeshPro가 붙은 FDTObject 프리팹
-    public float defaultDuration = 1f;
+    private FDTObject fdtPrefab; // TextMeshPro가 붙은 FDTObject 프리팹
+    private float fdtDuration;
 
     private void Awake()
     {
@@ -19,6 +19,12 @@ public class FDTManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SetFDTPrefab(FDTObject prefab, float duration)
+    {
+        fdtPrefab = prefab;
+        fdtDuration = duration;
     }
 
     // ── 공개 API ──────────────────────────────────────────────────
@@ -38,7 +44,7 @@ public class FDTManager : MonoBehaviour
 
         // 2. 색상 결정 및 초기화
         Color damageColor = color;
-        newFdt.Initialize(damage, defaultDuration, damageColor);
+        newFdt.Initialize(damage, fdtDuration, damageColor);
     }
 
     public void SpawnText(Vector3 position, string text, Color color)
@@ -53,6 +59,6 @@ public class FDTManager : MonoBehaviour
 
         // 2. 색상 결정 및 초기화
         Color damageColor = color;
-        newFdt.Initialize(text, defaultDuration, damageColor);
+        newFdt.Initialize(text, fdtDuration, damageColor);
     }
 }

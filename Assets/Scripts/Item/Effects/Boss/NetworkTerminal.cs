@@ -1,11 +1,11 @@
-using UnityEngine;
-using System.Collections;
-using Entity;
-using Player;
 using System;
-using Unity.VisualScripting;
+using System.Collections;
 using Core;
 using Enemy;
+using Entity;
+using Player;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Item
 {
@@ -15,6 +15,7 @@ namespace Item
         public float cooldown = 30f;
         public float damageMultiplier = 1.0f;
         public float damageValue = 0.2f;
+
         public override void OnApply(PlayerStats player)
         {
             var tracker = player.GetComponent<NetworkTerminalTracker>();
@@ -33,14 +34,19 @@ namespace Item
         private float _damageValue;
         private float _cooldown;
 
-        public void Initialize(PlayerStats player, float damageMultiplier, float damageValue, float cooldown)
+        public void Initialize(
+            PlayerStats player,
+            float damageMultiplier,
+            float damageValue,
+            float cooldown
+        )
         {
             _player = player;
             _damageMultiplier = damageMultiplier;
             _damageValue = damageValue;
             _cooldown = cooldown;
 
-            WaveManager.OnBossSummon += HandleBossDamage;
+            GameManager.OnBossSummon += HandleBossDamage;
             _player.OnPlayerAttackHit += HandleBossExtraDamage;
         }
 
@@ -55,16 +61,27 @@ namespace Item
             {
                 if (enemy.isBoss)
                 {
-                    enemy.TakeDamage(attacker, Mathf.RoundToInt(_player.DamageIncreased.GetValue(damage * _damageMultiplier)), Color.aliceBlue);
+                    enemy.TakeDamage(
+                        attacker,
+                        Mathf.RoundToInt(
+                            _player.DamageIncreased.GetValue(damage * _damageMultiplier)
+                        ),
+                        Color.aliceBlue
+                    );
                 }
             }
         }
+
         private IEnumerator BossDamage(EntityStats boss)
         {
             yield return new WaitForSeconds(_cooldown);
             if (boss is EnemyStats enemy)
             {
-                enemy.TakeDamage(_player, Mathf.RoundToInt(enemy.maxHealth * _damageValue), Color.aliceBlue);
+                enemy.TakeDamage(
+                    _player,
+                    Mathf.RoundToInt(enemy.maxHealth * _damageValue),
+                    Color.aliceBlue
+                );
             }
         }
 
@@ -74,7 +91,7 @@ namespace Item
             {
                 _player.DamageTaken.RemoveModifiersFromSource(this);
 
-                WaveManager.OnBossSummon -= HandleBossDamage;
+                GameManager.OnBossSummon -= HandleBossDamage;
                 _player.OnPlayerAttackHit -= HandleBossExtraDamage;
             }
         }

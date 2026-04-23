@@ -48,8 +48,6 @@ namespace UI
         // 폰트
         private TMP_FontAsset font;
 
-        private Sprite crosshairSprite;
-
         private PlayerInput playerInput;
 
         #region Unity Lifecycle
@@ -117,16 +115,13 @@ namespace UI
                 interactText.font = font;
                 interactText.fontSize = 36;
                 interactText.textWrappingMode = TextWrappingModes.NoWrap;
+                interactText.verticalAlignment = VerticalAlignmentOptions.Middle;
+                interactText.horizontalAlignment = HorizontalAlignmentOptions.Center;
                 interactRoot.transform.SetParent(hudCanvas.transform, false);
 
                 // 이동 후 스케일이 꼬일 수 있으니 (1,1,1)로 초기화
                 interactRoot.transform.localScale = Vector3.one;
             }
-        }
-
-        public void SetCrosshairSprite(Sprite sprite)
-        {
-            crosshairSprite = sprite;
         }
 
         public void SetPlayerInput(PlayerInput input)

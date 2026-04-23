@@ -12,26 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
   m_Name: Dummy
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
-  enemyName: 
+  enemyName: "\uB354\uBBF8"
   maxHealth: 100000
-  baseMoveSpeed: 2
-  baseAttackDamage: 10
+  baseMoveSpeed: 0
+  baseAttackDamage: 0
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 1
+  baseProjectileScale: 1
+  baseProjectileSpeed: 1
   baseDamageIncreasedFlat: 0
   baseDamageIncreasedPercent: 0
   baseDamageTakenFlat: 0
   baseDamageTakenPercent: 0
   hitstunDuration: 0.15
-  shootDelay: 0.5
   animationFrames:
   - {fileID: -4010617647764655359, guid: c73828e89c7f5cf408296522de3d218d, type: 3}
+  directionalSprites: []
   defaultFPS: 10
   isInvincible: 0
-  moveDuration: 2
-  bulletPrefab: {fileID: 0}
-  bulletSpeed: 10
-  directionalSprites: []
-  restDuration: 2
-  aimDuration: 0
-  fireDelay: 0.3
-  targetingMarkerSprite: {fileID: 0}
-  markerSortingOrder: -1
+  tier: 0
+  cost: 0
+  minFloor: 0
+  maxCountInWave: 0
+  ComponentName: DummyAI
+  colliderOffset: {x: 0, y: 0.2}
+  colliderSize: {x: 0.75, y: 0.5}
+  bulletList: []

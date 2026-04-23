@@ -11,7 +11,7 @@ namespace Log
         private int shotsFired;
         private int shotsHit;
         private float waveStartTime;
-        
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -34,17 +34,22 @@ namespace Log
         public void OnWaveCompleted(int wave)
         {
             float duration = Time.time - waveStartTime;
-            if (duration <= 0) duration = 1f;
+            if (duration <= 0)
+                duration = 1f;
 
             float apm = (currentActions / duration) * 60f;
             float accuracy = shotsFired > 0 ? (float)shotsHit / shotsFired : 0f;
 
-            Debug.Log($"[PlayerLogManager] Wave {wave} Ended. Time: {duration}s, APM: {apm:F1}, Accuracy: {accuracy:P1}");
+            Debug.Log(
+                $"[PlayerLogManager] Wave {wave} Ended. Time: {duration}s, APM: {apm:F1}, Accuracy: {accuracy:P1}"
+            );
             // Eventual integration point to send to backend ML system
         }
 
         public void RecordAction() => currentActions++;
+
         public void RecordShotFired() => shotsFired++;
+
         public void RecordShotHit() => shotsHit++;
     }
 }

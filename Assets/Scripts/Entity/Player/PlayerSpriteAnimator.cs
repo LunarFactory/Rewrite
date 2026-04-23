@@ -95,66 +95,53 @@ namespace Player
 
         private void Update()
         {
+            // 1. 참조 및 카메라 체크 (이전 로직 유지)
             if (_mainCam == null)
-            {
                 _mainCam = Camera.main;
-                if (_mainCam == null)
-                    return;
-            }
-
-            // 2. 컨트롤러가 없으면 다시 찾기
             if (controller == null)
-            {
-                controller = GetComponentInParent<PlayerController>();
-                if (controller == null)
-                    return;
-            }
-            // 1. 이동 상태 확인 (기존 controller 활용)
+                return;
+
+            // 2. 이동 및 조준 방향 데이터 확보
             Vector2 moveInput = controller.MoveInput;
             bool isMoving = moveInput.sqrMagnitude > 0.01f;
 
-            // 2. [핵심] Input System 액션에서 마우스 좌표 읽기
-            Vector2 mouseScreenPos = Vector2.zero;
-            if (mousePosAction != null)
-            {
-                mouseScreenPos = mousePosAction.action.ReadValue<Vector2>();
-            }
+            // 조준점 좌표 가져오기 (싱글톤 활용)
+            Vector3 targetWorldPos =
+                (Crosshair.Instance != null)
+                    ? Crosshair.Instance.transform.position
+                    : transform.position;
+            Vector2 lookDir = (Vector2)(targetWorldPos - transform.position);
 
-            // 3. 월드 좌표 변환 및 방향 계산
-            Vector3 worldMousePos = _mainCam.ScreenToWorldPoint(
-                new Vector3(
-                    mouseScreenPos.x,
-                    mouseScreenPos.y,
-                    Mathf.Abs(_mainCam.transform.position.z)
-                )
-            );
-
-            Vector2 lookDir = (Vector2)(worldMousePos - transform.position);
-
-            // Flip 로직 (마우스 위치 기준)
-            if (Mathf.Abs(lookDir.x) > 0.01f)
+            // 3. 좌우 반전(Flip) 로직
+            if (Mathf.Abs(lookDir.x) > 0.05f)
             {
                 isFacingRight = lookDir.x > 0;
                 spriteRenderer.flipX = !isFacingRight;
             }
 
-            // 애니메이션 결정 로직
-            Sprite[] targetAnim = idleSprites;
-            if (isMoving)
-            {
-                // 마우스가 캐릭터보다 위에 있으면 위쪽 달리기 애니메이션 재생
-                targetAnim = (lookDir.y > 0.1f) ? runUpsideSprites : runSprites;
-            }
+            // 4. [중요] 애니메이션 결정 로직 (Null 체크 강화)
+            Sprite[] targetAnim = GetTargetAnimation(isMoving, lookDir.y);
 
+            // 5. 애니메이션 교체 시 초기화
             if (targetAnim != currentAnim)
             {
-                currentAnim = targetAnim;
-                currentFrame = 0;
-                frameTimer = 0f;
-                UpdateSprite();
+                if (targetAnim != null && targetAnim.Length > 0)
+                {
+                    currentAnim = targetAnim;
+                    currentFrame = 0;
+                    frameTimer = 0f;
+                    UpdateSprite();
+                }
+                else
+                {
+                    // 만약 바꿀 애니메이션이 비어있다면 Idle로 강제 복구
+                    currentAnim = idleSprites;
+                }
             }
 
-            // 프레임 재생 로직
+            // 6. 프레임 재생 로직 (fps가 0이면 재생 안 됨)
+            if (fps <= 0)
+                fps = 10f; // 최소 속도 보장
             float currentFps = isMoving ? fps : (fps / 2f);
 
             if (currentAnim != null && currentAnim.Length > 0)
@@ -167,6 +154,22 @@ namespace Player
                     UpdateSprite();
                 }
             }
+        }
+
+        // 애니메이션 선택 로직 분리 (가독성)
+        private Sprite[] GetTargetAnimation(bool isMoving, float lookY)
+        {
+            if (!isMoving)
+                return idleSprites;
+
+            // 달리는 중일 때 방향에 따라 애니메이션 선택
+            // Upside 애니메이션이 비어있다면 일반 Run으로 대체하는 안전장치 포함
+            if (lookY > 0.5f && runUpsideSprites != null && runUpsideSprites.Length > 0)
+            {
+                return runUpsideSprites;
+            }
+
+            return (runSprites != null && runSprites.Length > 0) ? runSprites : idleSprites;
         }
 
         private void UpdateSprite()

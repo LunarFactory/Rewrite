@@ -38,6 +38,7 @@ namespace Entity
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rb = GetComponent<Rigidbody2D>();
             _rb.gravityScale = 0f;
+            _rb.freezeRotation = true; // [추가] 물리 회전 방지 (이게 핵심!)
             if (_spriteRenderer != null)
                 _originalColor = _spriteRenderer.color;
         }

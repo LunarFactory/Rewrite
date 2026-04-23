@@ -28,13 +28,7 @@ MonoBehaviour:
   baseDamageTakenFlat: 0
   baseDamageTakenPercent: 0
   hitstunDuration: 0
-  shootDelay: 3
   animationFrames: []
-  defaultFPS: 10
-  isInvincible: 0
-  moveDuration: 1
-  bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}
-  bulletSpeed: 45
   directionalSprites:
   - {fileID: -1072714562, guid: 7517ff96bf962154685948907fd21365, type: 3}
   - {fileID: 816571229, guid: 7517ff96bf962154685948907fd21365, type: 3}
@@ -44,8 +38,13 @@ MonoBehaviour:
   - {fileID: -601697440, guid: 7517ff96bf962154685948907fd21365, type: 3}
   - {fileID: 668080929, guid: 7517ff96bf962154685948907fd21365, type: 3}
   - {fileID: 1325640915, guid: 7517ff96bf962154685948907fd21365, type: 3}
-  restDuration: 5
-  aimDuration: 3
-  fireDelay: 0.5
-  targetingMarkerSprite: {fileID: -621115978589131259, guid: 8fe9bde385be0f84cabe7399a9b8693a, type: 3}
-  markerSortingOrder: 9
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 0
+  cost: 0
+  minFloor: 0
+  maxCountInWave: 0
+  ComponentName: TurretAI
+  colliderOffset: {x: 0, y: 0.25}
+  colliderSize: {x: 1, y: 0.5}
+  bulletList: []

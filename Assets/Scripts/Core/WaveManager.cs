@@ -28,10 +28,21 @@ namespace Core
         private GameObject itemPrefab;
 
         [SerializeField]
-        private GameObject mobPrefab;
+        private List<EnemyData> bossPool; // 보스전 대비용 추가
 
         [SerializeField]
-        private GameObject bossPrefab; // 보스전 대비용 추가
+        private List<EnemyData> enemyPool; // 전체 적 데이터 리스트
+
+        private Dictionary<EnemyData, int> _spawnTracker = new Dictionary<EnemyData, int>();
+
+        [SerializeField]
+        private int baseWaveBudget = 10; // 1층 1웨이브 기본 예산
+
+        [SerializeField]
+        private int budgetIncreasePerWave = 2; // 웨이브당 증가치
+
+        [SerializeField]
+        private int budgetIncreasePerFloor = 20; // 층당 증가치
 
         [Header("Special Prefabs")]
         [SerializeField]
@@ -41,27 +52,9 @@ namespace Core
         private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
         public int activeEnemyCount = 0;
 
+        private GameManager gameManager;
+
         public static event Action OnBossWaveStart;
-        public static event Action<EntityStats> OnBossSummon;
-
-        private void Start()
-        {
-            // 씬이 시작되자마자 실행됩니다.
-            if (RunManager.Instance != null)
-            {
-                // 현재 RunManager에 저장된 층 번호로 웨이브를 시작합니다.
-                StartFloor(RunManager.Instance.CurrentFloor);
-            }
-            else { }
-            GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
-
-            // 2. 플레이어 객체를 찾아 위치 이동
-            GameObject player = GameObject.FindWithTag("Player");
-            if (player != null && spawnPoint != null)
-            {
-                player.transform.position = spawnPoint.transform.position;
-            }
-        }
 
         private void Awake()
         {
@@ -71,10 +64,30 @@ namespace Core
                 return;
             }
             Instance = this;
+            if (GameManager.Instance != null)
+            {
+                gameManager = GameManager.Instance;
+                enemyPool = gameManager.GetEnemyPool();
+                bossPool = gameManager.GetBossPool();
+            }
+        }
+
+        private void Start()
+        {
+            // 씬이 시작되자마자 실행됩니다.
+            if (RunManager.Instance != null)
+            {
+                // 현재 RunManager에 저장된 층 번호로 웨이브를 시작합니다.
+                StartFloor(RunManager.Instance.CurrentFloor);
+            }
         }
 
         public void StartFloor(int floorNumber)
         {
+            if (MapManager.Instance != null)
+            {
+                MapManager.Instance.LoadMap(floorNumber);
+            }
             CurrentWave = 1;
             StartWave(CurrentWave);
         }
@@ -89,7 +102,12 @@ namespace Core
             switch (type)
             {
                 case WaveType.Mob:
-                    SpawnEnemies(mobPrefab, 3 + RunManager.Instance.CurrentFloor);
+                    // 웨이브 예산 계산: (기본) + (웨이브 보너스) + (층 보너스)
+                    int budget =
+                        baseWaveBudget
+                        + (waveNumber * budgetIncreasePerWave)
+                        + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
+                    SpawnEnemiesWithRules(budget);
                     break;
                 case WaveType.Shop:
                     SpawnShop();
@@ -99,29 +117,82 @@ namespace Core
                     break;
                 case WaveType.Boss:
                     NotifyBossWaveStart();
-                    SpawnEnemies(bossPrefab, 1, true);
+                    gameManager.ExecuteSpawn(bossPool[RunManager.Instance.CurrentFloor - 1], true);
                     break;
             }
         }
 
-        // [개선] 소환 로직을 별도 메서드로 분리하여 중복 제거 및 의존성 고립
-        private void SpawnEnemies(GameObject prefab, int count, bool isBoss = false)
+        private void SpawnEnemiesWithRules(int totalBudget)
         {
-            if (prefab == null)
-            {
-                return;
-            }
+            Debug.Log($"Total Budget: {totalBudget}, Pool Count: {enemyPool.Count}");
+            _spawnTracker.Clear();
+            activeEnemyCount = 0;
 
-            for (int i = 0; i < count; i++)
+            // [규칙 1] 황금 비율 분배
+            int specialBudget = Mathf.FloorToInt(totalBudget * 0.15f);
+            int eliteBudget = Mathf.FloorToInt(totalBudget * 0.35f);
+            int normalBudget = totalBudget - specialBudget - eliteBudget;
+
+            // 상위 티어에서 남은 예산(leftover)을 하위 티어로 넘겨주는 구조
+            int leftover = 0;
+            leftover += SpawnTier(EnemyTier.Special, specialBudget);
+            leftover += SpawnTier(EnemyTier.Elite, eliteBudget + leftover);
+            SpawnTier(EnemyTier.Normal, normalBudget + leftover);
+        }
+
+        private int SpawnTier(EnemyTier tier, int budget)
+        {
+            int remainingBudget = budget;
+            List<EnemyData> candidates = enemyPool.FindAll(e =>
+                e.tier == tier && e.minFloor <= RunManager.Instance.CurrentFloor
+            );
+
+            if (candidates.Count == 0)
+                return remainingBudget;
+
+            int safetyNet = 0;
+            while (remainingBudget > 0 && safetyNet < 100)
             {
-                Vector2 randomPos = UnityEngine.Random.insideUnitCircle * 8f;
-                GameObject enemy = Instantiate(prefab, randomPos, Quaternion.identity);
-                EnemyStats stat = enemy.GetComponent<EnemyStats>();
-                enemy.SetActive(true);
-                stat.isBoss = isBoss;
-                if (isBoss)
-                    NotifyBossSummon(stat);
-                activeEnemyCount++;
+                safetyNet++;
+                ShuffleList(candidates);
+
+                bool spawnedInThisLoop = false;
+                foreach (var data in candidates)
+                {
+                    // [규칙 2] 맥스 카운트 체크 (SO 데이터 기준)
+                    if (data.maxCountInWave > 0)
+                    {
+                        _spawnTracker.TryGetValue(data, out int currentCount);
+                        if (currentCount >= data.maxCountInWave)
+                            continue;
+                    }
+
+                    if (remainingBudget >= data.cost)
+                    {
+                        gameManager.ExecuteSpawn(data, false);
+                        activeEnemyCount++;
+                        remainingBudget -= data.cost;
+
+                        if (!_spawnTracker.ContainsKey(data))
+                            _spawnTracker[data] = 0;
+                        _spawnTracker[data]++;
+                        spawnedInThisLoop = true;
+                    }
+                }
+                if (!spawnedInThisLoop)
+                    break;
+            }
+            return remainingBudget;
+        }
+
+        private void ShuffleList<T>(List<T> list)
+        {
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int rnd = UnityEngine.Random.Range(0, i + 1);
+                T temp = list[i];
+                list[i] = list[rnd];
+                list[rnd] = temp;
             }
         }
 
@@ -133,18 +204,15 @@ namespace Core
                 if (GetWaveType(CurrentWave) == WaveType.Boss)
                 {
                     if (RunManager.Instance.CurrentFloor == 5)
-                    {
                         RunManager.Instance.AdvanceFloor();
-                    }
                     else
                     {
                         SpawnBossRewards();
-                        SpawnExitPortal(); // 보상을 다 보고 나갈 수 있게 포탈 소환
+                        SpawnExitPortal();
                     }
                 }
                 else
                     CompleteCurrentWave();
-                // 모든 적 처치 시 다음 웨이브 포탈 소환 또는 즉시 완료
             }
         }
 
@@ -199,11 +267,6 @@ namespace Core
         private void NotifyBossWaveStart()
         {
             OnBossWaveStart?.Invoke();
-        }
-
-        private void NotifyBossSummon(EntityStats boss)
-        {
-            OnBossSummon?.Invoke(boss);
         }
 
         public void CompleteCurrentWave()
