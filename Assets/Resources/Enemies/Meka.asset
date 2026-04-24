@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
+  m_Name: Meka
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
+  enemyName: M3-K4
+  maxHealth: 1000
+  baseMoveSpeed: 0
+  baseAttackDamage: 20
+  baseRicochet: 1
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 1
+  baseProjectileScale: 1
+  baseProjectileSpeed: 1
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
+  hitstunDuration: 0
+  animationFrames: []
+  directionalSprites:
+  - {fileID: -349920204518983120, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: -1342410416378563431, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: 6892536600727627294, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: 6606912305742980290, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: 4176751042241392674, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: 8130104450940460180, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: -8432595576601238101, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  - {fileID: -7141638063815811326, guid: dca9aec29f345ab4fb5d217cd6f307ab, type: 3}
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 2
+  cost: 0
+  minFloor: 1
+  maxCountInWave: 1
+  ComponentName: MekaAI
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 4.5, y: 4.5}
+  bulletList:
+  - bulletKey: Normal
+    bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}
+  - bulletKey: Plazma
+    bulletPrefab: {fileID: 674297919083904026, guid: dd8d0a1e11fc07a428a345658ac027bf, type: 3}

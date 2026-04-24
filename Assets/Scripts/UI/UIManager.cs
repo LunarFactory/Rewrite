@@ -1,6 +1,7 @@
 using Core;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
@@ -40,10 +41,10 @@ namespace UI
             }
             Instance = this;
             // EventSystem이 없으면 버튼 클릭이 안 되므로 보장
-            if (UnityEngine.EventSystems.EventSystem.current == null)
+            if (EventSystem.current == null)
             {
                 var esGo = new GameObject("EventSystem");
-                esGo.AddComponent<UnityEngine.EventSystems.EventSystem>();
+                esGo.AddComponent<EventSystem>();
                 esGo.AddComponent<InputSystemUIInputModule>();
                 esGo.transform.parent = gameObject.transform;
             }

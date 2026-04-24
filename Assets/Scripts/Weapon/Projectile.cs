@@ -64,8 +64,9 @@ namespace Weapon
         private GameObject _originPrefab;
         private HashSet<EntityId> _hitTargets = new HashSet<EntityId>();
 
-        [HideInInspector]
-        public EntityStats stats;
+        public bool isSpin = true;
+
+        private EntityStats stats;
 
         public void SetOriginPrefab(GameObject prefab) => _originPrefab = prefab;
 
@@ -158,7 +159,8 @@ namespace Weapon
 
                     // 조향 중에도 탄환의 앞방향이 진행 방향을 바라보게 갱신
                     float angle = Mathf.Atan2(moveVelocity.y, moveVelocity.x) * Mathf.Rad2Deg;
-                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                    if (isSpin)
+                        transform.rotation = Quaternion.Euler(0, 0, angle);
                 }
             }
 
@@ -255,7 +257,8 @@ namespace Weapon
         {
             rb.linearVelocity = moveVelocity * currentSpeed;
             float angle = Mathf.Atan2(moveVelocity.y, moveVelocity.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            if (isSpin)
+                transform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
         private void HandlePierce()

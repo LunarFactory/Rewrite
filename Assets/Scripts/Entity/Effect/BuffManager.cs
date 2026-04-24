@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Enemy;
 using Entity;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class BuffManager : MonoBehaviour
@@ -42,6 +44,14 @@ public class BuffManager : MonoBehaviour
         bool infinity = false
     )
     {
+        var stats = GetComponent<EntityStats>();
+        if (stats is EnemyStats enemy)
+        {
+            if (enemy.isBoss && data.isHard)
+            {
+                return;
+            }
+        }
         // 중복 체크 및 시간 갱신 로직
         ActiveEffect existingEffect = HasEffect(data);
 

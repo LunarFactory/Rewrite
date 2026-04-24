@@ -1,6 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
+using Item;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -62,6 +65,18 @@ namespace UI
         private TextMeshProUGUI _boltText;
         private TextMeshProUGUI _creditText;
 
+        // -- 아이템 획득 알림 --
+        private GameObject acquisitionRoot;
+        private Image acquisitionIcon;
+        private TextMeshProUGUI acquisitionName;
+        private TextMeshProUGUI acquisitionDesc;
+        private Coroutine acquisitionCoroutine; // 자동 숨김 처리를 위한 코루틴
+
+        [Header("Tooltip Settings")]
+        private GameObject tooltipRoot;
+        private TextMeshProUGUI tooltipName;
+        private TextMeshProUGUI tooltipDesc;
+        private CanvasGroup tooltipCanvasGroup; // 페이드 효과용
         #region Unity Lifecycle
 
         private void Awake()
@@ -159,14 +174,17 @@ namespace UI
             BuildInteract();
             BuildDynamicInventory();
             BuildCurrencyPanel();
+            BuildAcquisitionPopup();
             // 이벤트 구독
             if (InventoryManager.Instance != null)
             {
                 InventoryManager.Instance.OnItemAdded += SyncDynamicInventory;
+                InventoryManager.Instance.OnItemAdded += OnItemAcquired;
             }
 
             // 즉시 한 번 동기화
             SyncDynamicInventory();
+            BuildTooltip();
         }
 
         private void OnEnable()
@@ -197,6 +215,7 @@ namespace UI
             if (InventoryManager.Instance != null)
             {
                 InventoryManager.Instance.OnItemAdded -= SyncDynamicInventory;
+                InventoryManager.Instance.OnItemAdded -= OnItemAcquired;
             }
             if (Instance == this)
                 Instance = null;
@@ -248,6 +267,7 @@ namespace UI
             RefreshBuffs(); // 버프 아이콘 갱신 추가
             HandleInteractUIPosition();
             RefreshCurrency();
+            UpdateTooltipPosition();
         }
 
         private void HandleInteractUIPosition()
@@ -878,6 +898,31 @@ namespace UI
             iconImg.color = Color.clear;
             iconImg.raycastTarget = false;
             _dynamicSlotImages.Add(iconImg);
+
+            EventTrigger trigger = slotGo.AddComponent<EventTrigger>();
+
+            // 1. 마우스 진입 (PointerEnter)
+            EventTrigger.Entry entryEnter = new EventTrigger.Entry();
+            entryEnter.eventID = EventTriggerType.PointerEnter;
+            int currentIndex = index; // 클로저 문제 방지
+            entryEnter.callback.AddListener(
+                (data) =>
+                {
+                    ShowTooltip(currentIndex);
+                }
+            );
+            trigger.triggers.Add(entryEnter);
+
+            // 2. 마우스 이탈 (PointerExit)
+            EventTrigger.Entry entryExit = new EventTrigger.Entry();
+            entryExit.eventID = EventTriggerType.PointerExit;
+            entryExit.callback.AddListener(
+                (data) =>
+                {
+                    HideTooltip();
+                }
+            );
+            trigger.triggers.Add(entryExit);
         }
 
         #endregion
@@ -975,6 +1020,260 @@ namespace UI
                 interactRoot.SetActive(true);
                 interactText.text = $"[E] {target.GetInteractPrompt()}";
             }
+        }
+
+        #endregion
+        // ────────────────────────────────────────────────────────────
+        #region 아이템 획득 설명 로직
+
+        private void BuildAcquisitionPopup()
+        {
+            // 1. 루트 패널 (배경)
+            acquisitionRoot = CreateUIObject("Acquisition_Popup", hudCanvas.transform);
+            RectTransform rootRT = acquisitionRoot.GetComponent<RectTransform>();
+            rootRT.anchorMin = rootRT.anchorMax = new Vector2(0.5f, 0);
+            rootRT.pivot = new Vector2(0.5f, 0);
+            rootRT.anchoredPosition = new Vector2(0, 150);
+
+            // [핵심] 자동 크기 조절 컴포넌트 추가
+            var fitter = acquisitionRoot.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize; // 가로 길이를 내용물에 맞춤
+            fitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained; // 세로는 고정 (또는 필요시 Preferred)
+
+            // [핵심] 가로 레이아웃 설정
+            var layout = acquisitionRoot.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(20, 20, 10, 10); // 안쪽 여백 (왼, 오, 위, 아래)
+            layout.spacing = 20; // 아이콘과 텍스트 사이 간격
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+
+            // 배경 이미지 & 아웃라인 (기존 동일)
+            Image bg = acquisitionRoot.AddComponent<Image>();
+            bg.color = new Color(0, 0, 0, 0.85f);
+            acquisitionRoot.AddComponent<Outline>().effectColor = new Color(1f, 0.8f, 0f, 0.5f);
+
+            // 2. 아이콘 생성 (Layout Group이 위치를 잡으므로 Rect 설정이 간단해짐)
+            GameObject iconGo = CreateUIObject("Icon", acquisitionRoot.transform);
+            acquisitionIcon = iconGo.AddComponent<Image>();
+
+            // [핵심 해결책] LayoutElement를 추가하여 그룹의 제어를 무시하고 크기를 고정합니다.
+            LayoutElement iconLayout = iconGo.AddComponent<LayoutElement>();
+            iconLayout.minWidth = 60f; // 최소 너비 고정
+            iconLayout.minHeight = 60f; // 최소 높이 고정
+            iconLayout.preferredWidth = 60f; // 권장 너비 고정
+            iconLayout.preferredHeight = 60f; // 권장 높이 고정
+
+            // 3. 텍스트 컨테이너 (이름과 설명을 세로로 쌓기 위함)
+            GameObject textContainer = CreateUIObject("TextContainer", acquisitionRoot.transform);
+            var vLayout = textContainer.AddComponent<VerticalLayoutGroup>();
+            vLayout.childControlWidth = true;
+            vLayout.childForceExpandWidth = false;
+            vLayout.spacing = 2;
+
+            // 4. 이름 텍스트
+            GameObject nameGo = CreateUIObject("ItemName", textContainer.transform);
+            acquisitionName = nameGo.AddComponent<TextMeshProUGUI>();
+            StyleLabel(acquisitionName, "아이템 이름", 20, TextAlignmentOptions.Left, Color.yellow);
+            acquisitionName.font = font;
+            acquisitionName.fontStyle = FontStyles.Bold;
+
+            // 5. 설명 텍스트
+            GameObject descGo = CreateUIObject("ItemDesc", textContainer.transform);
+            acquisitionDesc = descGo.AddComponent<TextMeshProUGUI>();
+            StyleLabel(acquisitionDesc, "아이템 설명", 14, TextAlignmentOptions.Left, Color.white);
+            acquisitionDesc.font = font;
+
+            acquisitionRoot.SetActive(false);
+        }
+
+        private void OnItemAcquired()
+        {
+            if (InventoryManager.Instance == null)
+                return;
+
+            var items = InventoryManager.Instance.items;
+
+            // 아이템 리스트가 비어있지 않다면 마지막 아이템을 가져옴
+            if (items != null && items.Count > 0)
+            {
+                PassiveItemData lastItem = items[items.Count - 1]; // 최신 획득 아이템
+
+                if (acquisitionCoroutine != null)
+                    StopCoroutine(acquisitionCoroutine);
+                acquisitionCoroutine = StartCoroutine(ShowAcquisitionRoutine(lastItem));
+            }
+        }
+
+        private IEnumerator ShowAcquisitionRoutine(PassiveItemData item)
+        {
+            acquisitionRoot.SetActive(true);
+
+            // 데이터 반영
+            acquisitionIcon.sprite = item.icon;
+            acquisitionName.text = item.itemName;
+            acquisitionDesc.text = item.description;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(
+                acquisitionRoot.GetComponent<RectTransform>()
+            );
+            // 간단한 페이드 인 효과 (선택 사항)
+            CanvasGroup cg = acquisitionRoot.GetComponent<CanvasGroup>();
+            if (cg == null)
+                cg = acquisitionRoot.AddComponent<CanvasGroup>();
+
+            float timer = 0;
+            while (timer < 0.2f)
+            {
+                timer += Time.unscaledDeltaTime;
+                cg.alpha = timer / 0.2f;
+                yield return null;
+            }
+
+            // 3초간 대기 (TimeScale의 영향을 받지 않도록 unscaled 사용)
+            yield return new WaitForSecondsRealtime(3f);
+
+            // 페이드 아웃
+            while (timer > 0)
+            {
+                timer -= Time.unscaledDeltaTime;
+                cg.alpha = timer / 0.2f;
+                yield return null;
+            }
+
+            acquisitionRoot.SetActive(false);
+        }
+
+        #endregion
+
+        #region 아이템 호버 툴팁 로직
+
+        private void BuildTooltip()
+        {
+            tooltipRoot = CreateUIObject("Item_Tooltip", hudCanvas.transform);
+            RectTransform rt = tooltipRoot.GetComponent<RectTransform>();
+
+            // [필수!] 앵커를 화면 중앙으로 설정
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+
+            // 피벗은 왼쪽 상단(0, 1) 유지
+            rt.pivot = new Vector2(0f, 1f);
+
+            // 배경 및 레이아웃 설정
+            Image bg = tooltipRoot.AddComponent<Image>();
+            bg.color = new Color(0.05f, 0.05f, 0.1f, 0.95f);
+
+            var layout = tooltipRoot.AddComponent<VerticalLayoutGroup>();
+            layout.padding = new RectOffset(12, 12, 12, 12);
+            layout.spacing = 8;
+            layout.childControlHeight = true;
+            layout.childControlWidth = true;
+
+            var fitter = tooltipRoot.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            tooltipCanvasGroup = tooltipRoot.AddComponent<CanvasGroup>();
+            tooltipCanvasGroup.alpha = 0;
+            tooltipCanvasGroup.blocksRaycasts = false; // 마우스 클릭 방해 금지
+
+            // 이름 및 설명 생성
+            GameObject nameGo = CreateUIObject("Name", tooltipRoot.transform);
+            tooltipName = nameGo.AddComponent<TextMeshProUGUI>();
+            StyleLabel(tooltipName, "Item Name", 16, TextAlignmentOptions.Left, Color.yellow);
+            tooltipName.font = font;
+            tooltipName.fontStyle = FontStyles.Bold;
+
+            GameObject descGo = CreateUIObject("Desc", tooltipRoot.transform);
+            tooltipDesc = descGo.AddComponent<TextMeshProUGUI>();
+            StyleLabel(
+                tooltipDesc,
+                "Item Description goes here.",
+                13,
+                TextAlignmentOptions.TopLeft,
+                Color.white
+            );
+            tooltipDesc.font = font;
+
+            tooltipRoot.SetActive(false);
+        }
+
+        private void ShowTooltip(int index)
+        {
+            if (InventoryManager.Instance == null || index >= InventoryManager.Instance.items.Count)
+                return;
+
+            PassiveItemData item = InventoryManager.Instance.items[index];
+            tooltipName.text = item.itemName;
+            tooltipDesc.text = item.description;
+
+            tooltipRoot.SetActive(true);
+            tooltipCanvasGroup.alpha = 1f;
+
+            // 레이아웃 즉시 갱신
+            LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRoot.GetComponent<RectTransform>());
+        }
+
+        private void HideTooltip()
+        {
+            tooltipRoot.SetActive(false);
+            tooltipCanvasGroup.alpha = 0f;
+        }
+
+        // Update 함수에 추가할 내용
+        private void UpdateTooltipPosition()
+        {
+            if (tooltipRoot == null || !tooltipRoot.activeSelf || playerInput == null)
+                return;
+
+            // 1. 마우스 좌표 읽기
+            Vector2 mouseScreenPos = playerInput.actions["Point"].ReadValue<Vector2>();
+
+            // 2. 캔버스 로컬 좌표(중앙 기준)로 변환
+            RectTransform canvasRT = hudCanvas.GetComponent<RectTransform>();
+            RectTransform tooltipRT = tooltipRoot.GetComponent<RectTransform>();
+
+            // ScreenPointToLocalPointInRectangle은 캔버스 피벗(보통 0.5, 0.5) 기준 좌표를 줍니다.
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRT,
+                mouseScreenPos,
+                null,
+                out Vector2 localPoint
+            );
+
+            // 3. 목표 위치 설정 (오프셋 적용)
+            Vector2 targetPos = localPoint + new Vector2(20, -20);
+
+            // 4. 경계선 체크 및 최종 적용
+            tooltipRT.anchoredPosition = ClampToCanvas(targetPos, tooltipRT, canvasRT);
+        }
+
+        private Vector2 ClampToCanvas(Vector2 pos, RectTransform tooltipRT, RectTransform canvasRT)
+        {
+            float canvasW = canvasRT.rect.width;
+            float canvasH = canvasRT.rect.height;
+            float tooltipW = tooltipRT.rect.width;
+            float tooltipH = tooltipRT.rect.height;
+
+            // 중앙 기준 좌표계이므로 경계선은 -W/2 ~ +W/2
+            float maxX = canvasW / 2;
+            float minY = -canvasH / 2;
+
+            // 오른쪽으로 넘어가면 마우스 왼쪽으로 툴팁 반전
+            if (pos.x + tooltipW > maxX)
+            {
+                pos.x -= (tooltipW + 40f);
+            }
+
+            // 아래로 넘어가면 마우스 위쪽으로 툴팁 반전
+            if (pos.y - tooltipH < minY)
+            {
+                pos.y += (tooltipH + 40f);
+            }
+
+            return pos;
         }
 
         #endregion

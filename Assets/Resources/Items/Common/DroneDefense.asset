@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: DroneDefense
   m_EditorClassIdentifier: Assembly-CSharp::Item.DroneDefense
   itemName: "\uB4DC\uB860 - \uBC29\uC5B4"
-  description: 
+  description: "\uD0C4\uD658\uC5D0 \uD53C\uACA9 \uC2DC \uCDA9\uACA9\uD30C\uB97C \uB0B4\uBCF4\uB0B4
+    \uC8FC\uBCC0\uC758 \uD0C4\uD658\uC744 \uC81C\uAC70\uD558\uB294 \uB4DC\uB860\uC744
+    \uC0DD\uC131\uD569\uB2C8\uB2E4. \uB2E4\uB978 \uBAA8\uB4E0 \uB4DC\uB860\uC774
+    \uB3D9\uC77C\uD55C \uBC29\uC5B4 \uB2A5\uB825\uC744 \uC5BB\uC2B5\uB2C8\uB2E4."
   icon: {fileID: 2643497490704597763, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 0
   dronePrefab: {fileID: 5126167086586392149, guid: 77b0ea102041198499cc18dda3eb3f16, type: 3}

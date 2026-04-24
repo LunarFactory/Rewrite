@@ -17,8 +17,8 @@ MonoBehaviour:
   icon: {fileID: -7511911463232200389, guid: 8a0ffc761fcdc3f438151f7dc1ae7e07, type: 3}
   description: "\uC774\uB3D9 \uC18D\uB3C4\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   statOffsets:
-  - 15
-  - 30
-  - 45
-  costs: 64000000c80000002c010000
+  - 10
+  - 20
+  - 40
+  costs: 3200000064000000c8000000
   statType: 2

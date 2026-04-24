@@ -1,7 +1,7 @@
-using UnityEngine;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
@@ -11,8 +11,10 @@ namespace Item
         [Header("EMP Settings")]
         public int maxStack = 10;
         public float duration = 0.5f;
+
         // BuffManager에 전달할 EMP 트리거용 SO (EMPEffectSO)
-        [SerializeField] private EMPEffect empTriggerData;
+        [SerializeField]
+        private EMPEffect empTriggerData;
 
         public override void OnApply(PlayerStats player)
         {
@@ -30,7 +32,12 @@ namespace Item
         private PlayerStats _player;
         private EMPEffect _empTriggerData;
 
-        public void Initialize(PlayerStats player, StatusEffectData empTriggerData, int maxStack, float duration)
+        public void Initialize(
+            PlayerStats player,
+            StatusEffectData empTriggerData,
+            int maxStack,
+            float duration
+        )
         {
             _player = player;
             _empTriggerData = (EMPEffect)empTriggerData;
@@ -42,7 +49,8 @@ namespace Item
 
         private void HandleItemEffect(PlayerStats attacker, EntityStats target, int damage)
         {
-            if (target == null) return;
+            if (target == null)
+                return;
 
             // 2. 적에게 BuffManager가 있는지 확인
             if (target.TryGetComponent(out BuffManager buffManager))
@@ -55,6 +63,7 @@ namespace Item
                 }
             }
         }
+
         private void OnDestroy()
         {
             if (_player != null)

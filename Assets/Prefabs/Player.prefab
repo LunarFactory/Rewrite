@@ -306,9 +306,9 @@ MonoBehaviour:
     BaseValue: 0
   isDead: 0
   isStunned: 0
-  baseAttackDamage: 10
-  baseAttackSpeed: 1
-  baseMoveSpeed: 5
+  baseAttackDamage: 5
+  baseAttackSpeed: 0.5
+  baseMoveSpeed: 4
   baseRicochet: 0
   basePierce: 0
   baseHomingRange: 0

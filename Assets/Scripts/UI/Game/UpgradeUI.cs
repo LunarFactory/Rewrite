@@ -151,7 +151,7 @@ namespace UI
             // 크레딧 갱신
             int credits = UpgradeManager.Instance.GetCredits();
             if (_creditDisplay != null)
-                _creditDisplay.text = $"보유 크레딧 : {credits} CR";
+                _creditDisplay.text = $"보유 크레딧 : <sprite=1> {credits}";
 
             // 기존 카드 삭제
             if (_cardsContainer != null)
@@ -222,7 +222,7 @@ namespace UI
 
             string descText =
                 level < maxLevel
-                    ? $"다음 레벨 효과:\n<color=#aaffaa>{statName} +{data.statOffsets[level]}</color>"
+                    ? $"다음 레벨 효과:\n<color=#aaffaa>{statName} +{data.statOffsets[level]}%</color>"
                     : "<color=#ffd700>최고 레벨에 도달했습니다.</color>";
 
             var descTmp = CreateText(
@@ -242,7 +242,7 @@ namespace UI
             int cost = isMax ? 0 : data.costs[level];
             bool canAfford = !isMax && UpgradeManager.Instance.GetCredits() >= cost;
 
-            string btnLabel = isMax ? "MAX" : $"{cost} CR";
+            string btnLabel = isMax ? "MAX" : $"<sprite=1> {cost}";
             Color btnColor = isMax
                 ? new Color(0.4f, 0.4f, 0.4f)
                 : (canAfford ? new Color(0.2f, 0.6f, 0.2f) : new Color(0.6f, 0.2f, 0.2f));

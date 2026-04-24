@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4245013448286117722}
   - component: {fileID: 768194719848379711}
   - component: {fileID: 7130446052030680748}
+  - component: {fileID: 5397699215873566516}
   m_Layer: 7
   m_Name: EnemyBase
   m_TagString: Enemy
@@ -158,10 +159,10 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 8, y: 8}
+    newSize: {x: 8, y: 8}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
@@ -209,3 +210,16 @@ MonoBehaviour:
   isStunned: 0
   data: {fileID: 0}
   isBoss: 0
+--- !u!210 &5397699215873566516
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8024068329176128005}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 10
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0

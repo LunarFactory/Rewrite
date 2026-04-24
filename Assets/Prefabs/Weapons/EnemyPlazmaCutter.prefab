@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 7993510629815632275}
   - component: {fileID: 8802842758697190553}
   - component: {fileID: 5043201717960028477}
-  m_Layer: 8
-  m_Name: PlazmaCutter
-  m_TagString: Untagged
+  m_Layer: 9
+  m_Name: EnemyPlazmaCutter
+  m_TagString: EnemyProjectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

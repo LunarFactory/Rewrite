@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ef1bc01578949c1468a76f649400fe14
+guid: 7c1b829ac0344e249938de415ef9a7e7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6429426389534495003
-    second: boss_lazer_0
+      213: 3831040709253135922
+    second: boss_gemini_laser_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: boss_lazer_0
+      name: boss_gemini_laser_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5ee264663c616c6a0800000000000000
-      internalID: -6429426389534495003
+      spriteID: 23ef7133a379a2530800000000000000
+      internalID: 3831040709253135922
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      boss_lazer_0: -6429426389534495003
+      boss_gemini_laser_0: 3831040709253135922
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

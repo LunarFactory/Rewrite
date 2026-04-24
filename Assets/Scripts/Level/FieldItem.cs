@@ -51,7 +51,7 @@ namespace Level
                 return "";
             // 가격이 있으면 가격 표시, 없으면 이름만 표시
             return price > 0
-                ? $"{itemData.itemName} 구매 ({price} 볼트)"
+                ? $"{itemData.itemName} 구매 [<sprite=0> {price}]"
                 : $"{itemData.itemName} 획득";
         }
 
