@@ -20,6 +20,8 @@ namespace UI
         private Player.PlayerInteractor playerInteractor;
         private BuffManager playerBuffManager; // 추가
 
+        private Enemy.EnemyStats currentBossTarget;
+
         private Canvas hudCanvas;
 
         // HP & Stealth
@@ -268,6 +270,10 @@ namespace UI
             HandleInteractUIPosition();
             RefreshCurrency();
             UpdateTooltipPosition();
+            if (bossHPPanel.activeSelf)
+            {
+                UpdateBossHP();
+            }
         }
 
         private void HandleInteractUIPosition()
@@ -514,27 +520,29 @@ namespace UI
             pRT.anchorMin = new Vector2(0.5f, 0);
             pRT.anchorMax = new Vector2(0.5f, 0);
             pRT.pivot = new Vector2(0.5f, 0);
-            pRT.anchoredPosition = new Vector2(0, 30);
+            pRT.anchoredPosition = new Vector2(0, 10);
             pRT.sizeDelta = new Vector2(500, 80);
 
             bossSubtitleText = CreateText(
                 "BossSubtitle",
                 bossHPPanel.transform,
-                new Vector2(0, 60),
+                new Vector2(0, 100),
                 new Vector2(400, 20),
-                "F2 BOSS",
-                11,
+                "",
+                24,
                 TextAlignmentOptions.Center,
                 new Color(0.7f, 0.7f, 0.7f)
             );
+            bossSubtitleText.fontStyle = FontStyles.Bold;
+            bossSubtitleText.font = font;
 
             bossNameText = CreateText(
                 "BossName",
                 bossHPPanel.transform,
-                new Vector2(0, 36),
+                new Vector2(0, 150),
                 new Vector2(460, 32),
-                "보스",
-                22,
+                "",
+                32,
                 TextAlignmentOptions.Center,
                 Color.white
             );
@@ -544,23 +552,55 @@ namespace UI
             bossSlider = BuildSlider(
                 bossHPPanel.transform,
                 new Vector2(0, 10),
-                new Vector2(460, 14),
+                new Vector2(pRT.sizeDelta.x, 14),
                 new Color(0.7f, 0.18f, 0.18f),
                 new Color(0.2f, 0.2f, 0.2f)
             );
 
-            CreateText(
-                "BossHP_Label",
-                bossHPPanel.transform,
-                new Vector2(0, -6),
-                new Vector2(200, 16),
-                "Boss HP",
-                10,
-                TextAlignmentOptions.Center,
-                new Color(0.55f, 0.55f, 0.55f)
-            );
-
             bossHPPanel.SetActive(false);
+        }
+
+        public void ShowBossHealth(Enemy.EnemyStats boss, string name, string subtitle = "F2 BOSS")
+        {
+            if (boss == null)
+                return;
+
+            currentBossTarget = boss;
+            bossNameText.text = name;
+            bossSubtitleText.text = subtitle;
+
+            bossHPPanel.SetActive(true);
+            UpdateBossHP(); // 즉시 한 번 갱신
+        }
+
+        public bool isBossHealthAvailable()
+        {
+            return bossHPPanel.activeSelf;
+        }
+
+        /// <summary>
+        /// 보스 UI를 숨깁니다. (보스 사망 시 호출)
+        /// </summary>
+        public void HideBossHealth()
+        {
+            currentBossTarget = null;
+            bossHPPanel.SetActive(false);
+        }
+
+        private void UpdateBossHP()
+        {
+            if (currentBossTarget == null || bossSlider == null)
+                return;
+
+            // 보스 스크립트에 체력 변수가 있을 것입니다 (예: currentHealth, maxHealth)
+            float ratio = (float)currentBossTarget.currentHealth / currentBossTarget.maxHealth;
+            bossSlider.value = Mathf.Clamp01(ratio);
+
+            // 보스가 죽었다면 UI 닫기
+            if (currentBossTarget.currentHealth <= 0)
+            {
+                HideBossHealth();
+            }
         }
 
         #endregion

@@ -39,6 +39,8 @@ namespace Core
         [SerializeField]
         private int baseWaveBudget = 10; // 1층 1웨이브 기본 예산
 
+        private float difficultyAlpha;
+
         [SerializeField]
         private int budgetIncreasePerWave = 2; // 웨이브당 증가치
 
@@ -120,7 +122,7 @@ namespace Core
                     int budget =
                         baseWaveBudget
                         + (waveNumber * budgetIncreasePerWave)
-                        + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
+                        + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor); // 여기에 알파를 곱하기
                     SpawnEnemiesWithRules(budget);
                     break;
                 case WaveType.Shop:
@@ -257,7 +259,7 @@ namespace Core
                 Vector2 pos = new Vector2(-2f + (i * 2f), 0);
                 GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity);
 
-                if (itemObj.TryGetComponent(out Level.FieldItem fieldItem))
+                if (itemObj.TryGetComponent(out FieldItem fieldItem))
                 {
                     fieldItem.itemData = itemsToSpawn[i];
 
@@ -304,6 +306,23 @@ namespace Core
             {
                 case WaveType.Boss:
                 case WaveType.Mob:
+                    // 1. 현재 웨이브의 날것(Raw) 데이터를 수집 (아직 s, c, a는 반영 전)
+                    //WaveLogData rawLog = LogTracker.Instance.CompleteLogging();
+
+                    // 2. DDA 추론 시작 (AI 모델 가동)
+                    // 인스턴스를 통해 추론 메서드를 호출하고 튜플 결과를 받습니다.
+                    //var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
+
+                    // 3. 실시간 게임 세션에 저장 (메모리 저장)
+                    // DDAInferenceManager.Instance.currentAlpha에 이미 저장되어 있을 것이므로
+                    // 이를 참조해서 다음 웨이브의 적 스펙을 조정합니다.
+                    //ApplyDifficultyToGame(alpha);
+
+                    // 4. 최종 결과 전송 (서버 및 파일 저장)
+                    // 여기서 s, c, alpha를 넘겨주면 LogTracker가 최종 JSON을 완성해서 보냅니다.
+                    //LogTracker.Instance.EndWaveAndSend(alpha, s, c);
+
+                    //Debug.Log($"[WaveManager] DDA 분석 완료: Skill({s}), Churn({c}) -> Alpha({alpha})");
                     LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
                     break;
                 case WaveType.Rest:
@@ -325,6 +344,11 @@ namespace Core
             {
                 RunManager.Instance.AdvanceFloor();
             }
+        }
+
+        private void ApplyDifficultyToGame(float alpha)
+        {
+            difficultyAlpha = alpha;
         }
 
         private void SpawnBossRewards()

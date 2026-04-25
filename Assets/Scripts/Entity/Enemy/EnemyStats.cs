@@ -143,6 +143,14 @@ namespace Enemy
 
         protected virtual void Update()
         {
+            if (isBoss)
+            {
+                // PlayerUI 인스턴스에 접근하여 보스 UI를 띄웁니다.
+                if (UI.PlayerUI.Instance != null && !UI.PlayerUI.Instance.isBossHealthAvailable())
+                {
+                    UI.PlayerUI.Instance.ShowBossHealth(this, data.enemyName, data.enemySubtitle);
+                }
+            }
             if (staggerTimer > 0f)
                 staggerTimer -= Time.deltaTime;
         }
@@ -216,7 +224,10 @@ namespace Enemy
         {
             if (WaveManager.Instance != null)
                 WaveManager.Instance.OnEnemyDied();
-
+            if (isBoss && UI.PlayerUI.Instance != null)
+            {
+                UI.PlayerUI.Instance.HideBossHealth();
+            }
             Destroy(gameObject);
         }
 

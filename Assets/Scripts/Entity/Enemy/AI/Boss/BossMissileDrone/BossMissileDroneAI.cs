@@ -22,16 +22,16 @@ namespace Enemy
         private float attackRange = 30f;
 
         [SerializeField]
-        private float shootDelay = 1.5f; // 일반 탄 1, 2회차 딜레이
+        private float shootDelay = 0.5f; // 일반 탄 1, 2회차 딜레이
 
         [SerializeField]
-        private float thirdShotDelay = 3f; // 10방향 발사 후 딜레이
+        private float thirdShotDelay = 1f; // 10방향 발사 후 딜레이
 
         [SerializeField]
         private float missileDelay = 0.5f; // 단발 미사일 후딜레이
 
         [SerializeField]
-        private float rapidMissileCooldown = 10f; // 연사 패턴 쿨타임
+        private float rapidMissileCooldown = 5f; // 연사 패턴 쿨타임
 
         [Header("Burst Settings")]
         [SerializeField]
@@ -104,7 +104,7 @@ namespace Enemy
             _shotsFiredCount++;
             int shotCount = (_shotsFiredCount >= 3) ? 10 : 1;
 
-            var bulletPrefab = stats.GetBulletPrefab("Normal");
+            var bulletPrefab = stats.GetBulletPrefab("Missile");
             if (bulletPrefab == null)
                 return;
 
@@ -117,7 +117,7 @@ namespace Enemy
                 bullet.transform.position = transform.position;
 
                 // 10방향일 경우 36도씩 회전하며 발사
-                float finalAngle = (shotCount == 10) ? baseAngle + (36f * i) : baseAngle;
+                float finalAngle = baseAngle + (360f / shotCount * i);
                 bullet.transform.rotation = Quaternion.Euler(0, 0, finalAngle);
 
                 if (bullet.TryGetComponent(out Projectile proj))
@@ -130,10 +130,11 @@ namespace Enemy
                         shootDir,
                         new ProjectileInfo
                         {
-                            damage = 5,
+                            damage = 10,
                             speed = 10,
-                            ricochetCount = 1,
-                            scale = 1,
+                            ricochetCount = 3,
+                            minSpeed = 1,
+                            scale = stats.ProjectileScale.GetValue(),
                         },
                         stats
                     );
