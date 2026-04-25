@@ -28,7 +28,7 @@ namespace Auth
         public static AuthWebClient Instance { get; private set; }
 
         // EC2 퍼블릭 IP와 포트 (보안 그룹에서 8080 포트가 열려있어야 함)
-        private readonly string baseUrl = "http://15.164.165.212:8080/api/v1/player/auth";
+        private readonly string baseUrl = "http://13.124.221.116:8080/api/v1/player/auth";
 
         private void Awake()
         {
@@ -79,7 +79,9 @@ namespace Auth
                         if (success)
                         {
                             var res = JsonUtility.FromJson<TokenResponse>(response);
-                            PlayerPrefs.SetString("AuthToken", res.accessToken); // JWT 토큰 저장
+                            PlayerPrefs.SetString("AuthToken", res.accessToken);
+                            PlayerPrefs.SetString("UserId", res.userId);
+                            PlayerPrefs.Save(); // 즉시 반영
                             callback?.Invoke(true, res.userId);
                         }
                         else
@@ -121,6 +123,21 @@ namespace Auth
                     callback?.Invoke(false, request.error);
                 }
             }
+        }
+
+        public IEnumerator Logout(Action<bool, string> callback)
+        {
+            // 로그아웃은 보통 보낼 데이터(Body)가 없으므로 빈 JSON을 보냅니다.
+            yield return StartCoroutine(
+                PostRequest(
+                    "/logout",
+                    "{}",
+                    (success, response) =>
+                    {
+                        callback?.Invoke(success, success ? "로그아웃 성공" : response);
+                    }
+                )
+            );
         }
     }
 }

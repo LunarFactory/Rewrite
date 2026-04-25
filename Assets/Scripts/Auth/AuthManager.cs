@@ -98,5 +98,47 @@ namespace Auth
             await Task.Delay(500); // 임시 대기
             return new AuthResult { Success = true, Message = "이메일을 확인해주세요." };
         }
+
+        public async Task<AuthResult> Logout()
+        {
+            var tcs = new TaskCompletionSource<AuthResult>();
+
+            if (AuthWebClient.Instance == null)
+            {
+                return new AuthResult { Success = false, Message = "AuthWebClient가 없습니다." };
+            }
+
+            // 1. 서버에 로그아웃 요청
+            StartCoroutine(
+                AuthWebClient.Instance.Logout(
+                    (success, message) =>
+                    {
+                        // 2. [핵심] 서버 응답이 성공이든 실패든 로컬 데이터는 지웁니다.
+                        // (네트워크가 없어도 로그아웃은 되어야 하니까요)
+                        PlayerPrefs.DeleteKey("AuthToken");
+                        PlayerPrefs.DeleteKey("UserId");
+                        PlayerPrefs.Save();
+
+                        // 3. 로그 추적기 정보 갱신 (Guest로 변경)
+                        if (Log.LogTracker.Instance != null)
+                        {
+                            Log.LogTracker.Instance.RefreshUserInfo();
+                        }
+
+                        tcs.SetResult(
+                            new AuthResult
+                            {
+                                Success = success,
+                                Message = success
+                                    ? "로그아웃 되었습니다."
+                                    : "서버 로그아웃 실패(로컬 데이터만 삭제)",
+                            }
+                        );
+                    }
+                )
+            );
+
+            return await tcs.Task;
+        }
     }
 }

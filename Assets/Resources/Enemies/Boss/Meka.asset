@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Meka
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: M3-K4
+  enemySubtitle: "\uACF5\uC5C5 \uC2DC\uC124 \uAD00\uB9AC"
   maxHealth: 1000
   baseMoveSpeed: 0
   baseAttackDamage: 20

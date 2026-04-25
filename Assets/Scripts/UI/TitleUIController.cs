@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro; // TMP 사용을 위해 필수 추가
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ namespace UI
         public Button statsButton; // 통계 버튼
         public Button settingsButton;
         public Button quitButton;
+        public Button logoutButton;
 
         [Header("Main Menu")]
         public GameObject mainMenuPanel; // 메인 버튼들이 들어있는 부모 컨테이너
@@ -46,6 +48,8 @@ namespace UI
 
             if (settingsPanel != null && settingsPanel.backButton != null)
                 settingsPanel.backButton.onClick.AddListener(ShowMainMenu);
+            if (logoutButton != null)
+                logoutButton.onClick.AddListener(OnLogoutClicked);
         }
 
         private void ShowMainMenu()
@@ -98,6 +102,23 @@ namespace UI
                 Application.Quit();
 #endif
             }
+        }
+
+        private async void OnLogoutClicked()
+        {
+            // 버튼 비활성화 (중복 클릭 방지)
+            logoutButton.interactable = false;
+
+            // Manager에게 로그아웃을 시킵니다.
+            var result = await Auth.AuthManager.Instance.Logout();
+
+            if (result.Success)
+            {
+                Debug.Log("로그아웃 성공: " + result.Message);
+            }
+
+            // 결과와 상관없이 로그인 씬으로 이동
+            SceneManager.LoadScene("LoginScene");
         }
     }
 }

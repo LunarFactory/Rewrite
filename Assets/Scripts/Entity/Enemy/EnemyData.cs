@@ -24,6 +24,8 @@ namespace Enemy
         [Tooltip("개체 이름")]
         public string enemyName;
 
+        public string enemySubtitle;
+
         [Tooltip("최대 체력")]
         public int maxHealth = 30;
 

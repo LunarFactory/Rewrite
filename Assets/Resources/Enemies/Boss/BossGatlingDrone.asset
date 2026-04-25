@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BossGatlingDrone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: "\uD3ED\uD48D \uB4DC\uB860"
+  enemySubtitle: "\uC218\uB9CE\uC740 \uD0C4\uD658\uC758 \uD3ED\uD48D"
   maxHealth: 2000
   baseMoveSpeed: 0.5
   baseAttackDamage: 5

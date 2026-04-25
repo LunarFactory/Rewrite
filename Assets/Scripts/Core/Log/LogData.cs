@@ -48,13 +48,12 @@ namespace Log
         public int atk_clicks_hit;
         public int enemy_atk_spawned;
         public int hitbox_collisions;
-        public float base_dmg_expected;
+        public int base_dmg_expected;
         public float actual_dmg_dealt;
         public int hp_lost;
         public int max_hp;
         public int apm;
         public int enemy_shot_count;
-        public float inverse_hit_rate;
     }
 
     // ==========================================

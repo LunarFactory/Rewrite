@@ -129,7 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 373403345}
   - component: {fileID: 373403342}
-  - component: {fileID: 373403341}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -137,18 +136,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &373403341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 373403340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e848d77518f35ab4a91be80b4372c9cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Log.PlayerLogManager
 --- !u!114 &373403342
 MonoBehaviour:
   m_ObjectHideFlags: 0

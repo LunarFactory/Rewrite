@@ -13081,3 +13081,5 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 1024
+  minPlayerDistance: 7
+  checkRadius: 0.5

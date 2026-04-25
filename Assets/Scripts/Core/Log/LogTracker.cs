@@ -40,8 +40,9 @@ namespace Log
         private int _startHp;
 
         private string _baseURL;
+        private int _pendingUploads = 0;
 
-        private string _ip = "15.164.165.212";
+        private string _ip = "13.124.221.116";
 
         // 인터넷이 끊겼을 때 임시 보관할 큐
         private Queue<string> _localRunEndQueue = new Queue<string>();
@@ -51,8 +52,14 @@ namespace Log
         private void Awake()
         {
             Instance = this;
-            user_id = PlayerPrefs.GetString("UserId", "Guest");
+            RefreshUserInfo(); // 여기서 호출
             _baseURL = "http://" + _ip + ":8080/api/v1/player/game/logs/";
+        }
+
+        public void RefreshUserInfo()
+        {
+            user_id = PlayerPrefs.GetString("UserId", "Guest");
+            Debug.Log($"[LogTracker] 유저 정보 갱신: {user_id}");
         }
 
         // 웨이브 시작 시 호출
@@ -96,10 +103,12 @@ namespace Log
                     atk_clicks_hit = _totalHits,
                     enemy_atk_spawned = _enemyShot,
                     hitbox_collisions = _hitsTaken,
+                    base_dmg_expected = PlayerStats.LocalPlayer.GetWeaponBaseAttackDamage(),
                     actual_dmg_dealt = _damageDealt,
                     hp_lost = _startHp - PlayerStats.LocalPlayer.currentHealth,
                     max_hp = PlayerStats.LocalPlayer.maxHealth,
                     apm = Mathf.RoundToInt(_totalClicks / ((Time.time - _startTime) / 60f)),
+                    enemy_shot_count = _enemyShot,
                 };
                 _damageDealt = 0;
                 _hitsTaken = 0;
@@ -148,6 +157,7 @@ namespace Log
 
             // 요약 데이터 계산
             _currentLog.wave_meta.clear_time_sec = clearTime;
+            _currentLog.wave_meta.version_id = "v1.2_live";
             _currentLog.wave_meta.calculated_a = alpha;
             _currentLog.wave_meta.ai_inferred_S = inferredS;
             _currentLog.wave_meta.ai_inferred_C = inferredC;
@@ -158,7 +168,7 @@ namespace Log
                 hits_taken = _totalHitsTaken,
                 apm = Mathf.RoundToInt(_totalClicks / (clearTime / 60f)),
                 dps = _totalDamageDealt / clearTime,
-                accuracy_rate = _totalAttackClicks > 0 ? _totalAttackClicks / (float)_totalHits : 0,
+                accuracy_rate = _totalHits > 0 ? _totalAttackClicks / (float)_totalHits : 0,
                 distance_moved = _totalDistance,
                 hp_retention_rate = PlayerStats.LocalPlayer.currentHealth / _startHp,
             };
@@ -187,7 +197,24 @@ namespace Log
             SaveLogToFile(jsonData, "RunLog");
 
             // 3. 서버로 전송!
-            StartCoroutine(PostRunEndLog(jsonData));
+            StartCoroutine(WaitAndPostRunEndLog(jsonData));
+        }
+
+        private IEnumerator WaitAndPostRunEndLog(string jsonData)
+        {
+            Debug.Log("[LogTracker] 1. 대기 시퀀스 진입");
+
+            while (_pendingUploads > 0)
+            {
+                Debug.Log($"[LogTracker] 2. 대기 중... 남은 개수: {_pendingUploads}");
+                yield return new WaitForSecondsRealtime(0.5f);
+            }
+
+            Debug.Log("[LogTracker] 3. 루프 탈출 성공 (0이 됨)"); // 이 로그가 찍히는지 확인!
+
+            yield return StartCoroutine(PostRunEndLog(jsonData));
+
+            Debug.Log("[LogTracker] 4. 모든 전송 완료");
         }
 
         private RunEndLogData CollectActualRunData(string status, string killerName)
@@ -262,6 +289,7 @@ namespace Log
         // 웨이브 종료 시 호출됨
         public void SendWaveLog(WaveLogData actualData)
         {
+            _pendingUploads++; // 전송 시작 전 증가
             string jsonData = JsonUtility.ToJson(actualData);
             StartCoroutine(PostWaveLog(jsonData));
         }
@@ -285,6 +313,7 @@ namespace Log
                 request.SetRequestHeader("Content-Type", "application/json");
 
                 yield return request.SendWebRequest();
+                _pendingUploads--;
 
                 if (request.result != UnityWebRequest.Result.Success)
                 {
