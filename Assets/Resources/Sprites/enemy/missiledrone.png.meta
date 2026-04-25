@@ -1,31 +1,31 @@
 fileFormatVersion: 2
-guid: ca53e0b01e9143d4bb3d6b9ce3fa6484
+guid: 7a35378b2bbc0d84093bb955e979bdde
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5129341858874568824
-    second: gemini_idle_0
+      213: -8236557103899311291
+    second: missiledrone_0
   - first:
-      213: 1070679961080351012
-    second: gemini_idle_1
+      213: 2191288441908209951
+    second: missiledrone_1
   - first:
-      213: 1464914729688389354
-    second: gemini_idle_2
+      213: 6616560536203392186
+    second: missiledrone_2
   - first:
-      213: 2444784905438393966
-    second: gemini_idle_3
+      213: -1729283423882386974
+    second: missiledrone_3
   - first:
-      213: 948558288464711121
-    second: gemini_idle_4
+      213: -5994804445323550389
+    second: missiledrone_4
   - first:
-      213: 5527565774173803061
-    second: gemini_idle_5
+      213: 2471141956452810
+    second: missiledrone_5
   - first:
-      213: -4449780213947349602
-    second: gemini_idle_6
+      213: 438044457606048921
+    second: missiledrone_6
   - first:
-      213: 5316504978745139390
-    second: gemini_idle_7
+      213: 1850552651208911842
+    second: missiledrone_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -58,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -69,10 +69,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -96,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -121,177 +121,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gemini_idle_0
+      name: missiledrone_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 870b2c58e351f2740800000000000000
-      internalID: 5129341858874568824
+      spriteID: 5438cd104fed1bd80800000000000000
+      internalID: -8236557103899311291
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gemini_idle_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 429c25c70c1dbde00800000000000000
-      internalID: 1070679961080351012
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_idle_2
+      name: missiledrone_1
       rect:
         serializedVersion: 2
         x: 32
         y: 0
-        width: 16
-        height: 15
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ae650596f2c645410800000000000000
-      internalID: 1464914729688389354
+      spriteID: f19ab5c5a35096e10800000000000000
+      internalID: 2191288441908209951
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gemini_idle_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e6674e02bee9de120800000000000000
-      internalID: 2444784905438393966
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_idle_4
+      name: missiledrone_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
-        width: 16
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1dd01b8dcb4f92d00800000000000000
-      internalID: 948558288464711121
+      spriteID: ab4754b60ceb2db50800000000000000
+      internalID: 6616560536203392186
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gemini_idle_5
-      rect:
-        serializedVersion: 2
-        x: 80
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5329c3a09cbd5bc40800000000000000
-      internalID: 5527565774173803061
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_idle_6
+      name: missiledrone_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 16
-        height: 15
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e954b1ba8743f32c0800000000000000
-      internalID: -4449780213947349602
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_idle_7
-      rect:
-        serializedVersion: 2
-        x: 112
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: eb023b03c1508c940800000000000000
-      internalID: 5316504978745139390
+      spriteID: 2e1e48b53e95008e0800000000000000
+      internalID: -1729283423882386974
       vertices: []
       indices: 
       edges: []
@@ -300,7 +212,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6295839fe3712234a910b19f87f64a64
     internalID: 0
     vertices: []
     indices: 
@@ -308,16 +220,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      gemini_idle_0: 5129341858874568824
-      gemini_idle_1: 1070679961080351012
-      gemini_idle_2: 1464914729688389354
-      gemini_idle_3: 2444784905438393966
-      gemini_idle_4: 948558288464711121
-      gemini_idle_5: 5527565774173803061
-      gemini_idle_6: -4449780213947349602
-      gemini_idle_7: 5316504978745139390
+      missiledrone_0: -8236557103899311291
+      missiledrone_1: 2191288441908209951
+      missiledrone_2: 6616560536203392186
+      missiledrone_3: -1729283423882386974
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

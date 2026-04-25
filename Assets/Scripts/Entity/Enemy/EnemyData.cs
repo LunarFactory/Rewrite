@@ -36,7 +36,7 @@ namespace Enemy
         public int basePierce = 0;
         public float baseHomingRange = 0f;
         public float baseHomingStrength = 0f;
-        public float baseDecelerationRate = 1f;
+        public float baseDecelerationRate = 0f;
         public float baseProjectileScale = 1f;
         public float baseProjectileSpeed = 1f;
         public float baseDamageIncreasedFlat = 0f;

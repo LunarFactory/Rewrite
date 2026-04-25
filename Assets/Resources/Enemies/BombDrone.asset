@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
+  m_Name: BombDrone
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
+  enemyName: "\uD3ED\uD0C4 \uB4DC\uB860"
+  maxHealth: 35
+  baseMoveSpeed: 4
+  baseAttackDamage: 30
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 0
+  baseProjectileScale: 1
+  baseProjectileSpeed: 1
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
+  hitstunDuration: 0.15
+  animationFrames:
+  - {fileID: 1950187007415977335, guid: b49011f5b0cef294cb5a791a1eec9d18, type: 3}
+  - {fileID: -1022078653260620335, guid: b49011f5b0cef294cb5a791a1eec9d18, type: 3}
+  - {fileID: -1536055382203048749, guid: b49011f5b0cef294cb5a791a1eec9d18, type: 3}
+  - {fileID: 8455081580333186684, guid: b49011f5b0cef294cb5a791a1eec9d18, type: 3}
+  directionalSprites: []
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 2
+  cost: 2
+  minFloor: 1
+  maxCountInWave: 2
+  ComponentName: BombDroneAI
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 1, y: 1}
+  bulletList: []

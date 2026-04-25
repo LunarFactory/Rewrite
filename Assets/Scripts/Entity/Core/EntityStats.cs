@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using Core;
+using Log;
 using UnityEngine;
 
 namespace Entity
@@ -53,7 +54,7 @@ namespace Entity
                 isDead = true;
                 currentHealth = 0;
                 attacker.NotifyKill(this);
-                Die();
+                Die(attacker);
             }
         }
 
@@ -107,7 +108,7 @@ namespace Entity
         }
 
         // 죽는 방식은 플레이어와 적이 완전히 다르므로 추상 메서드로 선언
-        protected abstract void Die();
+        protected abstract void Die(EntityStats source);
 
         public SpriteRenderer GetRenderer()
         {

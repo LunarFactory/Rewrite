@@ -22,4 +22,4 @@ MonoBehaviour:
   decelerationRate: 0.01
   numberOfPellets: 1
   spreadAngle: 0
-  pierceCount: 1
+  pierceCount: 5

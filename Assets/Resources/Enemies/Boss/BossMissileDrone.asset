@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
+  m_Name: BossMissileDrone
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
+  enemyName: "\uD3ED\uACA9\uC218"
+  maxHealth: 1500
+  baseMoveSpeed: 0.5
+  baseAttackDamage: 20
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 5
+  baseHomingStrength: 2
+  baseDecelerationRate: -0.02
+  baseProjectileScale: 1
+  baseProjectileSpeed: 4
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
+  hitstunDuration: 0
+  animationFrames:
+  - {fileID: 7979965145513132832, guid: 0295bbd72b325a0479f4e929ca440993, type: 3}
+  - {fileID: 998124997914274967, guid: 0295bbd72b325a0479f4e929ca440993, type: 3}
+  - {fileID: 9067657758556691155, guid: 0295bbd72b325a0479f4e929ca440993, type: 3}
+  - {fileID: 6188882005535584157, guid: 0295bbd72b325a0479f4e929ca440993, type: 3}
+  directionalSprites: []
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 2
+  cost: 10
+  minFloor: 2
+  maxCountInWave: 1
+  ComponentName: BossMissileDroneAI
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 1, y: 1}
+  bulletList:
+  - bulletKey: Normal
+    bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}
+  - bulletKey: Missile
+    bulletPrefab: {fileID: 674297919083904026, guid: a6b519fa90a17fd4c99121ca4bf7a5f3, type: 3}

@@ -125,23 +125,23 @@ namespace UI
             // Reflection으로 Log 데이터 꺼내오기
             float apm = 0f;
             float accuracy = 0f;
-            if (PlayerLogManager.Instance != null)
+            if (LogTracker.Instance != null)
             {
                 try
                 {
-                    var t = typeof(PlayerLogManager);
+                    var t = typeof(LogTracker);
                     int actions = (int)
                         t.GetField("currentActions", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(PlayerLogManager.Instance);
+                            .GetValue(LogTracker.Instance);
                     int shotsFired = (int)
                         t.GetField("shotsFired", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(PlayerLogManager.Instance);
+                            .GetValue(LogTracker.Instance);
                     int shotsHit = (int)
                         t.GetField("shotsHit", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(PlayerLogManager.Instance);
+                            .GetValue(LogTracker.Instance);
                     float startTime = (float)
                         t.GetField("waveStartTime", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(PlayerLogManager.Instance);
+                            .GetValue(LogTracker.Instance);
 
                     float duration = Mathf.Max(Time.time - startTime, 1f);
                     apm = (actions / duration) * 60f;
@@ -156,11 +156,11 @@ namespace UI
                 _statsText.alignment = TextAlignmentOptions.TopLeft;
                 _statsText.lineSpacing = 15f;
                 _statsText.text =
-                    $"진행 층수      : <color=#ffaa00>B{floor} Floor</color>\n"
-                    + $"도달 웨이브  : <color=#aaffaa>Wave {wave}</color>\n"
-                    + $"수집한 볼트  : <color=#00ccff>{bolts} Bolts</color>\n"
-                    + $"최종 APM       : <color=#dddddd>{apm:F1}</color>\n"
-                    + $"명중률           : <color=#dddddd>{accuracy:F1}%</color>\n\n"
+                    $"진행 층 수 : <color=#ffaa00>B{floor} Floor</color>\n"
+                    + $"도달 웨이브 : <color=#aaffaa>Wave {wave}</color>\n"
+                    + $"수집한 볼트 : <color=#00ccff>{bolts} Bolts</color>\n"
+                    + $"최종 APM : <color=#dddddd>{apm:F1}</color>\n"
+                    + $"명중률 : <color=#dddddd>{accuracy:F1}%</color>\n\n"
                     + $"<color=#ffd700>+ {earnedCredits} 크레딧 획득!</color>";
             }
         }

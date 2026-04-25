@@ -4,6 +4,7 @@ using Drone;
 using Enemy;
 using Entity;
 using Level;
+using Log;
 using Player;
 using UI;
 using UnityEngine;
@@ -76,6 +77,7 @@ namespace Core
             gameObject.AddComponent<InventoryManager>();
             var fdt = gameObject.AddComponent<FDTManager>();
             fdt.SetFDTPrefab(fdtPrefab, defaultDuration);
+            gameObject.AddComponent<LogTracker>();
 
             Instantiate(playerCrosshairPrefab);
         }

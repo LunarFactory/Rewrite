@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Enemy;
 using Item;
 using Level;
+using Log;
 using UnityEngine;
 
 namespace Core
@@ -95,9 +96,22 @@ namespace Core
         public void StartWave(int waveNumber)
         {
             CurrentWave = waveNumber;
+            switch (GetWaveType(CurrentWave))
+            {
+                case WaveType.Mob:
+                case WaveType.Boss:
+                    LogTracker.Instance.StartLogging(
+                        RunManager.Instance.CurrentFloor,
+                        CurrentWave,
+                        RunManager.Instance.CurrentSeed.ToString()
+                    );
+                    break;
+                case WaveType.Shop:
+                case WaveType.Rest:
+                default:
+                    break;
+            }
             WaveType type = GetWaveType(CurrentWave);
-
-            Log.PlayerLogManager.Instance?.OnWaveStarted(CurrentWave);
 
             switch (type)
             {
@@ -249,7 +263,8 @@ namespace Core
 
                     // 가격 책정 로직...
                     fieldItem.price =
-                        GetPriceByRarity(itemsToSpawn[i].tier) * RunManager.Instance.CurrentFloor;
+                        GetPriceByRarity(itemsToSpawn[i].tier)
+                        * (int)Math.Pow(2, RunManager.Instance.CurrentFloor - 1);
                 }
             }
             SpawnExitPortal();
@@ -285,14 +300,25 @@ namespace Core
 
         public void CompleteCurrentWave()
         { // 1. [추가] 필드의 모든 총알 청소
+            switch (GetWaveType(CurrentWave))
+            {
+                case WaveType.Boss:
+                case WaveType.Mob:
+                    LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
+                    break;
+                case WaveType.Rest:
+                case WaveType.Shop:
+                default:
+                    break;
+            }
             if (ProjectileManager.Instance != null)
             {
                 ProjectileManager.Instance.ClearAllProjectiles();
             }
-            Log.PlayerLogManager.Instance?.OnWaveCompleted(CurrentWave);
 
             if (CurrentWave < 9)
             {
+                Player.PlayerStats.LocalPlayer.AddBolts(30 * RunManager.Instance.CurrentFloor);
                 StartWave(CurrentWave + 1);
             }
             else

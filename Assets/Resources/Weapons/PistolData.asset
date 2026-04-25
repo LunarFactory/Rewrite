@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponSprite: {fileID: 1098179606456428539, guid: 014fd052a40a8ca4e8a4164f4c1c91b2, type: 3}
   projectilePrefab: {fileID: 674297919083904026, guid: 9aef942a6b7247f458629447bc1c92e8, type: 3}
   Type: 0
-  weaponName: 
+  weaponName: "\uAD8C\uCD1D"
   damageMultiplier: 1
   fireRate: 4
   projectileSpeed: 20

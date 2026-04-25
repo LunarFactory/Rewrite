@@ -90,6 +90,11 @@ namespace Weapon
             bool noHoming = false
         )
         {
+            if (stats is EnemyStats enemy)
+            {
+                Log.LogTracker.Instance.RegisterEnemyShot();
+            }
+
             if (rb == null)
                 rb = GetComponent<Rigidbody2D>();
 
@@ -279,11 +284,20 @@ namespace Weapon
 
         private Transform FindClosestEnemy()
         {
+            string layer;
+            if (stats is EnemyStats)
+            {
+                layer = "Player";
+            }
+            else
+            {
+                layer = "Enemy";
+            }
             // 주변 적 레이어만 검색
             Collider2D[] enemies = Physics2D.OverlapCircleAll(
                 transform.position,
                 homingRange,
-                LayerMask.GetMask("Enemy")
+                LayerMask.GetMask(layer)
             );
 
             Transform closest = null;

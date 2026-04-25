@@ -1,6 +1,6 @@
-using UnityEngine;
-using Entity;
 using Core;
+using Entity;
+using UnityEngine;
 
 namespace Weapon
 {
@@ -29,11 +29,13 @@ namespace Weapon
                 _playerStats = player;
             }
         }
+
         // [추가] 외부(PlayerController 등)에서 무기 정보를 주입하는 함수
         public void Initialize(WeaponData newData)
         {
             weaponData = newData;
-            if (weaponRenderer == null) weaponRenderer = GetComponent<SpriteRenderer>();
+            if (weaponRenderer == null)
+                weaponRenderer = GetComponent<SpriteRenderer>();
 
             if (newData != null && newData.weaponSprite != null)
             {
@@ -44,7 +46,8 @@ namespace Weapon
 
         public virtual void Fire(Vector2 direction)
         {
-            if (weaponData == null || Time.time < nextFireTime) return;
+            if (weaponData == null || Time.time < nextFireTime)
+                return;
             // 플레이어 스탯이 반영된 연사 속도
             finalFireRate = _playerStats.GetWeaponBaseAttackSpeed();
             nextFireTime = Time.time + (1f / Mathf.Max(finalFireRate, 0.1f)); //
@@ -58,34 +61,54 @@ namespace Weapon
 
         protected virtual void SpawnProjectile(Vector2 direction)
         {
-            if (weaponData == null || weaponData.projectilePrefab == null || firePoint == null) return;
+            if (weaponData == null || weaponData.projectilePrefab == null || firePoint == null)
+                return;
 
             // 1. [핵심] 탄환 퍼짐(Spread) 계산
             // 설계도에 설정된 SpreadAngle이 10도라면, -5도 ~ +5도 사이의 랜덤한 각도를 생성합니다.
-            float randomSpread = Random.Range(-weaponData.spreadAngle * 0.5f, weaponData.spreadAngle * 0.5f);
+            float randomSpread = Random.Range(
+                -weaponData.spreadAngle * 0.5f,
+                weaponData.spreadAngle * 0.5f
+            );
 
             // 2. 방향 벡터를 랜덤 각도만큼 회전시킵니다.
             Quaternion spreadRotation = Quaternion.Euler(0, 0, randomSpread);
             Vector2 finalDirection = spreadRotation * direction;
 
             // 3. 탄환 생성 (회전값에 spreadRotation을 곱해 시각적으로도 퍼지게 만듭니다)
-            GameObject obj = Instantiate(weaponData.projectilePrefab, firePoint.position, firePoint.rotation * spreadRotation);
+            GameObject obj = Instantiate(
+                weaponData.projectilePrefab,
+                firePoint.position,
+                firePoint.rotation * spreadRotation
+            );
             obj.SetActive(true);
 
             if (obj.TryGetComponent(out Projectile proj))
             {
-                proj.Initialize(finalDirection, new ProjectileInfo
-                {
-                    damage = Mathf.RoundToInt(_playerStats.DamageIncreased.GetValue(_playerStats.GetWeaponBaseAttackDamage())),
-                    pierceCount = weaponData.pierceCount + (int)_playerStats.Pierce.GetValue(),
-                    ricochetCount = (int)_playerStats.Ricochet.GetValue(),
-                    homingRange = (int)_playerStats.HomingRange.GetValue(),
-                    homingStrength = (int)_playerStats.HomingStrength.GetValue(),
-                    decelerationRate = weaponData.decelerationRate * _playerStats.DecelerationRate.GetValue(),
-                    scale = _playerStats.ProjectileScale.GetValue(),
-                    speed = weaponData.projectileSpeed * _playerStats.ProjectileSpeed.GetValue(),
-                    minSpeed = (weaponData.projectileSpeed * _playerStats.ProjectileSpeed.GetValue()) / 10,
-                }, _playerStats);
+                proj.Initialize(
+                    finalDirection,
+                    new ProjectileInfo
+                    {
+                        damage = Mathf.RoundToInt(
+                            _playerStats.DamageIncreased.GetValue(
+                                _playerStats.GetWeaponBaseAttackDamage()
+                            )
+                        ),
+                        pierceCount = weaponData.pierceCount + (int)_playerStats.Pierce.GetValue(),
+                        ricochetCount = (int)_playerStats.Ricochet.GetValue(),
+                        homingRange = (int)_playerStats.HomingRange.GetValue(),
+                        homingStrength = (int)_playerStats.HomingStrength.GetValue(),
+                        decelerationRate =
+                            weaponData.decelerationRate * _playerStats.DecelerationRate.GetValue(),
+                        scale = _playerStats.ProjectileScale.GetValue(),
+                        speed =
+                            weaponData.projectileSpeed * _playerStats.ProjectileSpeed.GetValue(),
+                        minSpeed =
+                            (weaponData.projectileSpeed * _playerStats.ProjectileSpeed.GetValue())
+                            / 10,
+                    },
+                    _playerStats
+                );
             }
         }
 

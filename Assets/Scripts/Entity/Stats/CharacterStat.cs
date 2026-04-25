@@ -48,7 +48,7 @@ public class CharacterStat
         // 최종 합산 퍼센트 적용 (예: 10% + 20% = 30% 증가)
         finalValue *= 1 + percentSum;
 
-        return Mathf.Max(finalValue, 0f);
+        return finalValue;
     }
 
     public float GetValue(float amount)

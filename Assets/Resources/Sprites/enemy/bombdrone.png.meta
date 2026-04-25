@@ -1,31 +1,19 @@
 fileFormatVersion: 2
-guid: c4ed52e5d8c835b41ae0aaea58294728
+guid: b49011f5b0cef294cb5a791a1eec9d18
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6968532477458966826
-    second: gemini_run_0
+      213: 1950187007415977335
+    second: bombdrone_0
   - first:
-      213: 8553895670361762413
-    second: gemini_run_1
+      213: -1022078653260620335
+    second: bombdrone_1
   - first:
-      213: 3287627376477078356
-    second: gemini_run_2
+      213: -1536055382203048749
+    second: bombdrone_2
   - first:
-      213: -7651890148935087227
-    second: gemini_run_3
-  - first:
-      213: 1115983907732190543
-    second: gemini_run_4
-  - first:
-      213: -1424433748619453062
-    second: gemini_run_5
-  - first:
-      213: -3638412657327664723
-    second: gemini_run_6
-  - first:
-      213: -1004397097130089467
-    second: gemini_run_7
+      213: 8455081580333186684
+    second: bombdrone_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -58,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -69,10 +57,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -96,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -121,177 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gemini_run_0
+      name: bombdrone_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 17
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a29e6bc0e5335b060800000000000000
-      internalID: 6968532477458966826
+      spriteID: 7758c9e20c4701b10800000000000000
+      internalID: 1950187007415977335
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gemini_run_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 17
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d6a2aadaaca85b670800000000000000
-      internalID: 8553895670361762413
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_run_2
+      name: bombdrone_1
       rect:
         serializedVersion: 2
         x: 32
         y: 0
-        width: 17
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 45304c82eafff9d20800000000000000
-      internalID: 3287627376477078356
+      spriteID: 1dd14eb41e8d0d1f0800000000000000
+      internalID: -1022078653260620335
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gemini_run_3
-      rect:
-        serializedVersion: 2
-        x: 49
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 58bc96473760fc590800000000000000
-      internalID: -7651890148935087227
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_run_4
+      name: bombdrone_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
-        width: 17
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f45fd6b8375cc7f00800000000000000
-      internalID: 1115983907732190543
+      spriteID: 3dcd57ca4c5deaae0800000000000000
+      internalID: -1536055382203048749
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gemini_run_5
-      rect:
-        serializedVersion: 2
-        x: 80
-        y: 0
-        width: 17
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a7d95777d056b3ce0800000000000000
-      internalID: -1424433748619453062
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_run_6
+      name: bombdrone_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 17
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: da113bd17f2c18dc0800000000000000
-      internalID: -3638412657327664723
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gemini_run_7
-      rect:
-        serializedVersion: 2
-        x: 113
-        y: 0
-        width: 15
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 504a024692aaf02f0800000000000000
-      internalID: -1004397097130089467
+      spriteID: c7e35be76eb765570800000000000000
+      internalID: 8455081580333186684
       vertices: []
       indices: 
       edges: []
@@ -300,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6eaf0043ae8415b4f9f86a7f2caa535e
     internalID: 0
     vertices: []
     indices: 
@@ -308,16 +208,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      gemini_run_0: 6968532477458966826
-      gemini_run_1: 8553895670361762413
-      gemini_run_2: 3287627376477078356
-      gemini_run_3: -7651890148935087227
-      gemini_run_4: 1115983907732190543
-      gemini_run_5: -1424433748619453062
-      gemini_run_6: -3638412657327664723
-      gemini_run_7: -1004397097130089467
+      bombdrone_0: 1950187007415977335
+      bombdrone_1: -1022078653260620335
+      bombdrone_2: -1536055382203048749
+      bombdrone_3: 8455081580333186684
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

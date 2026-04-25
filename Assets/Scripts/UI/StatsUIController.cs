@@ -50,34 +50,41 @@ namespace UI
             // 현재는 placeholder 표시
 
             SetValue(totalGamesValue, "—");
-            SetValue(winsValue,       "—");
-            SetValue(lossesValue,     "—");
-            SetValue(winRateValue,    "—  %");
-            SetValue(bestKillValue,   "—");
-            SetValue(avgSurvivalValue,"—  분");
+            SetValue(winsValue, "—");
+            SetValue(lossesValue, "—");
+            SetValue(winRateValue, "—  %");
+            SetValue(bestKillValue, "—");
+            SetValue(avgSurvivalValue, "—  분");
             SetValue(longestStreakValue, "—  연승");
         }
 
         /// <summary>
         /// 서버 데이터 수신 후 호출할 메서드 (예약).
         /// </summary>
-        public void ApplyStats(int totalGames, int wins, int losses,
-                               int bestKill, float avgSurvival, int longestStreak)
+        public void ApplyStats(
+            int totalGames,
+            int wins,
+            int losses,
+            int bestKill,
+            float avgSurvival,
+            int longestStreak
+        )
         {
             float winRate = totalGames > 0 ? (float)wins / totalGames * 100f : 0f;
 
-            SetValue(totalGamesValue,    $"{totalGames} 경기");
-            SetValue(winsValue,          $"{wins} 승");
-            SetValue(lossesValue,        $"{losses} 패");
-            SetValue(winRateValue,       $"{winRate:F1}  %");
-            SetValue(bestKillValue,      $"{bestKill}");
-            SetValue(avgSurvivalValue,   $"{avgSurvival:F1}  분");
-            SetValue(longestStreakValue,  $"{longestStreak}  연승");
+            SetValue(totalGamesValue, $"{totalGames} 경기");
+            SetValue(winsValue, $"{wins} 승");
+            SetValue(lossesValue, $"{losses} 패");
+            SetValue(winRateValue, $"{winRate:F1}  %");
+            SetValue(bestKillValue, $"{bestKill}");
+            SetValue(avgSurvivalValue, $"{avgSurvival:F1}  분");
+            SetValue(longestStreakValue, $"{longestStreak}  연승");
         }
 
         private static void SetValue(Text t, string v)
         {
-            if (t != null) t.text = v;
+            if (t != null)
+                t.text = v;
         }
     }
 }

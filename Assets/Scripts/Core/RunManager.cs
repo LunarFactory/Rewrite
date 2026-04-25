@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Item;
+using Log;
 using UnityEngine;
 
 namespace Core
@@ -155,6 +156,8 @@ namespace Core
             CurrentFloor = 1;
             Random.InitState(CurrentSeed);
 
+            LogTracker.Instance.GenerateRunId();
+
             UI.UIManager.Instance.LoadScene("GameScene");
         }
 
@@ -167,6 +170,11 @@ namespace Core
                 {
                     WaveManager.Instance.StartFloor(CurrentFloor);
                 }
+            }
+            else
+            {
+                LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
+                LogTracker.Instance.OnRunEnded("CLEAR");
             }
         }
     }

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using Core;
 using Entity;
+using Log;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Categorization;
 
 namespace Enemy
 {
@@ -149,15 +151,16 @@ namespace Enemy
         {
             if (data != null && data.isInvincible)
                 return;
-
-            base.TakeDamage(attacker, damage);
+            int finalDamage = (int)DamageTaken.GetValue(damage);
+            base.TakeDamage(attacker, finalDamage);
+            LogTracker.Instance.RegisterHit(finalDamage);
             staggerTimer = data != null ? data.hitstunDuration : 0f;
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
                 FDTManager.Instance.SpawnText(
                     transform.position + Vector3.up * 0.5f,
-                    Mathf.RoundToInt(DamageTaken.GetValue(damage)),
+                    finalDamage,
                     Color.white
                 );
             }
@@ -209,7 +212,7 @@ namespace Enemy
             }
         }
 
-        protected override void Die()
+        protected override void Die(EntityStats source)
         {
             if (WaveManager.Instance != null)
                 WaveManager.Instance.OnEnemyDied();

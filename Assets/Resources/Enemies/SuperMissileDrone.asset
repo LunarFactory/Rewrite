@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
+  m_Name: SuperMissileDrone
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
+  enemyName: "\uAC15\uD654 \uBBF8\uC0AC\uC77C \uB4DC\uB860"
+  maxHealth: 50
+  baseMoveSpeed: 3
+  baseAttackDamage: 15
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 10
+  baseHomingStrength: 4
+  baseDecelerationRate: -0.02
+  baseProjectileScale: 1.3
+  baseProjectileSpeed: 2
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
+  hitstunDuration: 0.15
+  animationFrames:
+  - {fileID: -5597914282335270421, guid: 2e9265c57795b834ea8f59873065156a, type: 3}
+  - {fileID: -1690703559552514150, guid: 2e9265c57795b834ea8f59873065156a, type: 3}
+  - {fileID: 6330459255535299007, guid: 2e9265c57795b834ea8f59873065156a, type: 3}
+  - {fileID: -4252602857972621827, guid: 2e9265c57795b834ea8f59873065156a, type: 3}
+  directionalSprites: []
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 1
+  cost: 10
+  minFloor: 3
+  maxCountInWave: 2
+  ComponentName: SuperMissileDroneAI
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 1, y: 1}
+  bulletList:
+  - bulletKey: Normal
+    bulletPrefab: {fileID: 674297919083904026, guid: a6b519fa90a17fd4c99121ca4bf7a5f3, type: 3}

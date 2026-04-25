@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
+  m_Name: DefenseDrone
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
+  enemyName: "\uC218\uBE44 \uB4DC\uB860"
+  maxHealth: 100
+  baseMoveSpeed: 2
+  baseAttackDamage: 0
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 0
+  baseProjectileScale: 1
+  baseProjectileSpeed: 10
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
+  hitstunDuration: 0.1
+  animationFrames:
+  - {fileID: -8224298955459886239, guid: b79132854957da345bffa7520d1a2562, type: 3}
+  - {fileID: 3192975996949519958, guid: b79132854957da345bffa7520d1a2562, type: 3}
+  - {fileID: -5880023277127801591, guid: b79132854957da345bffa7520d1a2562, type: 3}
+  - {fileID: -6866308796479682762, guid: b79132854957da345bffa7520d1a2562, type: 3}
+  directionalSprites: []
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 0
+  cost: 5
+  minFloor: 2
+  maxCountInWave: 2
+  ComponentName: DefenseDroneAI
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 1, y: 1}
+  bulletList: []

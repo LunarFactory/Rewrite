@@ -10,12 +10,12 @@ namespace UI
     public class SettingsUIController : MonoBehaviour
     {
         // ── PlayerPrefs 키 ──────────────────────────────────────────
-        private const string KeyMasterVol  = "Vol_Master";
-        private const string KeyBgmVol     = "Vol_BGM";
-        private const string KeySfxVol     = "Vol_SFX";
-        private const string KeyResolution  = "Resolution";
-        private const string KeyFullscreen  = "Fullscreen";
-        private const string KeyVSync       = "VSync";
+        private const string KeyMasterVol = "Vol_Master";
+        private const string KeyBgmVol = "Vol_BGM";
+        private const string KeySfxVol = "Vol_SFX";
+        private const string KeyResolution = "Resolution";
+        private const string KeyFullscreen = "Fullscreen";
+        private const string KeyVSync = "VSync";
 
         // ── 버튼 참조 ───────────────────────────────────────────────
         [Header("오디오 버튼")]
@@ -32,8 +32,14 @@ namespace UI
         public Button backButton;
 
         // ── 내부 상태 ────────────────────────────────────────────────
-        private static readonly int[]    VolSteps       = { 0, 20, 40, 60, 80, 100 };
-        private static readonly string[] ResolutionOptions = { "1280×720", "1600×900", "1920×1080", "2560×1440" };
+        private static readonly int[] VolSteps = { 0, 20, 40, 60, 80, 100 };
+        private static readonly string[] ResolutionOptions =
+        {
+            "1280×720",
+            "1600×900",
+            "1920×1080",
+            "2560×1440",
+        };
 
         private int _masterVolIdx;
         private int _bgmVolIdx;
@@ -72,22 +78,22 @@ namespace UI
 
         private void LoadPrefs()
         {
-            _masterVolIdx  = PlayerPrefs.GetInt(KeyMasterVol, 5);   // 기본 100%
-            _bgmVolIdx     = PlayerPrefs.GetInt(KeyBgmVol,    4);   // 기본 80%
-            _sfxVolIdx     = PlayerPrefs.GetInt(KeySfxVol,    4);   // 기본 80%
-            _resolutionIdx = PlayerPrefs.GetInt(KeyResolution, 2);  // 기본 1920×1080
-            _fullscreen    = PlayerPrefs.GetInt(KeyFullscreen, 1) == 1;
-            _vsync         = PlayerPrefs.GetInt(KeyVSync, 1) == 1;
+            _masterVolIdx = PlayerPrefs.GetInt(KeyMasterVol, 5); // 기본 100%
+            _bgmVolIdx = PlayerPrefs.GetInt(KeyBgmVol, 4); // 기본 80%
+            _sfxVolIdx = PlayerPrefs.GetInt(KeySfxVol, 4); // 기본 80%
+            _resolutionIdx = PlayerPrefs.GetInt(KeyResolution, 2); // 기본 1920×1080
+            _fullscreen = PlayerPrefs.GetInt(KeyFullscreen, 1) == 1;
+            _vsync = PlayerPrefs.GetInt(KeyVSync, 1) == 1;
         }
 
         private void SaveAndClose()
         {
-            PlayerPrefs.SetInt(KeyMasterVol,  _masterVolIdx);
-            PlayerPrefs.SetInt(KeyBgmVol,     _bgmVolIdx);
-            PlayerPrefs.SetInt(KeySfxVol,     _sfxVolIdx);
-            PlayerPrefs.SetInt(KeyResolution,  _resolutionIdx);
-            PlayerPrefs.SetInt(KeyFullscreen,  _fullscreen ? 1 : 0);
-            PlayerPrefs.SetInt(KeyVSync,       _vsync ? 1 : 0);
+            PlayerPrefs.SetInt(KeyMasterVol, _masterVolIdx);
+            PlayerPrefs.SetInt(KeyBgmVol, _bgmVolIdx);
+            PlayerPrefs.SetInt(KeySfxVol, _sfxVolIdx);
+            PlayerPrefs.SetInt(KeyResolution, _resolutionIdx);
+            PlayerPrefs.SetInt(KeyFullscreen, _fullscreen ? 1 : 0);
+            PlayerPrefs.SetInt(KeyVSync, _vsync ? 1 : 0);
             PlayerPrefs.Save();
 
             ApplySettings();
@@ -110,9 +116,11 @@ namespace UI
             // 해상도
             string res = ResolutionOptions[_resolutionIdx];
             var parts = res.Split('×');
-            if (parts.Length == 2 &&
-                int.TryParse(parts[0], out int w) &&
-                int.TryParse(parts[1], out int h))
+            if (
+                parts.Length == 2
+                && int.TryParse(parts[0], out int w)
+                && int.TryParse(parts[1], out int h)
+            )
             {
                 Screen.SetResolution(w, h, _fullscreen);
             }
@@ -160,20 +168,22 @@ namespace UI
 
         private void RefreshAllUI()
         {
-            RefreshBtn(masterVolBtn,  $"{VolSteps[_masterVolIdx]}%");
-            RefreshBtn(bgmVolBtn,     $"{VolSteps[_bgmVolIdx]}%");
-            RefreshBtn(sfxVolBtn,     $"{VolSteps[_sfxVolIdx]}%");
-            RefreshBtn(resolutionBtn,  ResolutionOptions[_resolutionIdx]);
-            RefreshBtn(fullscreenBtn,  _fullscreen ? "켜짐" : "꺼짐");
-            RefreshBtn(vsyncBtn,       _vsync ? "켜짐" : "꺼짐");
+            RefreshBtn(masterVolBtn, $"{VolSteps[_masterVolIdx]}%");
+            RefreshBtn(bgmVolBtn, $"{VolSteps[_bgmVolIdx]}%");
+            RefreshBtn(sfxVolBtn, $"{VolSteps[_sfxVolIdx]}%");
+            RefreshBtn(resolutionBtn, ResolutionOptions[_resolutionIdx]);
+            RefreshBtn(fullscreenBtn, _fullscreen ? "켜짐" : "꺼짐");
+            RefreshBtn(vsyncBtn, _vsync ? "켜짐" : "꺼짐");
         }
 
         // 버튼의 MainText를 갱신
         private static void RefreshBtn(Button btn, string text)
         {
-            if (btn == null) return;
+            if (btn == null)
+                return;
             var mt = btn.transform.Find("MainText")?.GetComponent<Text>();
-            if (mt != null) mt.text = text;
+            if (mt != null)
+                mt.text = text;
         }
     }
 }

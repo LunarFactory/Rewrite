@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
   m_Name: Drone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
-  enemyName: Drone
+  enemyName: "\uB4DC\uB860"
   maxHealth: 30
   baseMoveSpeed: 2
   baseAttackDamage: 10
@@ -41,8 +41,8 @@ MonoBehaviour:
   minFloor: 1
   maxCountInWave: 300
   ComponentName: DroneAI
-  colliderSize: {x: 1, y: 1}
   colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 1, y: 1}
   bulletList:
   - bulletKey: Normal
     bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}

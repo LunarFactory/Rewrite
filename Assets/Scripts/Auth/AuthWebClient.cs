@@ -28,7 +28,7 @@ namespace Auth
         public static AuthWebClient Instance { get; private set; }
 
         // EC2 퍼블릭 IP와 포트 (보안 그룹에서 8080 포트가 열려있어야 함)
-        private readonly string baseUrl = "http://3.35.26.80:8080/api/v1/player/auth";
+        private readonly string baseUrl = "http://15.164.165.212:8080/api/v1/player/auth";
 
         private void Awake()
         {
@@ -42,12 +42,7 @@ namespace Auth
         }
 
         // [회원가입]
-        public IEnumerator SignUp(
-            string id,
-            string pw,
-            string email,
-            System.Action<bool, string> callback
-        )
+        public IEnumerator SignUp(string id, string pw, string email, Action<bool, string> callback)
         {
             var data = new SignUpRequest
             {
@@ -97,11 +92,7 @@ namespace Auth
         }
 
         // [공통 POST 요청 메서드]
-        private IEnumerator PostRequest(
-            string endpoint,
-            string json,
-            System.Action<bool, string> callback
-        )
+        private IEnumerator PostRequest(string endpoint, string json, Action<bool, string> callback)
         {
             using (UnityWebRequest request = new UnityWebRequest(baseUrl + endpoint, "POST"))
             {

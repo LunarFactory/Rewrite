@@ -1,6 +1,7 @@
 using System;
-using Core;
+using Enemy;
 using Entity;
+using Log;
 using UI;
 using UnityEngine;
 using Weapon;
@@ -125,6 +126,7 @@ namespace Player
             }
 
             base.TakeDamage(attacker, finalDamage); // 부모 로직 실행 (currentHealth 감소 및 Die 체크)
+            LogTracker.Instance.RegisterHitTaken();
             if (FDTManager.Instance != null)
             {
                 // 적의 머리 위쪽에서 띄우고 싶다면 position + Vector3.up * 1f 처럼 오프셋을 줍니다.
@@ -156,8 +158,13 @@ namespace Player
             OnHealthChanged?.Invoke(currentHealth);
         }
 
-        protected override void Die() // 추상 메서드 구현
+        protected override void Die(EntityStats source) // 추상 메서드 구현
         {
+            if (source is EnemyStats enemy)
+            {
+                LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
+                LogTracker.Instance.OnRunEnded("GAME_OVER", enemy.data.enemyName);
+            }
             UIManager.Instance.RequestStateChange(UIState.GameOver);
         }
 
@@ -193,7 +200,6 @@ namespace Player
 
         public override void NotifyKill(EntityStats entity)
         {
-            AddBolts(100);
             OnKill?.Invoke(entity);
         }
 
@@ -210,21 +216,9 @@ namespace Player
 
         public bool AddBolts(int amount)
         {
-            if (amount > 0)
-            {
-                bolts += amount;
-                // 여기에 볼트 UI 업데이트 이벤트를 넣으면 좋습니다.
-                return true;
-            }
-            else
-            {
-                if (bolts >= amount)
-                {
-                    bolts -= amount;
-                    return true;
-                }
-                return false;
-            }
+            bolts += amount;
+            // 여기에 볼트 UI 업데이트 이벤트를 넣으면 좋습니다.
+            return true;
         }
 
         public int GetBolts()
@@ -235,6 +229,11 @@ namespace Player
         public bool isStealth()
         {
             return stealth.IsStealthActive;
+        }
+
+        public WeaponData GetWeaponData()
+        {
+            return currentWeapon.weaponData;
         }
     }
 }

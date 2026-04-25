@@ -146,7 +146,15 @@ namespace Player
 
         public void OnMove(InputValue value)
         {
-            moveInput = value.Get<Vector2>();
+            Vector2 newMoveInput = value.Get<Vector2>();
+            if (newMoveInput != moveInput && newMoveInput != Vector2.zero)
+            {
+                if (LogTracker.Instance != null)
+                {
+                    LogTracker.Instance.RegisterClick();
+                }
+            }
+            moveInput = newMoveInput;
         }
 
         public void OnAttack(InputValue value)
@@ -196,7 +204,8 @@ namespace Player
                 // 처음 눌렀을 때만 로그 기록 (중복 로그 방지)
                 if (attackAction.action.WasPressedThisFrame())
                 {
-                    PlayerLogManager.Instance?.RecordAction();
+                    LogTracker.Instance?.RegisterClick();
+                    LogTracker.Instance?.RegisterAttackClick();
                 }
 
                 if (currentWeapon != null)
@@ -211,7 +220,7 @@ namespace Player
             // WasPressedThisFrame()을 쓰면 꾹 누르고 있어도 한 번만 터집니다.
             if (stealthAction.action.WasPressedThisFrame() && stealth != null)
             {
-                PlayerLogManager.Instance?.RecordAction();
+                LogTracker.Instance?.RegisterClick();
                 stealth.ActivateStealth(); // 이제 굴러가는 동안 한 번만 호출됨
             }
         }
