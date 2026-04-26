@@ -61,6 +61,7 @@ namespace Enemy
         public EnemyTier tier;
         public int cost;
         public int minFloor; // 등장 시작 층
+        public int maxFloor = 5; // 최대 등장 가능 층
         public int maxCountInWave; // 한 웨이브 최대 소환 수 (0이면 무제한)
         public string ComponentName;
 

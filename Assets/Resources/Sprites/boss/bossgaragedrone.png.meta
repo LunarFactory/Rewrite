@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 486a8bf8d47bbe74799559f993990004
+guid: 9a0b6b0d472e4e24db2203170459fcc9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6861840132216724293
-    second: monitor_popup_0
+      213: 3616135293458790030
+    second: bossgaragedrone_0
+  - first:
+      213: -5888845294835690838
+    second: bossgaragedrone_1
+  - first:
+      213: 7546794523106229225
+    second: bossgaragedrone_2
+  - first:
+      213: -3761476808137076632
+    second: bossgaragedrone_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,10 +57,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: monitor_popup_0
+      name: bossgaragedrone_0
       rect:
         serializedVersion: 2
-        x: 11
+        x: 0
         y: 0
-        width: 98
-        height: 73
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 54b1c42ae372a3f50800000000000000
-      internalID: 6861840132216724293
+      spriteID: e863d5ae3e71f2230800000000000000
+      internalID: 3616135293458790030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bossgaragedrone_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa29610a76e964ea0800000000000000
+      internalID: -5888845294835690838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bossgaragedrone_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eb3c9652a99bb860800000000000000
+      internalID: 7546794523106229225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bossgaragedrone_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8609e1ca5cc8ccbc0800000000000000
+      internalID: -3761476808137076632
       vertices: []
       indices: 
       edges: []
@@ -125,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0060210fd5abb104d88044f4825876ca
     internalID: 0
     vertices: []
     indices: 
@@ -133,9 +208,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      monitor_popup_0: 6861840132216724293
+      bossgaragedrone_0: 3616135293458790030
+      bossgaragedrone_1: -5888845294835690838
+      bossgaragedrone_2: 7546794523106229225
+      bossgaragedrone_3: -3761476808137076632
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

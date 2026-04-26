@@ -633,6 +633,7 @@ MonoBehaviour:
   enemyBasePrefab: {fileID: 8024068329176128005, guid: d7a1d3268812708409f495bea3f9b077, type: 3}
   MapPool:
   - {fileID: 11400000, guid: 475a9eaefb127374daa6b88c4ebf43b6, type: 2}
+  - {fileID: 11400000, guid: d48d71e57a6d37a49be999a30e3d8a93, type: 2}
   enemyPool:
   - {fileID: 11400000, guid: 967f3b87bf373d94d9b18d7accdcb4d8, type: 2}
   - {fileID: 11400000, guid: 93ae4e8edf44f054e9967938691f1dd8, type: 2}
@@ -645,8 +646,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c0b671b3de87ec84ba913ce5795c3d1d, type: 2}
   - {fileID: 11400000, guid: e7db2b3ffbe8b1a429a2710f392bd5db, type: 2}
   - {fileID: 11400000, guid: 06b2c21f0fcdf624b9ae25dfac9d1db7, type: 2}
-  - {fileID: 11400000, guid: c0b671b3de87ec84ba913ce5795c3d1d, type: 2}
-  - {fileID: 11400000, guid: c0b671b3de87ec84ba913ce5795c3d1d, type: 2}
+  - {fileID: 11400000, guid: 0f531e5e283bdbe458f2272d7f1100cc, type: 2}
+  - {fileID: 11400000, guid: 416f98d8c0f9bc649b714e37f13cfd0b, type: 2}
   fdtPrefab: {fileID: 2679069419348618612, guid: 5d152e55cb8a73c47a7b8e1f6d10557c, type: 3}
   defaultDuration: 0.75
 --- !u!114 &1789515917

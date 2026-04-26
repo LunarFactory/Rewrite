@@ -138,7 +138,7 @@ namespace Weapon
             currentSpeed *= (1 - decelerationRate);
             if (currentSpeed < minSpeed)
             {
-                Destroy(gameObject);
+                Deactivate();
                 return;
             }
 

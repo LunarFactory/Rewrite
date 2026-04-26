@@ -55,6 +55,9 @@ namespace Core
         private GameObject healthRestorerPrefab; // 체력 회복 오브젝트
         public int activeEnemyCount = 0;
 
+        public Vector2 bossSpawnPoint;
+        public Vector2 rewardSpawnPoint;
+
         private GameManager gameManager;
 
         public static event Action OnBossWaveStart;
@@ -136,7 +139,7 @@ namespace Core
                     gameManager.ExecuteSpawn(
                         bossPool[RunManager.Instance.CurrentFloor - 1],
                         true,
-                        Vector2.zero
+                        bossSpawnPoint
                     );
                     break;
             }
@@ -164,7 +167,9 @@ namespace Core
         {
             int remainingBudget = budget;
             List<EnemyData> candidates = enemyPool.FindAll(e =>
-                e.tier == tier && e.minFloor <= RunManager.Instance.CurrentFloor
+                e.tier == tier
+                && e.minFloor <= RunManager.Instance.CurrentFloor
+                && e.maxFloor >= RunManager.Instance.CurrentFloor
             );
 
             if (candidates.Count == 0)
@@ -256,7 +261,7 @@ namespace Core
 
             for (int i = 0; i < itemsToSpawn.Count; i++)
             {
-                Vector2 pos = new Vector2(-2f + (i * 2f), 0);
+                Vector2 pos = new Vector2(-2f + (i * 2f), rewardSpawnPoint.y - 3);
                 GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity);
 
                 if (itemObj.TryGetComponent(out FieldItem fieldItem))
@@ -285,14 +290,18 @@ namespace Core
 
         private void SpawnRest()
         {
-            Instantiate(healthRestorerPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(
+                healthRestorerPrefab,
+                new Vector2(rewardSpawnPoint.x, rewardSpawnPoint.y - 3),
+                Quaternion.identity
+            );
             SpawnExitPortal();
         }
 
         private void SpawnExitPortal()
         {
             // 플레이어 근처나 맵 중앙에 포탈 생성
-            Instantiate(exitPortalPrefab, new Vector2(0.5f, 3.5f), Quaternion.identity);
+            Instantiate(exitPortalPrefab, rewardSpawnPoint, Quaternion.identity);
         }
 
         private void NotifyBossWaveStart()
@@ -363,7 +372,7 @@ namespace Core
             for (int i = 0; i < rewards.Count; i++)
             {
                 // 보상 아이템들 위치 선정 (가운데 정렬)
-                Vector2 pos = new Vector2(-2f + (i * 2f), 1f);
+                Vector2 pos = new Vector2(-2f + (i * 2f), rewardSpawnPoint.y - 3);
                 GameObject itemObj = Instantiate(itemPrefab, pos, Quaternion.identity);
 
                 if (itemObj.TryGetComponent(out Level.FieldItem fieldItem))

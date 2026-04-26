@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
+  m_Name: BossGarageDrone
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
+  enemyName: "\"\uC9D0\uAFBC\""
+  enemySubtitle: "\uB4DC\uB860 \uAD70\uB2E8"
+  maxHealth: 3000
+  baseMoveSpeed: 0.5
+  baseAttackDamage: 10
+  baseRicochet: 0
+  basePierce: 0
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 0
+  baseProjectileScale: 1
+  baseProjectileSpeed: 10
+  baseDamageIncreasedFlat: 0
+  baseDamageIncreasedPercent: 0
+  baseDamageTakenFlat: 0
+  baseDamageTakenPercent: 0
+  hitstunDuration: 0
+  animationFrames:
+  - {fileID: 3616135293458790030, guid: 9a0b6b0d472e4e24db2203170459fcc9, type: 3}
+  - {fileID: -5888845294835690838, guid: 9a0b6b0d472e4e24db2203170459fcc9, type: 3}
+  - {fileID: 7546794523106229225, guid: 9a0b6b0d472e4e24db2203170459fcc9, type: 3}
+  - {fileID: -3761476808137076632, guid: 9a0b6b0d472e4e24db2203170459fcc9, type: 3}
+  directionalSprites: []
+  defaultFPS: 10
+  isInvincible: 0
+  tier: 2
+  cost: 6
+  minFloor: 3
+  maxFloor: 5
+  maxCountInWave: 1
+  ComponentName: BossGarageDroneAI
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 1, y: 1}
+  bulletList:
+  - bulletKey: Normal
+    bulletPrefab: {fileID: 674297919083904026, guid: c0efc003f7ee3ca4dafe0a6e397769f2, type: 3}

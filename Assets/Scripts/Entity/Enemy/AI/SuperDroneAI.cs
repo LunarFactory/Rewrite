@@ -20,7 +20,7 @@ namespace Enemy
         private float moveDuration = 2f; // 이동 지속 시간
 
         [SerializeField]
-        private float attackRange = 4f; // [추가] 사격 가능한 최대 거리
+        private float attackRange = 12f; // [추가] 사격 가능한 최대 거리
 
         public float shootDelay = 1f;
 

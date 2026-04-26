@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Turret
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: "\uD3EC\uD0D1"
+  enemySubtitle: 
   maxHealth: 50
   baseMoveSpeed: 0
   baseAttackDamage: 20
@@ -43,6 +44,7 @@ MonoBehaviour:
   tier: 1
   cost: 4
   minFloor: 1
+  maxFloor: 3
   maxCountInWave: 3
   ComponentName: TurretAI
   colliderOffset: {x: 0, y: 0.25}

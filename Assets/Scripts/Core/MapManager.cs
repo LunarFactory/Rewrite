@@ -97,6 +97,8 @@ namespace Core
             {
                 Player.PlayerStats.LocalPlayer.transform.position = selectedMap.playerSpawnPoint;
             }
+            WaveManager.Instance.bossSpawnPoint = selectedMap.bossSpawnPoint;
+            WaveManager.Instance.rewardSpawnPoint = selectedMap.rewardSpawnPoint;
 
             Debug.Log($"<color=yellow>[MapManager]</color> {selectedMap.mapName} 로드 완료");
         }
