@@ -29,10 +29,10 @@ namespace Log
         private TimeSeriesFrame _currentFrame;
 
         // 카운터들
-        private int _damageDealt;
         private int _hitsTaken;
         private int _enemyShot;
         private int _totalClicks;
+        private int _clicks;
         private int _totalAttackClicks;
         private int _totalHits;
         private int _totalDamageDealt;
@@ -68,7 +68,6 @@ namespace Log
             _isTracking = true;
             _startTime = Time.time;
             _lastPosition = transform.position;
-            _damageDealt = 0;
             _hitsTaken = 0;
             _enemyShot = 0;
             _totalDistance = 0;
@@ -94,6 +93,8 @@ namespace Log
         {
             while (_isTracking)
             {
+                var currentHealth = PlayerStats.LocalPlayer.currentHealth;
+                var baseDamage = PlayerStats.LocalPlayer.GetWeaponBaseAttackDamage();
                 yield return new WaitForSeconds(1.0f);
 
                 var frame = new TimeSeriesFrame
@@ -103,17 +104,32 @@ namespace Log
                     atk_clicks_hit = _totalHits,
                     enemy_atk_spawned = _enemyShot,
                     hitbox_collisions = _hitsTaken,
-                    base_dmg_expected = PlayerStats.LocalPlayer.GetWeaponBaseAttackDamage(),
-                    actual_dmg_dealt = _damageDealt,
-                    hp_lost = _startHp - PlayerStats.LocalPlayer.currentHealth,
+                    base_dmg_expected = baseDamage,
+                    hp_lost = _startHp - currentHealth,
                     max_hp = PlayerStats.LocalPlayer.maxHealth,
-                    apm = Mathf.RoundToInt(_totalClicks / ((Time.time - _startTime) / 60f)),
                     enemy_shot_count = _enemyShot,
+                    hp_retention_rate = (float)currentHealth / _startHp,
+                    apm = _clicks / ((Time.time - _startTime) / 60f),
+                    accuracy =
+                        (_totalAttackClicks > 0) ? (float)_totalHits / _totalAttackClicks : 0f,
+                    inverse_hit_rate = (_enemyShot > 0) ? (float)_totalHitsTaken / _enemyShot : 0f,
+                    attack_item_efficiency =
+                        (_totalDamageDealt > 0)
+                            ? (1f - baseDamage * (float)_totalHits / _totalDamageDealt)
+                            : 0,
                 };
-                _damageDealt = 0;
+                _clicks = 0;
                 _hitsTaken = 0;
 
-                _currentLog.time_series_frames.Add(frame);
+                _currentLog.time_series_frames.Add(frame); // 이 로그가 콘솔에 찍히는지, 그리고 count가 올라가는지 확인하세요!
+                Debug.Log(
+                    $"<color=lime>[Log]</color> 프레임 추가됨. 현재 총 개수: {_currentLog.time_series_frames.Count}"
+                );
+                Debug.LogWarning($"totalDamageDealt : {_totalDamageDealt}");
+                Debug.LogWarning($"totalHits : {_totalHits}");
+                Debug.LogWarning(
+                    $"totalDamageDealt : {PlayerStats.LocalPlayer.GetWeaponBaseAttackDamage()}"
+                );
             }
         }
 
@@ -123,15 +139,25 @@ namespace Log
         }
 
         // 각종 이벤트 기록용 퍼블릭 메서드 (다른 스크립트에서 호출)
-        public void RegisterClick() => _totalClicks++;
+        public void RegisterClick()
+        {
+            _clicks++;
+            _totalClicks++;
+        }
 
-        public void RegisterAttackClick() => _totalAttackClicks++;
+        public void RegisterAttackClick()
+        {
+            _totalAttackClicks++;
+        }
 
-        public void RegisterHit(int damage)
+        public void RegisterHit()
         {
             _totalHits++;
+        }
+
+        public void RegisterDamageDealt(int damage)
+        {
             _totalDamageDealt += damage;
-            _damageDealt += damage;
         }
 
         public void RegisterHitTaken()

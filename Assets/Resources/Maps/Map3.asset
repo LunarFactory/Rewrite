@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b7071f31451ece4490cda4ad2a5f93f, type: 3}
-  m_Name: Map2
+  m_Name: Map3
   m_EditorClassIdentifier: Assembly-CSharp::Level.MapData
-  mapName: Map2
-  mapPrefab: {fileID: 7953048364140301780, guid: 13396378ae2e5e245bfcc355b82009f6, type: 3}
-  minFloor: 2
+  mapName: Map3
+  mapPrefab: {fileID: 7953048364140301780, guid: e0d486b609b519045baea9d541650711, type: 3}
+  minFloor: 3
   maxFloor: 5
   weight: 10
   environmentColor: {r: 1, g: 1, b: 1, a: 1}
-  playerSpawnPoint: {x: 0, y: 0}
+  playerSpawnPoint: {x: 0, y: -10}
   rewardSpawnPoint: {x: 0, y: -5}
-  bossSpawnPoint: {x: 0, y: 10}
+  bossSpawnPoint: {x: 0, y: 8}

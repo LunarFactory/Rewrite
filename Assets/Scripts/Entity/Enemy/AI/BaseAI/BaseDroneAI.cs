@@ -39,7 +39,7 @@ namespace Enemy
             UpdateTargetByStealth();
             if (playerTarget == null)
             {
-                StopMovement();
+                StopBehavior();
                 return;
             } // 3. 타겟이 있다면 이동 재개 및 목적지 갱신
             ResumeMovement();
@@ -60,7 +60,7 @@ namespace Enemy
             }
         }
 
-        protected void StopMovement()
+        protected override void StopBehavior()
         {
             if (aiPath.canMove)
             {

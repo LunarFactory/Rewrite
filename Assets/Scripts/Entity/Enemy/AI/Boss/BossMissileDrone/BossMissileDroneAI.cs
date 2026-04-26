@@ -155,7 +155,7 @@ namespace Enemy
 
                 if (distance <= attackRange)
                 {
-                    StopMovement();
+                    StopBehavior();
 
                     // [패턴 2 & 3 결정] 연사 쿨타임이 끝났는가?
                     if (_missileTimer <= 0)
@@ -180,7 +180,7 @@ namespace Enemy
 
         private void HandleMissileState()
         {
-            StopMovement();
+            StopBehavior();
             if (_stateTimer <= 0)
             {
                 _currentState = State.Moving;
@@ -190,7 +190,7 @@ namespace Enemy
 
         private void HandleRapidMissileState()
         {
-            StopMovement();
+            StopBehavior();
 
             if (_missilesFired < burstCount)
             {

@@ -87,12 +87,10 @@ public class BuffManager : MonoBehaviour
 
         if (existingEffect != null)
         {
-            Debug.Log("너 버프 있대");
             return existingEffect;
         }
         else
         {
-            Debug.Log("너 버프 없대");
             return null;
         }
     }

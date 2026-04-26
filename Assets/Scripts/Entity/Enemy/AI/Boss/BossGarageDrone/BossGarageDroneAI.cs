@@ -67,7 +67,7 @@ namespace Enemy
 
         private void HandleSummonState()
         {
-            StopMovement(); // 소환 중 정지
+            StopBehavior(); // 소환 중 정지
 
             if (summonPool != null && summonPool.Length > 0)
             {

@@ -170,9 +170,10 @@ namespace Player
 
         public override void NotifyAttackHit(EntityStats attacker, EntityStats target, int damage)
         {
-            if (attacker is PlayerStats)
+            if (attacker is PlayerStats player)
             {
-                OnPlayerAttackHit?.Invoke((PlayerStats)attacker, target, damage);
+                LogTracker.Instance.RegisterHit();
+                OnPlayerAttackHit?.Invoke(player, target, damage);
             }
         }
 

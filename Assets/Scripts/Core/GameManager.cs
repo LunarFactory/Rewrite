@@ -5,6 +5,7 @@ using Enemy;
 using Entity;
 using Level;
 using Log;
+using Pathfinding;
 using Player;
 using UI;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace Core
         Playing,
         Paused,
         GameOver,
+        GameClear,
     };
 
     public class GameManager : MonoBehaviour // MCP SYNC TEST - IF YOU SEE THIS, IT WORKS!
@@ -93,15 +95,33 @@ namespace Core
         {
             State = newState;
             // Handle state transitions (e.g., time scale for pause)
-            Time.timeScale = (State == GameState.Paused || State == GameState.GameOver) ? 0f : 1f;
+            Time.timeScale =
+                (
+                    State == GameState.Paused
+                    || State == GameState.GameOver
+                    || State == GameState.GameClear
+                )
+                    ? 0f
+                    : 1f;
         }
 
         // [통합] 모든 스폰은 이 메서드를 통과하여 Setup을 보장함
-        public void ExecuteSpawn(EnemyData data, bool isBoss, Vector2 spawnPos)
+        public GameObject ExecuteSpawn(EnemyData data, bool isBoss, Vector2 spawnPos)
         {
             if (data == null || enemyBasePrefab == null)
-                return;
+                return null;
+            if (AstarPath.active != null)
+            {
+                // 0.5f 이내에서 가장 가까운 walkable 노드를 찾습니다.
+                var nnConstraint = NNConstraint.Default;
+                nnConstraint.constrainWalkability = true; // 이동 가능한 노드만 찾기
 
+                var info = AstarPath.active.GetNearest(spawnPos, nnConstraint);
+                if (info.node != null)
+                {
+                    spawnPos = (Vector2)info.position; // 찾은 좌표로 스폰 위치 보정
+                }
+            }
             GameObject enemyObj = Instantiate(enemyBasePrefab, spawnPos, Quaternion.identity);
 
             if (enemyObj.TryGetComponent(out EnemyStats stats))
@@ -112,6 +132,7 @@ namespace Core
                 if (isBoss)
                     NotifyBossSummon(stats);
             }
+            return enemyObj;
         }
 
         private void NotifyBossSummon(EntityStats boss)

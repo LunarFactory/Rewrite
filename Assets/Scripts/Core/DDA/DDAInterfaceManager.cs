@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using Log;
 using Unity.InferenceEngine;
@@ -23,6 +24,22 @@ public class DDAInferenceManager : MonoBehaviour
         // 1. 모델 로드 및 워커(엔진) 생성
         _runtimeModel = ModelLoader.Load(modelAsset);
         _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
+    }
+
+    public void LoadModelFromDisk()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "dda_model.onnx");
+
+        if (File.Exists(path))
+        {
+            // [중요] Sentis에서 외부 파일을 Model 객체로 변환
+            _runtimeModel = ModelLoader.Load(path);
+            Debug.Log("성공적으로 외부 모델을 로드했습니다.");
+        }
+        else
+        {
+            // 파일이 없으면 기본 모델(Resources) 로드 로직
+        }
     }
 
     /// <summary>

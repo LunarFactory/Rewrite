@@ -161,7 +161,7 @@ namespace Enemy
                 return;
             int finalDamage = (int)DamageTaken.GetValue(damage);
             base.TakeDamage(attacker, finalDamage);
-            LogTracker.Instance.RegisterHit(finalDamage);
+            LogTracker.Instance.RegisterDamageDealt(finalDamage);
             staggerTimer = data != null ? data.hitstunDuration : 0f;
             if (FDTManager.Instance != null)
             {
@@ -180,6 +180,7 @@ namespace Enemy
                 return;
             int finalDamage = Mathf.RoundToInt(DamageTaken.GetValue(damage));
             base.TakeDamage(attacker, finalDamage); // 부모의 체력 감소 로직 실행
+            LogTracker.Instance.RegisterDamageDealt(finalDamage);
             staggerTimer = data.hitstunDuration;
             if (FDTManager.Instance != null)
             {
@@ -220,14 +221,26 @@ namespace Enemy
             }
         }
 
+        public void NotifyDie(EntityStats source)
+        {
+            Die(source);
+        }
+
         protected override void Die(EntityStats source)
         {
-            if (WaveManager.Instance != null)
-                WaveManager.Instance.OnEnemyDied();
-            if (isBoss && UI.PlayerUI.Instance != null)
+            if (isBoss)
             {
-                UI.PlayerUI.Instance.HideBossHealth();
+                if (WaveManager.Instance != null)
+                {
+                    WaveManager.Instance.OnBossEnemyDied();
+                }
+                if (UI.PlayerUI.Instance != null)
+                {
+                    UI.PlayerUI.Instance.HideBossHealth();
+                }
             }
+            else
+                WaveManager.Instance.OnEnemyDied();
             Destroy(gameObject);
         }
 

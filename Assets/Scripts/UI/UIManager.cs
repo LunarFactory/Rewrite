@@ -12,6 +12,7 @@ public enum UIState
     Pause, // 일시정지 메뉴
     Upgrade, // 보급 포트 (상점)
     GameOver, // 게임 오버
+    GameClear, // 게임 클리어
 }
 
 namespace UI
@@ -23,6 +24,7 @@ namespace UI
         private GameoverUI _gameoverUI;
         private PlayerUI _playerUI;
         private UpgradeUI _upgradeUI;
+        private GameclearUI _gameclearUI;
 
         private TMP_FontAsset _font;
         public static UIManager Instance { get; private set; }
@@ -80,6 +82,9 @@ namespace UI
             if (_upgradeUI == null)
                 _upgradeUI = gameObject.AddComponent<UpgradeUI>();
             _upgradeUI.SetFont(_font); // UIManager.LoadUI(PlayerInput input) 내부에서...
+            if (_gameclearUI == null)
+                _gameclearUI = gameObject.AddComponent<GameclearUI>();
+            _gameclearUI.SetFont(_font); // UIManager.LoadUI(PlayerInput input) 내부에서...
             _isInitialized = true;
             EnterNewState(UIState.None);
         }
@@ -104,6 +109,7 @@ namespace UI
                     break;
 
                 case UIState.GameOver:
+                case UIState.GameClear:
                     // 게임오버 시에는 ESC 무시 (혹은 로비 이동)
                     break;
             }
@@ -169,6 +175,12 @@ namespace UI
                     mapName = "UI";
                     _gamestate = GameState.GameOver;
                     _gameoverUI.GameOver();
+                    break;
+
+                case UIState.GameClear:
+                    mapName = "UI";
+                    _gamestate = GameState.GameClear;
+                    _gameclearUI.GameClear();
                     break;
             }
             SetInputMap(mapName);

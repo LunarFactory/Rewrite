@@ -252,8 +252,8 @@ namespace Weapon
                 _hitTargets.Add(targetID);
                 _target = null;
                 stats.NotifyAttackHit(stats, target, damage);
-                stats.NotifyPostAttackHit(stats, target, damage);
                 target.TakeDamage(stats, damage);
+                stats.NotifyPostAttackHit(stats, target, damage);
                 HandlePierce();
             }
         }

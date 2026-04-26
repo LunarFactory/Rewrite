@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b7071f31451ece4490cda4ad2a5f93f, type: 3}
-  m_Name: Map2
+  m_Name: Map4
   m_EditorClassIdentifier: Assembly-CSharp::Level.MapData
-  mapName: Map2
-  mapPrefab: {fileID: 7953048364140301780, guid: 13396378ae2e5e245bfcc355b82009f6, type: 3}
-  minFloor: 2
+  mapName: Map4
+  mapPrefab: {fileID: 7953048364140301780, guid: f77a1fee3f68300479437f96f64a2aa2, type: 3}
+  minFloor: 4
   maxFloor: 5
   weight: 10
   environmentColor: {r: 1, g: 1, b: 1, a: 1}

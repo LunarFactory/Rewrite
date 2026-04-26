@@ -204,8 +204,7 @@ namespace Player
                 // 처음 눌렀을 때만 로그 기록 (중복 로그 방지)
                 if (attackAction.action.WasPressedThisFrame())
                 {
-                    LogTracker.Instance?.RegisterClick();
-                    LogTracker.Instance?.RegisterAttackClick();
+                    LogTracker.Instance.RegisterClick();
                 }
 
                 if (currentWeapon != null)

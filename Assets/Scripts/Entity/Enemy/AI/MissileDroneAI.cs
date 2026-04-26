@@ -60,7 +60,7 @@ namespace Enemy
                     // 사거리 안이면 공격 상태로 전환
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
-                    StopMovement();
+                    StopBehavior();
                     ShootAtPlayer();
                 }
                 else
@@ -73,7 +73,7 @@ namespace Enemy
 
         private void HandleShootingState()
         {
-            StopMovement();
+            StopBehavior();
 
             if (_stateTimer <= 0)
             {

@@ -219,7 +219,7 @@ namespace Core
             MapSpawnZone zone = MapManager.Instance.CurrentSpawnZone;
             Vector2 spawnPos = (zone != null) ? zone.GetRandomLocation() : Vector2.zero;
 
-            gameManager.ExecuteSpawn(data, isBoss, spawnPos);
+            var enemy = gameManager.ExecuteSpawn(data, isBoss, spawnPos);
             activeEnemyCount++;
         }
 
@@ -236,26 +236,36 @@ namespace Core
 
         public void OnEnemyDied()
         {
-            activeEnemyCount--;
-            if (activeEnemyCount <= 0)
+            if (GetWaveType(CurrentWave) == WaveType.Mob)
             {
-                if (ProjectileManager.Instance != null)
+                activeEnemyCount--;
+                if (activeEnemyCount <= 0)
                 {
-                    ProjectileManager.Instance.ClearAllProjectiles();
-                }
-                if (GetWaveType(CurrentWave) == WaveType.Boss)
-                {
-                    if (RunManager.Instance.CurrentFloor == 5)
-                        RunManager.Instance.AdvanceFloor();
-                    else
+                    if (ProjectileManager.Instance != null)
                     {
-                        SpawnBossRewards();
-                        SpawnExitPortal();
+                        ProjectileManager.Instance.ClearAllProjectiles();
                     }
-                }
-                else
                     CompleteCurrentWave();
+                }
             }
+        }
+
+        public void OnBossEnemyDied()
+        {
+            if (ProjectileManager.Instance != null)
+            {
+                ProjectileManager.Instance.ClearAllProjectiles();
+            }
+            EnemyStats[] activeMobs = FindObjectsByType<EnemyStats>();
+
+            foreach (EnemyStats mob in activeMobs)
+            {
+                // 각 투사체 내부의 반납 로직(Deactivate 등)을 호출합니다.
+                // 이 메서드는 우리가 앞서 작성했던 'Release' 로직을 포함해야 합니다.
+                Destroy(mob.gameObject);
+            }
+            SpawnExitPortal();
+            SpawnBossRewards();
         }
 
         private void SpawnShop()
@@ -318,6 +328,7 @@ namespace Core
 
         public void CompleteCurrentWave()
         { // 1. [추가] 필드의 모든 총알 청소
+            activeEnemyCount = 0;
             switch (GetWaveType(CurrentWave))
             {
                 case WaveType.Boss:

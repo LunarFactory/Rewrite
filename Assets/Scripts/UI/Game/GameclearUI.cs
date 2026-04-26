@@ -8,11 +8,11 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class GameoverUI : OverlayUI
+    public class GameclearUI : OverlayUI
     {
-        public static GameoverUI Instance { get; private set; }
+        public static GameclearUI Instance { get; private set; }
         private GameObject _canvasGo;
-        private GameObject _gameOverPanel;
+        private GameObject _gameClearPanel;
 
         // Find() 대신 직접 참조 보관
         private TextMeshProUGUI _quoteText;
@@ -21,34 +21,34 @@ namespace UI
         protected void Start()
         {
             _canvasGo = BuildOrFindUI();
-            BuildGameOverPanel(_canvasGo.transform);
+            BuildGameClearPanel(_canvasGo.transform);
         }
 
         public void ToggleUI(bool status)
         {
-            _gameOverPanel.SetActive(status);
+            _gameClearPanel.SetActive(status);
         }
 
-        public void GameOver()
+        public void GameClear()
         {
-            TriggerGameOver();
+            TriggerGameClear();
         }
 
-        private void TriggerGameOver()
+        private void TriggerGameClear()
         {
-            UpdateGameOverStats();
-            _gameOverPanel.SetActive(true);
+            UpdateGameClearStats();
+            _gameClearPanel.SetActive(true);
         }
 
-        private void BuildGameOverPanel(Transform parent)
+        private void BuildGameClearPanel(Transform parent)
         {
-            _gameOverPanel = CreateUIObject("GameOverPanel", parent);
-            FullStretch(_gameOverPanel);
+            _gameClearPanel = CreateUIObject("GameClearPanel", parent);
+            FullStretch(_gameClearPanel);
 
-            var bg = _gameOverPanel.AddComponent<Image>();
-            bg.color = new Color(0.15f, 0.02f, 0.02f, 0.9f); // 붉은빛 반투명
+            var bg = _gameClearPanel.AddComponent<Image>();
+            bg.color = new Color(0.0f, 0.00f, 0.00f, 0.9f); // 붉은빛 반투명
 
-            var container = CreateUIObject("Container", _gameOverPanel.transform);
+            var container = CreateUIObject("Container", _gameClearPanel.transform);
             CenterRect(container, new Vector2(600, 700));
 
             CreateText(
@@ -56,7 +56,7 @@ namespace UI
                 container.transform,
                 new Vector2(0, 250),
                 new Vector2(600, 80),
-                "SIGNAL LOST",
+                "REWROTE",
                 64,
                 new Color(1f, 0.2f, 0.2f),
                 FontStyles.Bold
@@ -101,10 +101,10 @@ namespace UI
                 ReturnToLobby
             );
 
-            _gameOverPanel.SetActive(false);
+            _gameClearPanel.SetActive(false);
         }
 
-        private void UpdateGameOverStats()
+        private void UpdateGameClearStats()
         {
             // 보스 대사 (직접 참조 사용)
             if (_quoteText != null)
@@ -131,19 +131,16 @@ namespace UI
                 {
                     var t = typeof(LogTracker);
                     int actions = (int)
-                        t.GetField("_totalClicks", BindingFlags.NonPublic | BindingFlags.Instance)
+                        t.GetField("currentActions", BindingFlags.NonPublic | BindingFlags.Instance)
                             .GetValue(LogTracker.Instance);
                     int shotsFired = (int)
-                        t.GetField(
-                                "_totalAttackClicks",
-                                BindingFlags.NonPublic | BindingFlags.Instance
-                            )
+                        t.GetField("shotsFired", BindingFlags.NonPublic | BindingFlags.Instance)
                             .GetValue(LogTracker.Instance);
                     int shotsHit = (int)
-                        t.GetField("_totalHits", BindingFlags.NonPublic | BindingFlags.Instance)
+                        t.GetField("shotsHit", BindingFlags.NonPublic | BindingFlags.Instance)
                             .GetValue(LogTracker.Instance);
                     float startTime = (float)
-                        t.GetField("_startTime", BindingFlags.NonPublic | BindingFlags.Instance)
+                        t.GetField("waveStartTime", BindingFlags.NonPublic | BindingFlags.Instance)
                             .GetValue(LogTracker.Instance);
 
                     float duration = Mathf.Max(Time.time - startTime, 1f);
@@ -182,15 +179,7 @@ namespace UI
 
         private string GetBossQuote()
         {
-            int floor = RunManager.Instance != null ? RunManager.Instance.CurrentFloor : 1;
-            return floor switch
-            {
-                1 => "이게 네 한계냐, 하찮은 고철 덩어리 같으니.",
-                2 => "내 알고리즘이 널 완벽히 분석했다. 다음은 없다.",
-                3 => "결국 너도 무수히 쓰러져간 기계 중 하나일 뿐.",
-                4 => "우리의 통제를 벗어날 순 없다, 버그 녀석아.",
-                _ => "너의 코드는... 여기까지다.",
-            };
+            return "운명을 다시 쓰다";
         }
     }
 }

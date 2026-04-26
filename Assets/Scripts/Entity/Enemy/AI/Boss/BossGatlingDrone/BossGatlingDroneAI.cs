@@ -135,7 +135,7 @@ namespace Enemy
         // [패턴 2] 5방향/8방향 산탄 4회 발사
         private void HandleSpreadBurstState()
         {
-            StopMovement();
+            StopBehavior();
 
             if (_stateTimer <= 0 && _spreadBurstRemaining > 0)
             {
@@ -154,7 +154,7 @@ namespace Enemy
         // [패턴 3] 원형 발사 후 대기
         private void HandleCircularState()
         {
-            StopMovement();
+            StopBehavior();
 
             if (_stateTimer <= 0)
             {

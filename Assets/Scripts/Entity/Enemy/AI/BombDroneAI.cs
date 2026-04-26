@@ -89,13 +89,13 @@ namespace Enemy
                 _currentState = State.Priming;
                 _stateTimer = fuseDuration;
                 _indicatorCircle.enabled = true; // 빨간 원 표시
-                StopMovement();
+                StopBehavior();
             }
         }
 
         private void HandlePrimingState()
         {
-            StopMovement();
+            StopBehavior();
 
             // [연출] 시간이 갈수록 빨간 원이 점점 진해지거나 깜빡이게 함
             float alpha = Mathf.PingPong(Time.time * 10f, 1f);
@@ -132,10 +132,10 @@ namespace Enemy
 
             if (WaveManager.Instance != null)
             {
-                WaveManager.Instance.activeEnemyCount--;
+                WaveManager.Instance.OnEnemyDied();
             }
             // 3. 자기 자신 파괴 (오브젝트 풀링 사용 시 반환)
-            Destroy(gameObject);
+            stats.NotifyDie(stats);
         }
 
         private void OnDrawGizmosSelected()

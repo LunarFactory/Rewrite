@@ -62,7 +62,7 @@ namespace Enemy
                 {
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
-                    StopMovement();
+                    StopBehavior();
                     ShootAtPlayer();
                 }
                 else
@@ -74,7 +74,7 @@ namespace Enemy
 
         private void HandleShootingState()
         {
-            StopMovement();
+            StopBehavior();
 
             if (_stateTimer <= 0)
             {

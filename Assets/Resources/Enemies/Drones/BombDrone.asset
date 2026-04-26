@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: BombDrone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: "\uD3ED\uD0C4 \uB4DC\uB860"
+  enemySubtitle: 
   maxHealth: 35
-  baseMoveSpeed: 4
+  baseMoveSpeed: 6
   baseAttackDamage: 30
   baseRicochet: 0
   basePierce: 0
@@ -39,6 +40,7 @@ MonoBehaviour:
   tier: 2
   cost: 2
   minFloor: 1
+  maxFloor: 5
   maxCountInWave: 2
   ComponentName: BombDroneAI
   colliderOffset: {x: 0, y: 0}

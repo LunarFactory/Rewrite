@@ -18,5 +18,5 @@ MonoBehaviour:
   icon: {fileID: 2352905312685420864, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 0
   maxStack: 10
-  duration: 0.2
+  duration: 1
   empTriggerData: {fileID: 11400000, guid: 43017f280e239b143821193818ffba54, type: 2}
