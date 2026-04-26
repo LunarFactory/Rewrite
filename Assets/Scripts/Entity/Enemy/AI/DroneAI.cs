@@ -54,6 +54,8 @@ namespace Enemy
         protected override void HandleMovingState()
         {
             base.HandleMovingState();
+            if (playerTarget == null)
+                return;
             // [상태 전환 로직은 기존과 동일]
             if (_stateTimer <= 0)
             {
@@ -62,7 +64,7 @@ namespace Enemy
                 {
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
-                    rb.linearVelocity = Vector2.zero;
+                    StopMovement(); // 부모의 정지 로직 활용
                     ShootAtPlayer();
                 }
                 else
@@ -74,7 +76,7 @@ namespace Enemy
 
         private void HandleShootingState()
         {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
 
             if (_stateTimer <= 0)
             {

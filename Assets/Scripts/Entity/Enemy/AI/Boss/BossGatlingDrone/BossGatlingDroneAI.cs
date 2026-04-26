@@ -135,7 +135,7 @@ namespace Enemy
         // [패턴 2] 5방향/8방향 산탄 4회 발사
         private void HandleSpreadBurstState()
         {
-            rb.linearVelocity = Vector2.zero; // 발사 중 정지
+            StopMovement();
 
             if (_stateTimer <= 0 && _spreadBurstRemaining > 0)
             {
@@ -154,7 +154,7 @@ namespace Enemy
         // [패턴 3] 원형 발사 후 대기
         private void HandleCircularState()
         {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
 
             if (_stateTimer <= 0)
             {

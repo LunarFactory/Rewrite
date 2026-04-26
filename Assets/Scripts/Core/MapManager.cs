@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Level;
+using Pathfinding;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Core
 {
@@ -53,6 +55,39 @@ namespace Core
                 Vector3.zero,
                 Quaternion.identity
             );
+            Tilemap floormap = _currentMapInstance
+                .GetComponentsInChildren<Tilemap>()
+                .FirstOrDefault(t => t.name == "FloorMap");
+            if (floormap != null && AstarPath.active != null)
+            {
+                var gg = AstarPath.active.data.gridGraph;
+
+                // Floormap에 깔린 타일들의 실제 영역(Bounds)을 가져옵니다.
+                // cellBounds는 타일이 있는 칸수만큼의 크기를 알려줍니다.
+                var bounds = floormap.cellBounds;
+
+                // 3. 에이스타 격자의 위치와 크기를 맵에 딱 맞게 조절
+                // 중심점: 타일맵의 중심 좌표
+                gg.center = floormap.transform.TransformPoint(bounds.center);
+
+                // 크기: 타일맵의 가로/세로 칸수 (여유분 +2)
+                int width = bounds.size.x + 2;
+                int depth = bounds.size.y + 2;
+
+                // 격자 크기 업데이트 (가로, 세로, 한 칸의 크기)
+                gg.SetDimensions(width, depth, gg.nodeSize);
+
+                // 4. 이 영역을 기준으로 다시 스캔!
+                AstarPath.active.Scan();
+
+                Debug.Log(
+                    $"<color=green>[MapManager]</color> Floormap 크기({width}x{depth})에 맞춰 길찾기 영역 갱신!"
+                );
+            }
+            else
+            {
+                Debug.LogError("맵 프리팹에서 'Floormap'을 찾을 수 없거나 Pathfinder가 없습니다!");
+            }
 
             // 5. 현재 맵의 스폰 영역 참조 (맵 프리팹 내부에 SpawnZone이 있다고 가정)
             CurrentSpawnZone = _currentMapInstance.GetComponentInChildren<MapSpawnZone>();

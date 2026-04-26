@@ -60,7 +60,7 @@ namespace Enemy
                     // 사거리 안이면 공격 상태로 전환
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
-                    rb.linearVelocity = Vector2.zero;
+                    StopMovement();
                     ShootAtPlayer();
                 }
                 else
@@ -73,7 +73,7 @@ namespace Enemy
 
         private void HandleShootingState()
         {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
 
             if (_stateTimer <= 0)
             {

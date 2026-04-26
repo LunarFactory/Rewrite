@@ -62,7 +62,7 @@ namespace Enemy
                 {
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
-                    rb.linearVelocity = Vector2.zero;
+                    StopMovement();
                     ShootAtPlayer();
                 }
                 else
@@ -74,7 +74,7 @@ namespace Enemy
 
         private void HandleShootingState()
         {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
 
             if (_stateTimer <= 0)
             {

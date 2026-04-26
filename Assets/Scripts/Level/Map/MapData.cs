@@ -20,5 +20,13 @@ namespace Level
         [Header("Player Settings")]
         [Tooltip("이 맵에서 플레이어가 시작할 위치")]
         public Vector2 playerSpawnPoint; // [추가] 플레이어 스폰 위치
+
+        [Header("Reward Settings")]
+        [Tooltip("상점 웨이브 또는 보스 웨이브 보상이 제공될 위치")]
+        public Vector2 rewardSpawnPoint; // [추가] 플레이어 스폰 위치
+
+        [Header("Boss Spawn Settings")]
+        [Tooltip("보스가 소환될 위치")]
+        public Vector2 bossSpawnPoint; // [추가] 플레이어 스폰 위치
     }
 }

@@ -89,13 +89,13 @@ namespace Enemy
                 _currentState = State.Priming;
                 _stateTimer = fuseDuration;
                 _indicatorCircle.enabled = true; // 빨간 원 표시
-                rb.linearVelocity = Vector2.zero; // 자폭 준비 중엔 멈춤 (혹은 아주 느리게 이동)
+                StopMovement();
             }
         }
 
         private void HandlePrimingState()
         {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
 
             // [연출] 시간이 갈수록 빨간 원이 점점 진해지거나 깜빡이게 함
             float alpha = Mathf.PingPong(Time.time * 10f, 1f);

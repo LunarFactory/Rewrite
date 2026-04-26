@@ -69,7 +69,7 @@ namespace Enemy
                     _currentState = State.Shooting;
                     _shotsFired = 0;
                     _stateTimer = 0; // 즉시 첫 발 발사하도록 설정
-                    rb.linearVelocity = Vector2.zero;
+                    StopMovement();
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace Enemy
 
         private void HandleShootingState()
         {
-            rb.linearVelocity = Vector2.zero;
+            StopMovement();
 
             // 아직 점사가 끝나지 않았을 때
             if (_shotsFired < burstCount)
