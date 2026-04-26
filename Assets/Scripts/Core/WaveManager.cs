@@ -236,6 +236,10 @@ namespace Core
             activeEnemyCount--;
             if (activeEnemyCount <= 0)
             {
+                if (ProjectileManager.Instance != null)
+                {
+                    ProjectileManager.Instance.ClearAllProjectiles();
+                }
                 if (GetWaveType(CurrentWave) == WaveType.Boss)
                 {
                     if (RunManager.Instance.CurrentFloor == 5)
@@ -338,10 +342,6 @@ namespace Core
                 case WaveType.Shop:
                 default:
                     break;
-            }
-            if (ProjectileManager.Instance != null)
-            {
-                ProjectileManager.Instance.ClearAllProjectiles();
             }
 
             if (CurrentWave < 9)

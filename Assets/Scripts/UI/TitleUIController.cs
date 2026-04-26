@@ -10,7 +10,6 @@ namespace UI
     {
         public TextMeshProUGUI welcomeText;
         public Button startButton;
-        public Button statsButton; // 통계 버튼
         public Button settingsButton;
         public Button quitButton;
         public Button logoutButton;
@@ -19,7 +18,6 @@ namespace UI
         public GameObject mainMenuPanel; // 메인 버튼들이 들어있는 부모 컨테이너
 
         [Header("UI Panels")]
-        public StatsUIController statsPanel;
         public SettingsUIController settingsPanel;
 
         private void Start()
@@ -33,18 +31,11 @@ namespace UI
             if (startButton != null)
                 startButton.onClick.AddListener(OnStartClicked);
 
-            if (statsButton != null)
-                statsButton.onClick.AddListener(OnStatsClicked);
-
             if (settingsButton != null)
                 settingsButton.onClick.AddListener(OnSettingsClicked);
 
             if (quitButton != null)
                 quitButton.onClick.AddListener(OnQuitClicked);
-
-            // 각 패널의 Back 버튼을 눌렀을 때 메인 메뉴를 다시 켜도록 연결
-            if (statsPanel != null && statsPanel.backButton != null)
-                statsPanel.backButton.onClick.AddListener(ShowMainMenu);
 
             if (settingsPanel != null && settingsPanel.backButton != null)
                 settingsPanel.backButton.onClick.AddListener(ShowMainMenu);
@@ -68,15 +59,6 @@ namespace UI
             {
                 SceneManager.LoadScene("LobbyScene");
             }
-        }
-
-        private void OnStatsClicked()
-        {
-            if (mainMenuPanel != null)
-                mainMenuPanel.SetActive(false); // 메인 메뉴 숨기기
-
-            if (statsPanel != null)
-                statsPanel.Show();
         }
 
         private void OnSettingsClicked()
