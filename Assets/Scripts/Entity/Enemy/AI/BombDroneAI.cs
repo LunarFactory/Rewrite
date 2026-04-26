@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class BombDroneAI : EnemyAI
+    public class BombDroneAI : BaseDroneAI
     {
         private enum State
         {
@@ -24,7 +24,6 @@ namespace Enemy
         private float fuseDuration = 1f; // 자폭 대기 시간 (2초)
 
         private State _currentState = State.Moving;
-        private float _stateTimer;
         private LineRenderer _indicatorCircle; // 빨간 원 시각화용
 
         protected override void Awake()
@@ -67,12 +66,6 @@ namespace Enemy
             if (playerStat != null)
                 playerTarget = playerStat.isStealth() ? null : playerStat.transform;
 
-            if (playerTarget == null || stats.isStaggered)
-            {
-                rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
             switch (_currentState)
             {
                 case State.Moving:
@@ -84,11 +77,11 @@ namespace Enemy
             }
         }
 
-        private void HandleMovingState()
+        protected override void HandleMovingState()
         {
+            base.HandleMovingState();
+
             float distance = Vector2.Distance(transform.position, playerTarget.position);
-            Vector2 dir = (playerTarget.position - transform.position).normalized;
-            rb.linearVelocity = dir * stats.MoveSpeed.GetValue();
 
             // 플레이어가 트리거 범위 안에 들어오면 카운트다운 시작
             if (distance <= triggerRange)
@@ -102,7 +95,6 @@ namespace Enemy
 
         private void HandlePrimingState()
         {
-            _stateTimer -= Time.deltaTime;
             rb.linearVelocity = Vector2.zero;
 
             // [연출] 시간이 갈수록 빨간 원이 점점 진해지거나 깜빡이게 함

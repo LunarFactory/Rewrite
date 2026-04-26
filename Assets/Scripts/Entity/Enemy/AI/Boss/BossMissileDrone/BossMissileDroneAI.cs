@@ -5,7 +5,7 @@ using Weapon;
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class BossMissileDroneAI : EnemyAI
+    public class BossMissileDroneAI : BaseDroneAI
     {
         private enum State
         {
@@ -41,7 +41,6 @@ namespace Enemy
         private float burstInterval = 0.5f;
 
         private State _currentState = State.Moving;
-        private float _stateTimer; // 상태 전환용 타이머
         private float _shotTimer; // 일반 탄 발사 타이머 (상태 무관)
         private float _missileTimer; // 연사 패턴 쿨타임 타이머
         private int _shotsFiredCount; // 일반 탄 발사 횟수 (1, 2, 3회차 체크)
@@ -61,15 +60,8 @@ namespace Enemy
             if (playerStat != null)
                 playerTarget = playerStat.isStealth() ? null : playerStat.transform;
 
-            if (playerTarget == null || stats.isStaggered)
-            {
-                rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
             // 1. 상태와 관계없이 흐르는 타이머들
             _shotTimer -= Time.deltaTime;
-            _stateTimer -= Time.deltaTime;
             _missileTimer -= Time.deltaTime;
 
             // 2. 일반 탄 패턴 (상태와 무관하게 실행)
@@ -132,7 +124,7 @@ namespace Enemy
                         {
                             damage = 10,
                             speed = 10,
-                            ricochetCount = 3,
+                            ricochetCount = 1,
                             minSpeed = 1,
                             scale = stats.ProjectileScale.GetValue(),
                         },
@@ -153,10 +145,9 @@ namespace Enemy
             }
         }
 
-        private void HandleMovingState()
+        protected override void HandleMovingState()
         {
-            Vector2 dir = (playerTarget.position - transform.position).normalized;
-            rb.linearVelocity = dir * stats.MoveSpeed.GetValue();
+            base.HandleMovingState();
 
             if (_stateTimer <= 0)
             {

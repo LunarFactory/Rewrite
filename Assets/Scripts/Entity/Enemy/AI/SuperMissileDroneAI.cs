@@ -5,7 +5,7 @@ using Weapon;
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class SuperMissileDroneAI : EnemyAI
+    public class SuperMissileDroneAI : BaseDroneAI
     {
         private enum State
         {
@@ -31,7 +31,6 @@ namespace Enemy
         private float burstInterval = 0.2f; // 총알 사이의 간격
 
         private State _currentState = State.Moving;
-        private float _stateTimer;
         private int _shotsFired; // 현재 발사된 탄환 수
 
         protected override void Awake()
@@ -46,14 +45,6 @@ namespace Enemy
             if (playerStat != null)
                 playerTarget = playerStat.isStealth() ? null : playerStat.transform;
 
-            if (playerTarget == null || stats.isStaggered)
-            {
-                rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
-            _stateTimer -= Time.deltaTime;
-
             switch (_currentState)
             {
                 case State.Moving:
@@ -65,11 +56,9 @@ namespace Enemy
             }
         }
 
-        private void HandleMovingState()
-        {
-            Vector2 dir = (playerTarget.position - transform.position).normalized;
-            rb.linearVelocity = dir * stats.MoveSpeed.GetValue();
-
+        protected override void HandleMovingState()
+        { // 1. 기본 방향: 플레이어를 향함
+            base.HandleMovingState();
             if (_stateTimer <= 0)
             {
                 float distance = Vector2.Distance(transform.position, playerTarget.position);

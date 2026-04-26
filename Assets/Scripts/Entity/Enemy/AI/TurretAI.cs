@@ -34,7 +34,6 @@ namespace Enemy
         public int markerSortingOrder = -1;
 
         private State _currentState = State.Rest;
-        private float _stateTimer;
         private Vector2 _aimDirection;
         private Vector2 _lastKnownPosition; // [추가] 마지막으로 감지된 위치
 
@@ -78,8 +77,6 @@ namespace Enemy
                 _lineRenderer.enabled = false;
                 return;
             }
-
-            _stateTimer -= Time.deltaTime;
 
             switch (_currentState)
             {

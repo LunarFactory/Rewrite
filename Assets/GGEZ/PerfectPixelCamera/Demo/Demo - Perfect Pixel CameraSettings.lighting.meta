@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 36463e236c213eb458cacb2b2da4ba09
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 100000
+  packageName: Perfect Pixel Camera by GG EZ
+  packageVersion: 1.1
+  assetPath: Assets/GGEZ/PerfectPixelCamera/Demo/Demo - Perfect Pixel CameraSettings.lighting
+  uploadId: 722800

@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: b3a57b8ad54744e29a13985a5d4f398d
+timeCreated: 1507440050
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 100000
+  packageName: Perfect Pixel Camera by GG EZ
+  packageVersion: 1.1
+  assetPath: Assets/GGEZ/PerfectPixelCamera/Demo/Assets/ZoomDemo.cs
+  uploadId: 722800

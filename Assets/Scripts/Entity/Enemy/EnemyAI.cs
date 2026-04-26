@@ -15,6 +15,8 @@ namespace Enemy
         protected PlayerStats playerStat;
         protected Transform playerTarget;
 
+        protected float _stateTimer;
+
         protected virtual void Awake()
         {
             stats = GetComponent<EnemyStats>();
@@ -34,13 +36,17 @@ namespace Enemy
 
         protected virtual void Update()
         {
-            _animationModule.UpdateAnimation(Time.deltaTime);
+            if (_animationModule != null)
+            {
+                _animationModule.UpdateAnimation(Time.deltaTime);
+            }
             // 경직(Stagger) 중이거나 기절(Stun) 중이면 행동 중단
             if (stats.isStaggered || stats.isStunned)
             {
                 StopBehavior();
                 return;
             }
+            _stateTimer -= Time.deltaTime;
             ExecuteBehavior();
         }
 

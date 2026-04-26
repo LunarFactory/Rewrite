@@ -10,40 +10,40 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1249790e21a4ca34d870168efc394c92, type: 3}
-  m_Name: MissileDrone
+  m_Name: SuperDrone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
-  enemyName: "\uBBF8\uC0AC\uC77C \uB4DC\uB860"
+  enemyName: "\uC870\uC900 \uB4DC\uB860"
   enemySubtitle: 
-  maxHealth: 60
-  baseMoveSpeed: 1
-  baseAttackDamage: 20
+  maxHealth: 35
+  baseMoveSpeed: 2
+  baseAttackDamage: 10
   baseRicochet: 0
   basePierce: 0
-  baseHomingRange: 4
-  baseHomingStrength: 2
-  baseDecelerationRate: -0.02
-  baseProjectileScale: 1
-  baseProjectileSpeed: 1
+  baseHomingRange: 0
+  baseHomingStrength: 0
+  baseDecelerationRate: 0
+  baseProjectileScale: 1.2
+  baseProjectileSpeed: 12
   baseDamageIncreasedFlat: 0
   baseDamageIncreasedPercent: 0
   baseDamageTakenFlat: 0
   baseDamageTakenPercent: 0
   hitstunDuration: 0.15
   animationFrames:
-  - {fileID: -8236557103899311291, guid: 7a35378b2bbc0d84093bb955e979bdde, type: 3}
-  - {fileID: 2191288441908209951, guid: 7a35378b2bbc0d84093bb955e979bdde, type: 3}
-  - {fileID: 6616560536203392186, guid: 7a35378b2bbc0d84093bb955e979bdde, type: 3}
-  - {fileID: -1729283423882386974, guid: 7a35378b2bbc0d84093bb955e979bdde, type: 3}
+  - {fileID: -7141475252272814235, guid: 9257eee74ed69cb4995f26f883385633, type: 3}
+  - {fileID: -8447839132097794830, guid: 9257eee74ed69cb4995f26f883385633, type: 3}
+  - {fileID: -4062301792827909106, guid: 9257eee74ed69cb4995f26f883385633, type: 3}
+  - {fileID: 3535115325238390489, guid: 9257eee74ed69cb4995f26f883385633, type: 3}
   directionalSprites: []
   defaultFPS: 10
   isInvincible: 0
   tier: 0
-  cost: 6
-  minFloor: 1
-  maxCountInWave: 4
-  ComponentName: MissileDroneAI
+  cost: 3
+  minFloor: 4
+  maxCountInWave: 40
+  ComponentName: SuperDroneAI
   colliderOffset: {x: 0, y: 0}
   colliderSize: {x: 1, y: 1}
   bulletList:
   - bulletKey: Normal
-    bulletPrefab: {fileID: 674297919083904026, guid: a6b519fa90a17fd4c99121ca4bf7a5f3, type: 3}
+    bulletPrefab: {fileID: 674297919083904026, guid: 7be5c193cdc0a7740a28a45269643cce, type: 3}

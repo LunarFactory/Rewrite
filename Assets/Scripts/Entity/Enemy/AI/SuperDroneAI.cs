@@ -1,11 +1,13 @@
 using Core;
+using Entity;
+using Player;
 using UnityEngine;
 using Weapon;
 
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class MissileDroneAI : BaseDroneAI
+    public class SuperDroneAI : BaseDroneAI
     {
         private enum State
         {
@@ -18,9 +20,9 @@ namespace Enemy
         private float moveDuration = 2f; // 이동 지속 시간
 
         [SerializeField]
-        private float attackRange = 12f; // [추가] 사격 가능한 최대 거리
+        private float attackRange = 4f; // [추가] 사격 가능한 최대 거리
 
-        public float shootDelay = 2f;
+        public float shootDelay = 1f;
 
         private State _currentState = State.Moving;
 
@@ -33,8 +35,10 @@ namespace Enemy
 
         protected override void ExecuteBehavior()
         {
-            if (playerTarget == null)
-                return;
+            if (playerStat != null)
+            {
+                playerTarget = playerStat.isStealth() ? null : playerStat.transform;
+            }
 
             switch (_currentState)
             {
@@ -50,14 +54,12 @@ namespace Enemy
         protected override void HandleMovingState()
         {
             base.HandleMovingState();
-            // [수정] 이동 타이머가 끝났고, 플레이어가 사거리 이내일 때만 발사
+            // [상태 전환 로직은 기존과 동일]
             if (_stateTimer <= 0)
             {
                 float distance = Vector2.Distance(transform.position, playerTarget.position);
-
                 if (distance <= attackRange)
                 {
-                    // 사거리 안이면 공격 상태로 전환
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
                     rb.linearVelocity = Vector2.zero;
@@ -65,8 +67,7 @@ namespace Enemy
                 }
                 else
                 {
-                    // 사거리 밖이면 이동 타이머만 초기화하고 계속 추적
-                    _stateTimer = 0.5f; // 너무 자주 체크하지 않도록 약간의 유예를 줌
+                    _stateTimer = 0.5f;
                 }
             }
         }
@@ -93,8 +94,19 @@ namespace Enemy
 
             GameObject bullet = ProjectileManager.Instance.Get(bulletPrefab);
             bullet.transform.position = transform.position;
+            Vector2 targetPos = playerTarget.position;
+            // 플레이어의 속도를 가져와서 탄환이 날아가는 시간을 고려해 미래 위치 계산
+            if (playerStat.TryGetComponent(out Rigidbody2D playerRb))
+            {
+                float bulletSpeed = stats.ProjectileSpeed.GetValue();
+                float dist = Vector2.Distance(transform.position, targetPos);
+                float travelTime = dist / bulletSpeed;
 
-            Vector2 dir = (playerTarget.position - transform.position).normalized;
+                // 미래 위치 = 현재 위치 + (속도 * 이동 시간)
+                targetPos += playerRb.linearVelocity * travelTime;
+            }
+
+            Vector2 dir = (targetPos - (Vector2)transform.position).normalized;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
 

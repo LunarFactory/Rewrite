@@ -7,7 +7,7 @@ using Weapon;
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class DroneAI : EnemyAI
+    public class DroneAI : BaseDroneAI
     {
         private enum State
         {
@@ -25,7 +25,6 @@ namespace Enemy
         public float shootDelay = 1f;
 
         private State _currentState = State.Moving;
-        private float _stateTimer;
 
         protected override void Awake()
         {
@@ -41,20 +40,6 @@ namespace Enemy
                 playerTarget = playerStat.isStealth() ? null : playerStat.transform;
             }
 
-            if (playerTarget == null)
-            {
-                rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
-            if (stats.isStaggered)
-            {
-                rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
-            _stateTimer -= Time.deltaTime;
-
             switch (_currentState)
             {
                 case State.Moving:
@@ -66,20 +51,15 @@ namespace Enemy
             }
         }
 
-        private void HandleMovingState()
+        protected override void HandleMovingState()
         {
-            // 플레이어 방향으로 이동
-            Vector2 dir = (playerTarget.position - transform.position).normalized;
-            rb.linearVelocity = dir * stats.MoveSpeed.GetValue();
-
-            // [수정] 이동 타이머가 끝났고, 플레이어가 사거리 이내일 때만 발사
+            base.HandleMovingState();
+            // [상태 전환 로직은 기존과 동일]
             if (_stateTimer <= 0)
             {
                 float distance = Vector2.Distance(transform.position, playerTarget.position);
-
                 if (distance <= attackRange)
                 {
-                    // 사거리 안이면 공격 상태로 전환
                     _currentState = State.Shooting;
                     _stateTimer = shootDelay;
                     rb.linearVelocity = Vector2.zero;
@@ -87,8 +67,7 @@ namespace Enemy
                 }
                 else
                 {
-                    // 사거리 밖이면 이동 타이머만 초기화하고 계속 추적
-                    _stateTimer = 0.5f; // 너무 자주 체크하지 않도록 약간의 유예를 줌
+                    _stateTimer = 0.5f;
                 }
             }
         }

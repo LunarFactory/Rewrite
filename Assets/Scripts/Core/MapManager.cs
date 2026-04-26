@@ -26,6 +26,8 @@ namespace Core
             Instance = this;
         }
 
+        private void Start() { }
+
         public void LoadMapList(List<MapData> maps)
         {
             totalMapPool = maps;

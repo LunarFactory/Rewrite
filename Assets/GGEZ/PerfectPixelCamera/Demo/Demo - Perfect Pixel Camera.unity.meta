@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9a8ffde0c0d564133826c3c9c602dfc2
+timeCreated: 1507440990
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 100000
+  packageName: Perfect Pixel Camera by GG EZ
+  packageVersion: 1.1
+  assetPath: Assets/GGEZ/PerfectPixelCamera/Demo/Demo - Perfect Pixel Camera.unity
+  uploadId: 722800

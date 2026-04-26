@@ -140,6 +140,10 @@ namespace Core
             {
                 // 1. 드론 청소
                 DroneManager.Instance.ClearAllDrones();
+                if (MapManager.Instance != null)
+                {
+                    MapManager.Instance.LoadMapList(MapPool);
+                }
             }
         }
     }

@@ -6,7 +6,7 @@ using Weapon;
 namespace Enemy
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class BossGatlingDroneAI : EnemyAI
+    public class BossGatlingDroneAI : BaseDroneAI
     {
         private enum State
         {
@@ -33,7 +33,6 @@ namespace Enemy
         private bool _isPhase2 = false;
 
         // 타이머 및 카운터
-        private float _stateTimer;
         private float _gatlingTimer;
         private float _spreadTimer;
         private float _circularTimer;
@@ -55,12 +54,6 @@ namespace Enemy
             if (playerStat != null)
                 playerTarget = playerStat.isStealth() ? null : playerStat.transform;
 
-            if (playerTarget == null || stats.isStaggered)
-            {
-                rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
             // 페이즈 체크 (체력 50% 이하)
             CheckPhase();
 
@@ -70,7 +63,6 @@ namespace Enemy
 
             _spreadTimer -= dt * speedMultiplier;
             _circularTimer -= dt * speedMultiplier;
-            _stateTimer -= dt;
 
             // 상태 우선순위 결정 (원형 > 산탄 > 일반)
             HandleStateTransitions();
@@ -127,11 +119,11 @@ namespace Enemy
         private void HandleMovingAndGatling()
         {
             // 이동 로직
-            Vector2 dir = (playerTarget.position - transform.position).normalized;
-            float currentMoveSpeed = stats.MoveSpeed.GetValue() * (_isPhase2 ? 1.5f : 1f);
-            rb.linearVelocity = dir * currentMoveSpeed;
+            base.HandleMovingState();
 
             // 연사 로직
+            Vector2 dir = (playerTarget.position - transform.position).normalized;
+
             _gatlingTimer -= Time.deltaTime;
             if (_gatlingTimer <= 0)
             {
@@ -229,7 +221,7 @@ namespace Enemy
                             stats.DamageIncreased.GetValue(stats.AttackDamage.GetValue())
                         ),
                         speed = stats.ProjectileSpeed.GetValue() * (_isPhase2 ? 1.2f : 1f),
-                        ricochetCount = (_isPhase2 ? 1 : 0),
+                        ricochetCount = 0,
                         scale = stats.ProjectileScale.GetValue(),
                     },
                     stats

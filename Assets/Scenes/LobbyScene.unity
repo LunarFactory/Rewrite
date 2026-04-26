@@ -637,6 +637,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 50595809a9b0621478c66a05fbd866ff, type: 2}
   - {fileID: 11400000, guid: be780e4d6f3286c429cfbe8b5ec1dc9d, type: 2}
   - {fileID: 11400000, guid: 415fa9a4cfe0ed04c8e719463b241058, type: 2}
+  - {fileID: 11400000, guid: 67a6a967fd3a48d46b87317daa7b7976, type: 2}
   bossPool:
   - {fileID: 11400000, guid: c0b671b3de87ec84ba913ce5795c3d1d, type: 2}
   - {fileID: 11400000, guid: e7db2b3ffbe8b1a429a2710f392bd5db, type: 2}

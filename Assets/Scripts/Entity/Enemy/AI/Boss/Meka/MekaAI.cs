@@ -31,7 +31,6 @@ namespace Enemy
         public float sawFireInterval = 1.5f;
 
         private BossState _currentState = BossState.Rest;
-        private float _stateTimer;
         private float _sawTimer;
 
         private Queue<(float time, Vector2 pos)> _playerPosHistory =
@@ -80,8 +79,6 @@ namespace Enemy
             {
                 _targetPos = _playerPosHistory.Dequeue().pos;
             }
-
-            _stateTimer -= Time.deltaTime;
             _sawTimer -= Time.deltaTime;
             HandleSawLogic();
 
