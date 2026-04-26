@@ -158,6 +158,8 @@ MonoBehaviour:
   exitPortalPrefab: {fileID: 8750929641611796470, guid: 80d96de75d6f1294da7a0a99d0cbbe9a, type: 3}
   healthRestorerPrefab: {fileID: 8750929641611796470, guid: dda694da831b1b3489f8de822bca1c09, type: 3}
   activeEnemyCount: 0
+  bossSpawnPoint: {x: 0, y: 0}
+  rewardSpawnPoint: {x: 0, y: 0}
 --- !u!4 &373403345
 Transform:
   m_ObjectHideFlags: 0
@@ -185,6 +187,7 @@ GameObject:
   - component: {fileID: 409525911}
   - component: {fileID: 409525910}
   - component: {fileID: 409525909}
+  - component: {fileID: 409525913}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -289,6 +292,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409525913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409525908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a05de0ac134f4f9d01bef6b9da077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePixelPerfect
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

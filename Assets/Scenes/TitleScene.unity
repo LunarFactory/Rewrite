@@ -761,12 +761,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.LobbyController
   welcomeText: {fileID: 1924085756}
   startButton: {fileID: 414023935}
-  statsButton: {fileID: 0}
   settingsButton: {fileID: 474159102}
   quitButton: {fileID: 450700600}
   logoutButton: {fileID: 1827623470}
   mainMenuPanel: {fileID: 639736127}
-  statsPanel: {fileID: 0}
   settingsPanel: {fileID: 870157045}
 --- !u!114 &447021624
 MonoBehaviour:
@@ -1962,6 +1960,7 @@ GameObject:
   - component: {fileID: 1356033744}
   - component: {fileID: 1356033743}
   - component: {fileID: 1356033745}
+  - component: {fileID: 1356033746}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1980,7 +1979,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
-  m_projectionMatrixMode: 1
+  m_projectionMatrixMode: 0
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_Iso: 200
@@ -2003,7 +2002,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -2079,6 +2078,19 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1356033746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356033742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f08a6f40d2ec4de981f811bfc829f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GGEZ.PerfectPixelCamera
+  TexturePixelsPerWorldUnit: 16
 --- !u!1 &1564638855
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,6 +30,24 @@ namespace Core
             InitializeItemDatabase();
         }
 
+        public int GetCalculatedSeed(string subKey, bool useAlpha = false, float currentAlpha = 0)
+        {
+            string combinedKey;
+
+            if (useAlpha)
+            {
+                // 몹 생성처럼 알파에 영향을 받아야 하는 경우
+                combinedKey = $"{CurrentSeed}_{CurrentFloor}_{subKey}_{currentAlpha:F2}";
+            }
+            else
+            {
+                // 맵이나 아이템처럼 알파가 변해도 결과가 같아야 하는 경우
+                combinedKey = $"{CurrentSeed}_{CurrentFloor}_{subKey}";
+            }
+
+            return combinedKey.GetHashCode();
+        }
+
         private void InitializeItemDatabase()
         {
             _itemPool.Clear();
@@ -54,8 +72,7 @@ namespace Core
         {
             Random.State originalState = Random.state;
             // 웨이브 전체에 대한 고유 시드 설정
-            int uniqueSeed = CurrentSeed + (CurrentFloor * 1000) + (wave * 100);
-            Random.InitState(uniqueSeed);
+            Random.InitState(GetCalculatedSeed("ItemSet_" + wave));
 
             List<PassiveItemData> resultList = new List<PassiveItemData>();
             // 이미 이번 세트에서 뽑힌 아이템을 추적 (이름이나 객체로 비교)
@@ -98,9 +115,8 @@ namespace Core
         public List<PassiveItemData> GetTierItemSet(ItemTier targetTier, int count, int wave)
         {
             Random.State originalState = Random.state;
-            // 기존 시드 로직 유지 (결과의 일관성 보장)
-            int uniqueSeed = CurrentSeed + (CurrentFloor * 1000) + (wave * 100);
-            Random.InitState(uniqueSeed);
+            // 웨이브 전체에 대한 고유 시드 설정
+            Random.InitState(GetCalculatedSeed("ItemTierSet_" + wave));
 
             List<PassiveItemData> resultList = new List<PassiveItemData>();
             HashSet<PassiveItemData> pickedInThisSet = new HashSet<PassiveItemData>();
@@ -152,7 +168,8 @@ namespace Core
 
         public void StartNewRun()
         {
-            CurrentSeed = Random.Range(1000, 99999);
+            var rand = new System.Random();
+            CurrentSeed = rand.Next(10000, 99999);
             CurrentFloor = 1;
             Random.InitState(CurrentSeed);
 

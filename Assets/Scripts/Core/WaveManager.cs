@@ -147,6 +147,9 @@ namespace Core
 
         private void SpawnEnemiesWithRules(int totalBudget)
         {
+            UnityEngine.Random.InitState(
+                RunManager.Instance.GetCalculatedSeed("ItemSet_" + CurrentWave, true, 0.5f)
+            );
             Debug.Log($"Total Budget: {totalBudget}, Pool Count: {enemyPool.Count}");
             _spawnTracker.Clear();
             activeEnemyCount = 0;

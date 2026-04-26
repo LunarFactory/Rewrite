@@ -37,6 +37,11 @@ namespace Core
 
         public void LoadMap(int currentFloor)
         {
+            Random.State originalState = Random.state;
+            int mapSeed = (
+                RunManager.Instance.CurrentSeed.ToString() + "_" + currentFloor + "_MapSelection"
+            ).GetHashCode();
+            Random.InitState(mapSeed);
             // 1. 기존 맵 제거
             if (_currentMapInstance != null)
                 Destroy(_currentMapInstance);
