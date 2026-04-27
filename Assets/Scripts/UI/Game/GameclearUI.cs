@@ -58,7 +58,7 @@ namespace UI
                 new Vector2(600, 80),
                 "REWROTE",
                 64,
-                new Color(0f, 0f, 0.3f),
+                new Color(0f, 0f, 0.1f),
                 FontStyles.Bold
             );
 
