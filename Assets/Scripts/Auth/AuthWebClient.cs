@@ -23,12 +23,26 @@ namespace Auth
         public string accessToken;
     }
 
+    [Serializable]
+    public class FindIdRequest { public string email; }
+
+    [Serializable]
+    public class FindIdResponse { public string userId; }
+
+    [Serializable]
+    public class ResetPasswordRequest
+    {
+        public string email;
+        public string userId;
+        public string newPassword;
+    }
+
     public class AuthWebClient : MonoBehaviour
     {
         public static AuthWebClient Instance { get; private set; }
 
         // EC2 퍼블릭 IP와 포트 (보안 그룹에서 8080 포트가 열려있어야 함)
-        private readonly string baseUrl = "http://13.124.221.116:8080/api/v1/player/auth";
+        private readonly string baseUrl = "http://13.209.66.250:8080/api/v1/player/auth";
 
         private void Awake()
         {
@@ -138,6 +152,65 @@ namespace Auth
                     }
                 )
             );
+        }
+        public IEnumerator FindId(string email, Action<bool, string> callback)
+        {
+            // 1. URL 구성 확인 (로그로 찍어서 브라우저에 직접 붙여넣어 보세요)
+            string url = $"{baseUrl}/find-id?email={UnityWebRequest.EscapeURL(email)}";
+            Debug.Log($"[AuthWebClient] 요청 URL: {url}");
+
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
+            {
+                yield return request.SendWebRequest();
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    string rawResponse = request.downloadHandler.text;
+                    Debug.Log($"[AuthWebClient] 서버 응답: {rawResponse}");
+
+                    try
+                    {
+                        // 서버가 {"userId": "아이디"} 가 아니라 그냥 "아이디"만 보낼 수도 있어요.
+                        if (rawResponse.StartsWith("{"))
+                        {
+                            var res = JsonUtility.FromJson<FindIdResponse>(rawResponse);
+                            callback?.Invoke(true, res.userId);
+                        }
+                        else
+                        {
+                            // 그냥 문자열로 오면 바로 반환
+                            callback?.Invoke(true, rawResponse);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[AuthWebClient] 파싱 에러: {e.Message}");
+                        callback?.Invoke(false, "데이터 형식 오류");
+                    }
+                }
+                else
+                {
+                    // 404, 500 에러 등 확인
+                    Debug.LogError($"[AuthWebClient] HTTP 에러: {request.responseCode} | {request.error}");
+                    callback?.Invoke(false, $"에러: {request.responseCode}");
+                }
+            }
+        }
+
+        public IEnumerator ResetPassword(string email, string id, string newPw, Action<bool, string> callback)
+        {
+            var data = new ResetPasswordRequest
+            {
+                email = email,
+                userId = id,
+                newPassword = newPw
+            };
+            string json = JsonUtility.ToJson(data);
+
+            yield return StartCoroutine(PostRequest("/find-password", json, (success, response) =>
+            {
+                callback?.Invoke(success, success ? "비밀번호가 성공적으로 변경되었습니다." : response);
+            }));
         }
     }
 }

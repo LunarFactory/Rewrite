@@ -91,12 +91,47 @@ namespace Auth
             return await tcs.Task;
         }
 
-        // [계정 찾기 로직 - 필요 시 구현]
-        public async Task<AuthResult> RecoverAccount(string email)
+        // [아이디 찾기]
+        public async Task<AuthResult> RecoverID(string email)
         {
-            // 현재 백엔드 API에 맞게 find-id 등을 호출하도록 확장 가능합니다.
-            await Task.Delay(500); // 임시 대기
-            return new AuthResult { Success = true, Message = "이메일을 확인해주세요." };
+            var tcs = new TaskCompletionSource<AuthResult>();
+
+            if (AuthWebClient.Instance == null)
+                return AuthResult.Failed("AuthWebClient 인스턴스가 없습니다.");
+
+            // 코루틴 호출
+            StartCoroutine(AuthWebClient.Instance.FindId(email, (success, result) =>
+            {
+                tcs.SetResult(new AuthResult
+                {
+                    Success = success,
+                    // 성공 시 메시지에 ID를 넣어주거나 UserId 필드에 할당
+                    Message = success ? $"사용자 아이디 : {result}" : "해당 이메일로 가입된 아이디가 없습니다.",
+                    UserId = success ? result : null
+                });
+            }));
+
+            return await tcs.Task;
+        }
+
+        // [비밀번호 재설정]
+        public async Task<AuthResult> RecoverPassword(string email, string id, string newPassword)
+        {
+            var tcs = new TaskCompletionSource<AuthResult>();
+
+            if (AuthWebClient.Instance == null)
+                return AuthResult.Failed("AuthWebClient가 없습니다.");
+
+            StartCoroutine(AuthWebClient.Instance.ResetPassword(email, id, newPassword, (success, message) =>
+            {
+                tcs.SetResult(new AuthResult
+                {
+                    Success = success,
+                    Message = message
+                });
+            }));
+
+            return await tcs.Task;
         }
 
         public async Task<AuthResult> Logout()

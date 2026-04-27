@@ -13,7 +13,8 @@ namespace UI
         [Header("Right Panels (오른쪽 교체 패널)")]
         public GameObject panelLogin;
         public GameObject panelSignup;
-        public GameObject panelRecover;
+        public GameObject panelRecoverID;
+        public GameObject panelRecoverPassword;
 
         // ─── 로그인 패널 필드 ─────────────────────────────────────────
         [Header("Login Panel Fields")]
@@ -21,7 +22,8 @@ namespace UI
         public TMP_InputField loginPwInput;
         public Button loginBtn;
         public Button toSignupBtn;
-        public Button toRecoverBtn;
+        public Button toRecoverIDBtn;
+        public Button toRecoverPasswordBtn;
 
         // ─── 회원가입 패널 필드 ───────────────────────────────────────
         [Header("Signup Panel Fields")]
@@ -33,9 +35,17 @@ namespace UI
 
         // ─── 계정 찾기 패널 필드 ──────────────────────────────────────
         [Header("Recover Panel Fields")]
-        public TMP_InputField recoverEmailInput;
-        public Button recoverSubmitBtn;
-        public Button recoverBackBtn;
+        public TMP_InputField recoverIDEmailInput;
+        public Button recoverIDSubmitBtn;
+        public Button recoverIDBackBtn;
+
+        // ─── 비밀번호 찾기 패널 필드 ──────────────────────────────────────
+        [Header("Recover Panel Fields")]
+        public TMP_InputField recoverPasswordIDInput;
+        public TMP_InputField recoverPasswordEmailInput;
+        public TMP_InputField recoverPasswordNewPasswordInput;
+        public Button recoverPasswordSubmitBtn;
+        public Button recoverPasswordBackBtn;
 
         // ─── 공통 ─────────────────────────────────────────────────────
         [Header("General")]
@@ -76,37 +86,51 @@ namespace UI
                         signupSubmitBtn = b;
                     if (b.name == "SignupBackBtn")
                         signupBackBtn = b;
-                    if (b.name == "RecoverSubmitBtn")
-                        recoverSubmitBtn = b;
-                    if (b.name == "RecoverBackBtn")
-                        recoverBackBtn = b;
+                    if (b.name == "RecoverIDSubmitBtn")
+                        recoverIDSubmitBtn = b;
+                    if (b.name == "RecoverIDBackBtn")
+                        recoverIDBackBtn = b;
+                    if (b.name == "RecoverPasswordSubmitBtn")
+                        recoverPasswordSubmitBtn = b;
+                    if (b.name == "RecoverPasswordBackBtn")
+                        recoverPasswordBackBtn = b;
                 }
             }
 
             CleanButton(loginBtn);
             CleanButton(toSignupBtn);
-            CleanButton(toRecoverBtn);
+            CleanButton(toRecoverIDBtn);
+            CleanButton(toRecoverPasswordBtn);
             CleanButton(signupSubmitBtn);
             CleanButton(signupBackBtn);
-            CleanButton(recoverSubmitBtn);
-            CleanButton(recoverBackBtn);
+            CleanButton(recoverIDSubmitBtn);
+            CleanButton(recoverIDBackBtn);
+            CleanButton(recoverPasswordSubmitBtn);
+            CleanButton(recoverPasswordBackBtn);
 
             if (loginBtn != null)
                 loginBtn.onClick.AddListener(OnLoginClicked);
             if (toSignupBtn != null)
                 toSignupBtn.onClick.AddListener(ShowSignup);
-            if (toRecoverBtn != null)
-                toRecoverBtn.onClick.AddListener(ShowRecover);
+            if (toRecoverIDBtn != null)
+                toRecoverIDBtn.onClick.AddListener(ShowIDRecover);
+            if (toRecoverPasswordBtn != null)
+                toRecoverPasswordBtn.onClick.AddListener(ShowPasswordRecover);
 
             if (signupSubmitBtn != null)
                 signupSubmitBtn.onClick.AddListener(OnSignupClicked);
             if (signupBackBtn != null)
                 signupBackBtn.onClick.AddListener(ShowLogin);
 
-            if (recoverSubmitBtn != null)
-                recoverSubmitBtn.onClick.AddListener(OnRecoverClicked);
-            if (recoverBackBtn != null)
-                recoverBackBtn.onClick.AddListener(ShowLogin);
+            if (recoverIDSubmitBtn != null)
+                recoverIDSubmitBtn.onClick.AddListener(OnRecoverIDClicked);
+            if (recoverIDBackBtn != null)
+                recoverIDBackBtn.onClick.AddListener(ShowLogin);
+
+            if (recoverPasswordSubmitBtn != null)
+                recoverPasswordSubmitBtn.onClick.AddListener(OnRecoverPasswordClicked);
+            if (recoverPasswordBackBtn != null)
+                recoverPasswordBackBtn.onClick.AddListener(ShowLogin);
         }
 
         private void CleanButton(Button btn)
@@ -125,8 +149,14 @@ namespace UI
                 signupPwInput.text = "";
             if (signupEmailInput != null)
                 signupEmailInput.text = "";
-            if (recoverEmailInput != null)
-                recoverEmailInput.text = "";
+            if (recoverIDEmailInput != null)
+                recoverIDEmailInput.text = "";
+            if (recoverPasswordEmailInput != null)
+                recoverPasswordEmailInput.text = "";
+            if (recoverPasswordIDInput != null)
+                recoverPasswordIDInput.text = "";
+            if (recoverPasswordNewPasswordInput != null)
+                recoverPasswordNewPasswordInput.text = "";
             if (loginIdInput != null)
                 loginIdInput.text = "";
             if (loginPwInput != null)
@@ -138,7 +168,8 @@ namespace UI
             ClearAllInputs();
             SetPanelActive(panelLogin, true);
             SetPanelActive(panelSignup, false);
-            SetPanelActive(panelRecover, false);
+            SetPanelActive(panelRecoverID, false);
+            SetPanelActive(panelRecoverPassword, false);
             ClearStatus();
         }
 
@@ -147,16 +178,28 @@ namespace UI
             ClearAllInputs();
             SetPanelActive(panelLogin, false);
             SetPanelActive(panelSignup, true);
-            SetPanelActive(panelRecover, false);
+            SetPanelActive(panelRecoverID, false);
+            SetPanelActive(panelRecoverPassword, false);
             ClearStatus();
         }
 
-        public void ShowRecover()
+        public void ShowIDRecover()
         {
             ClearAllInputs();
             SetPanelActive(panelLogin, false);
             SetPanelActive(panelSignup, false);
-            SetPanelActive(panelRecover, true);
+            SetPanelActive(panelRecoverID, true);
+            SetPanelActive(panelRecoverPassword, false);
+            ClearStatus();
+        }
+
+        public void ShowPasswordRecover()
+        {
+            ClearAllInputs();
+            SetPanelActive(panelLogin, false);
+            SetPanelActive(panelSignup, false);
+            SetPanelActive(panelRecoverID, false);
+            SetPanelActive(panelRecoverPassword, true);
             ClearStatus();
         }
 
@@ -237,9 +280,9 @@ namespace UI
         }
 
         // ─── 계정 찾기 로직 ───────────────────────────────────────────
-        private void OnRecoverClicked()
+        private void OnRecoverIDClicked()
         {
-            if (string.IsNullOrEmpty(recoverEmailInput?.text))
+            if (string.IsNullOrEmpty(recoverIDEmailInput?.text))
             {
                 SetStatus("이메일을 입력하세요.", Color.red);
                 return;
@@ -250,7 +293,43 @@ namespace UI
 
         private IEnumerator RecoverRoutine()
         {
-            var task = AuthManager.Instance.RecoverAccount(recoverEmailInput.text);
+            var task = AuthManager.Instance.RecoverID(recoverIDEmailInput.text);
+            while (!task.IsCompleted)
+                yield return null;
+
+            if (task.Result.Success)
+                SetStatus(task.Result.Message, Color.green);
+            else
+                SetStatus($"확인 실패: {task.Result.Message}", Color.red);
+        }
+
+        // ─── 비밀번호 변경 로직 ───────────────────────────────────────────
+        private void OnRecoverPasswordClicked()
+        {
+            if (string.IsNullOrEmpty(recoverPasswordEmailInput?.text))
+            {
+                SetStatus("이메일을 입력하세요.", Color.red);
+                return;
+            }
+            
+            if (string.IsNullOrEmpty(recoverPasswordIDInput?.text))
+            {
+                SetStatus("이메일을 입력하세요.", Color.red);
+                return;
+            }
+            
+            if (string.IsNullOrEmpty(recoverPasswordNewPasswordInput?.text))
+            {
+                SetStatus("이메일을 입력하세요.", Color.red);
+                return;
+            }
+            SetStatus("정보 확인 중...", Color.blue);
+            StartCoroutine(RecoverPasswordRoutine());
+        }
+
+        private IEnumerator RecoverPasswordRoutine()
+        {
+            var task = AuthManager.Instance.RecoverPassword(recoverPasswordEmailInput.text, recoverPasswordIDInput.text, recoverPasswordNewPasswordInput.text);
             while (!task.IsCompleted)
                 yield return null;
 

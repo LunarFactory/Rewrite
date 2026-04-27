@@ -121,6 +121,7 @@ namespace Core
             switch (type)
             {
                 case WaveType.Mob:
+                    activeEnemyCount = 0;
                     // 웨이브 예산 계산: (기본) + (웨이브 보너스) + (층 보너스)
                     int budget =
                         baseWaveBudget
@@ -152,7 +153,6 @@ namespace Core
             );
             Debug.Log($"Total Budget: {totalBudget}, Pool Count: {enemyPool.Count}");
             _spawnTracker.Clear();
-            activeEnemyCount = 0;
 
             // [규칙 1] 황금 비율 분배
             int specialBudget = Mathf.FloorToInt(totalBudget * 0.15f);

@@ -42,7 +42,7 @@ namespace Log
         private string _baseURL;
         private int _pendingUploads = 0;
 
-        private string _ip = "13.124.221.116";
+        private string _ip = "13.209.66.250";
 
         // 인터넷이 끊겼을 때 임시 보관할 큐
         private Queue<string> _localRunEndQueue = new Queue<string>();

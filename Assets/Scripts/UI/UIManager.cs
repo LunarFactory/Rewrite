@@ -157,11 +157,13 @@ namespace UI
                 case UIState.None:
                     mapName = "Player";
                     _gamestate = GameState.Playing;
+                    Cursor.lockState = CursorLockMode.Confined;
                     break;
 
                 case UIState.Pause:
                     mapName = "UI";
                     _gamestate = GameState.Paused;
+                    Cursor.lockState = CursorLockMode.None;
                     _pauseUI.ToggleUI(true);
                     break;
 

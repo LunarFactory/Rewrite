@@ -129,11 +129,6 @@ namespace Enemy
 
             // 2. 폭발 이펙트 (데이터 기반이라면 이펙트 매니저 등을 통해 호출)
             // CreateExplosionEffect();
-
-            if (WaveManager.Instance != null)
-            {
-                WaveManager.Instance.OnEnemyDied();
-            }
             // 3. 자기 자신 파괴 (오브젝트 풀링 사용 시 반환)
             stats.NotifyDie(stats);
         }
