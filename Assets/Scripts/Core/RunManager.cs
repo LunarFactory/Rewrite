@@ -170,7 +170,7 @@ namespace Core
         {
             var rand = new System.Random();
             CurrentSeed = rand.Next(10000, 99999);
-            CurrentFloor = 1;
+            CurrentFloor = 5;
             Random.InitState(CurrentSeed);
 
             LogTracker.Instance.GenerateRunId();

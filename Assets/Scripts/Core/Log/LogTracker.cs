@@ -122,14 +122,6 @@ namespace Log
                 _hitsTaken = 0;
 
                 _currentLog.time_series_frames.Add(frame); // 이 로그가 콘솔에 찍히는지, 그리고 count가 올라가는지 확인하세요!
-                Debug.Log(
-                    $"<color=lime>[Log]</color> 프레임 추가됨. 현재 총 개수: {_currentLog.time_series_frames.Count}"
-                );
-                Debug.LogWarning($"totalDamageDealt : {_totalDamageDealt}");
-                Debug.LogWarning($"totalHits : {_totalHits}");
-                Debug.LogWarning(
-                    $"totalDamageDealt : {PlayerStats.LocalPlayer.GetWeaponBaseAttackDamage()}"
-                );
             }
         }
 

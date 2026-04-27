@@ -82,6 +82,7 @@ namespace Core
             gameObject.AddComponent<LogTracker>();
 
             Instantiate(playerCrosshairPrefab);
+            PlayerPrefs.SetInt("LobbyCredits", 10000);
         }
 
         private void Start()

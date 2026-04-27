@@ -4,6 +4,7 @@ using Enemy;
 using Item;
 using Level;
 using Log;
+using UI;
 using UnityEngine;
 
 namespace Core
@@ -264,8 +265,21 @@ namespace Core
                 // 이 메서드는 우리가 앞서 작성했던 'Release' 로직을 포함해야 합니다.
                 Destroy(mob.gameObject);
             }
-            SpawnExitPortal();
-            SpawnBossRewards();
+            if (RunManager.Instance != null)
+            {
+                if (RunManager.Instance.CurrentFloor < 5)
+                {
+                    SpawnExitPortal();
+                    SpawnBossRewards();
+                }
+                else
+                {
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.RequestStateChange(UIState.GameClear);
+                    }
+                }
+            }
         }
 
         private void SpawnShop()
