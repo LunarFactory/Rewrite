@@ -233,6 +233,12 @@ namespace UI
             {
                 SetStatus("로그인 성공!", Color.green);
                 yield return new WaitForSeconds(0.5f);
+                SetStatus("모델 업데이트 중...", Color.green);
+                // [추가] 모델 업데이트 확인
+                var modelUpdateTask = AuthManager.Instance.UpdateAIModelAsync();
+                while (!modelUpdateTask.IsCompleted)
+                    yield return null;
+                yield return new WaitForSeconds(0.5f);
                 SceneManager.LoadScene("TitleScene");
             }
             else
@@ -311,13 +317,13 @@ namespace UI
                 SetStatus("이메일을 입력하세요.", Color.red);
                 return;
             }
-            
+
             if (string.IsNullOrEmpty(recoverPasswordIDInput?.text))
             {
                 SetStatus("이메일을 입력하세요.", Color.red);
                 return;
             }
-            
+
             if (string.IsNullOrEmpty(recoverPasswordNewPasswordInput?.text))
             {
                 SetStatus("이메일을 입력하세요.", Color.red);
@@ -329,7 +335,11 @@ namespace UI
 
         private IEnumerator RecoverPasswordRoutine()
         {
-            var task = AuthManager.Instance.RecoverPassword(recoverPasswordEmailInput.text, recoverPasswordIDInput.text, recoverPasswordNewPasswordInput.text);
+            var task = AuthManager.Instance.RecoverPassword(
+                recoverPasswordEmailInput.text,
+                recoverPasswordIDInput.text,
+                recoverPasswordNewPasswordInput.text
+            );
             while (!task.IsCompleted)
                 yield return null;
 

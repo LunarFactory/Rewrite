@@ -26,6 +26,25 @@ public class DDAInferenceManager : MonoBehaviour
         _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
     }
 
+    public void ReloadModel(string newModelPath)
+    {
+        try
+        {
+            // 기존 리소스 해제
+            _worker?.Dispose();
+
+            // 새 모델 로드 및 워커 생성
+            _runtimeModel = ModelLoader.Load(newModelPath);
+            _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
+
+            Debug.Log("<color=cyan>[AI]</color> 새로운 모델 엔진이 적용되었습니다.");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"모델 재로드 중 오류 발생: {e.Message}");
+        }
+    }
+
     public void LoadModelFromDisk()
     {
         string path = Path.Combine(Application.persistentDataPath, "dda_model.onnx");

@@ -24,10 +24,16 @@ namespace Auth
     }
 
     [Serializable]
-    public class FindIdRequest { public string email; }
+    public class FindIdRequest
+    {
+        public string email;
+    }
 
     [Serializable]
-    public class FindIdResponse { public string userId; }
+    public class FindIdResponse
+    {
+        public string userId;
+    }
 
     [Serializable]
     public class ResetPasswordRequest
@@ -37,12 +43,23 @@ namespace Auth
         public string newPassword;
     }
 
+    [Serializable]
+    public class ModelInfoResponse
+    {
+        public string versionId;
+        public string s3Key;
+        public string downloadUrl;
+        public string sha256;
+        public long sizeBytes;
+        public string uploadedAt;
+    }
+
     public class AuthWebClient : MonoBehaviour
     {
         public static AuthWebClient Instance { get; private set; }
 
         // EC2 퍼블릭 IP와 포트 (보안 그룹에서 8080 포트가 열려있어야 함)
-        private readonly string baseUrl = "http://13.209.66.250:8080/api/v1/player/auth";
+        private readonly string baseUrl = "http://43.201.75.236:8080/api/v1";
 
         private void Awake()
         {
@@ -110,7 +127,12 @@ namespace Auth
         // [공통 POST 요청 메서드]
         private IEnumerator PostRequest(string endpoint, string json, Action<bool, string> callback)
         {
-            using (UnityWebRequest request = new UnityWebRequest(baseUrl + endpoint, "POST"))
+            using (
+                UnityWebRequest request = new UnityWebRequest(
+                    baseUrl + "/player/auth" + endpoint,
+                    "POST"
+                )
+            )
             {
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -153,10 +175,11 @@ namespace Auth
                 )
             );
         }
+
         public IEnumerator FindId(string email, Action<bool, string> callback)
         {
             // 1. URL 구성 확인 (로그로 찍어서 브라우저에 직접 붙여넣어 보세요)
-            string url = $"{baseUrl}/find-id?email={UnityWebRequest.EscapeURL(email)}";
+            string url = $"{baseUrl}/player/auth/find-id?email={UnityWebRequest.EscapeURL(email)}";
             Debug.Log($"[AuthWebClient] 요청 URL: {url}");
 
             using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -191,26 +214,101 @@ namespace Auth
                 else
                 {
                     // 404, 500 에러 등 확인
-                    Debug.LogError($"[AuthWebClient] HTTP 에러: {request.responseCode} | {request.error}");
+                    Debug.LogError(
+                        $"[AuthWebClient] HTTP 에러: {request.responseCode} | {request.error}"
+                    );
                     callback?.Invoke(false, $"에러: {request.responseCode}");
                 }
             }
         }
 
-        public IEnumerator ResetPassword(string email, string id, string newPw, Action<bool, string> callback)
+        public IEnumerator ResetPassword(
+            string email,
+            string id,
+            string newPw,
+            Action<bool, string> callback
+        )
         {
             var data = new ResetPasswordRequest
             {
                 email = email,
                 userId = id,
-                newPassword = newPw
+                newPassword = newPw,
             };
             string json = JsonUtility.ToJson(data);
 
-            yield return StartCoroutine(PostRequest("/find-password", json, (success, response) =>
+            yield return StartCoroutine(
+                PostRequest(
+                    "/find-password",
+                    json,
+                    (success, response) =>
+                    {
+                        callback?.Invoke(
+                            success,
+                            success ? "비밀번호가 성공적으로 변경되었습니다." : response
+                        );
+                    }
+                )
+            );
+        }
+
+        public IEnumerator GetLatestModelInfo(Action<bool, ModelInfoResponse, string> callback)
+        {
+            string url = baseUrl + "/models/latest"; // 모델 관련 API 베이스 주소 확인 필요
+
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
-                callback?.Invoke(success, success ? "비밀번호가 성공적으로 변경되었습니다." : response);
-            }));
+                // 토큰 인증 헤더 추가
+                if (PlayerPrefs.HasKey("AuthToken"))
+                {
+                    request.SetRequestHeader(
+                        "Authorization",
+                        "Bearer " + PlayerPrefs.GetString("AuthToken")
+                    );
+                }
+
+                yield return request.SendWebRequest();
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    var res = JsonUtility.FromJson<ModelInfoResponse>(request.downloadHandler.text);
+                    callback?.Invoke(true, res, null);
+                }
+                else
+                {
+                    // 상세 로그 추가
+                    Debug.LogError($"[ModelUpdate] 실패 URL: {url}");
+                    Debug.LogError($"[ModelUpdate] 응답 코드: {request.responseCode}");
+                    Debug.LogError($"[ModelUpdate] 에러 내용: {request.error}");
+                    callback?.Invoke(false, null, request.error);
+                    callback?.Invoke(false, null, request.error);
+                }
+            }
+        }
+
+        // [파일 다운로드]
+        public IEnumerator DownloadModelFile(
+            string url,
+            string savePath,
+            Action<bool, string> callback
+        )
+        {
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
+            {
+                // 파일로 바로 저장하는 Handler 사용 (메모리 효율적)
+                request.downloadHandler = new DownloadHandlerFile(savePath);
+
+                yield return request.SendWebRequest();
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    callback?.Invoke(true, "다운로드 성공");
+                }
+                else
+                {
+                    callback?.Invoke(false, request.error);
+                }
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -100,16 +101,25 @@ namespace Auth
                 return AuthResult.Failed("AuthWebClient 인스턴스가 없습니다.");
 
             // 코루틴 호출
-            StartCoroutine(AuthWebClient.Instance.FindId(email, (success, result) =>
-            {
-                tcs.SetResult(new AuthResult
-                {
-                    Success = success,
-                    // 성공 시 메시지에 ID를 넣어주거나 UserId 필드에 할당
-                    Message = success ? $"사용자 아이디 : {result}" : "해당 이메일로 가입된 아이디가 없습니다.",
-                    UserId = success ? result : null
-                });
-            }));
+            StartCoroutine(
+                AuthWebClient.Instance.FindId(
+                    email,
+                    (success, result) =>
+                    {
+                        tcs.SetResult(
+                            new AuthResult
+                            {
+                                Success = success,
+                                // 성공 시 메시지에 ID를 넣어주거나 UserId 필드에 할당
+                                Message = success
+                                    ? $"사용자 아이디 : {result}"
+                                    : "해당 이메일로 가입된 아이디가 없습니다.",
+                                UserId = success ? result : null,
+                            }
+                        );
+                    }
+                )
+            );
 
             return await tcs.Task;
         }
@@ -122,14 +132,17 @@ namespace Auth
             if (AuthWebClient.Instance == null)
                 return AuthResult.Failed("AuthWebClient가 없습니다.");
 
-            StartCoroutine(AuthWebClient.Instance.ResetPassword(email, id, newPassword, (success, message) =>
-            {
-                tcs.SetResult(new AuthResult
-                {
-                    Success = success,
-                    Message = message
-                });
-            }));
+            StartCoroutine(
+                AuthWebClient.Instance.ResetPassword(
+                    email,
+                    id,
+                    newPassword,
+                    (success, message) =>
+                    {
+                        tcs.SetResult(new AuthResult { Success = success, Message = message });
+                    }
+                )
+            );
 
             return await tcs.Task;
         }
@@ -168,6 +181,66 @@ namespace Auth
                                     ? "로그아웃 되었습니다."
                                     : "서버 로그아웃 실패(로컬 데이터만 삭제)",
                             }
+                        );
+                    }
+                )
+            );
+
+            return await tcs.Task;
+        }
+
+        public async Task<bool> UpdateAIModelAsync()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            StartCoroutine(
+                AuthWebClient.Instance.GetLatestModelInfo(
+                    (success, info, error) =>
+                    {
+                        if (!success)
+                        {
+                            tcs.SetResult(false);
+                            return;
+                        }
+
+                        // 폴더 및 파일 경로 설정
+                        string folderPath = Path.Combine(Application.persistentDataPath, "model");
+                        if (!Directory.Exists(folderPath))
+                            Directory.CreateDirectory(folderPath);
+
+                        string savePath = Path.Combine(folderPath, "dda_model.onnx");
+                        string localVersion = PlayerPrefs.GetString("LocalModelVersion", "");
+
+                        // 버전이 같고 파일도 실제로 존재할 때만 통과
+                        if (localVersion == info.versionId && File.Exists(savePath))
+                        {
+                            Debug.Log(
+                                "<color=green>모델이 이미 최신 폴더 내에 존재합니다.</color>"
+                            );
+                            tcs.SetResult(true);
+                            return;
+                        }
+
+                        // 다운로드 진행
+                        StartCoroutine(
+                            AuthWebClient.Instance.DownloadModelFile(
+                                info.downloadUrl,
+                                savePath,
+                                (dlSuccess, dlError) =>
+                                {
+                                    if (dlSuccess)
+                                    {
+                                        PlayerPrefs.SetString("LocalModelVersion", info.versionId);
+                                        PlayerPrefs.Save();
+                                        DDAInferenceManager.Instance?.ReloadModel(savePath);
+                                        tcs.SetResult(true);
+                                    }
+                                    else
+                                    {
+                                        tcs.SetResult(false);
+                                    }
+                                }
+                            )
                         );
                     }
                 )

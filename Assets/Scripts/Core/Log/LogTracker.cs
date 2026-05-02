@@ -42,7 +42,7 @@ namespace Log
         private string _baseURL;
         private int _pendingUploads = 0;
 
-        private string _ip = "13.209.66.250";
+        private string _ip = "43.201.75.236";
 
         // 인터넷이 끊겼을 때 임시 보관할 큐
         private Queue<string> _localRunEndQueue = new Queue<string>();
@@ -385,7 +385,8 @@ namespace Log
         private void SaveLogToFile(string jsonData, string prefix)
         {
             string fileName = $"{prefix}_{DateTime.Now:yyyyMMdd_HHmmss}.json";
-            string path = Path.Combine(Application.persistentDataPath, fileName);
+            string basePath = Path.Combine(Application.persistentDataPath, "logs");
+            string path = Path.Combine(basePath, fileName);
 
             try
             {
