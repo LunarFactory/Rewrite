@@ -382,10 +382,11 @@ namespace Log
             );
         }
 
-        private void SaveLogToFile(string logData, string fileName)
+        private void SaveLogToFile(string logData, string prefix)
         {
+            string fileName = $"{prefix}_{DateTime.Now:yyyyMMdd_HHmmss}.json";
             // 1. 전체 저장 경로 설정
-            string directoryPath = Path.Combine(Application.persistentDataPath, "Logs");
+            string directoryPath = Path.Combine(Application.persistentDataPath, "logs");
             string fullPath = Path.Combine(directoryPath, fileName);
 
             try
@@ -403,7 +404,7 @@ namespace Log
                 File.WriteAllText(fullPath, logData);
                 Debug.Log($"<color=cyan>[Log]</color> 로그 저장 성공: {fullPath}");
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Debug.LogError($"파일 저장 실패: {e.Message}");
             }
