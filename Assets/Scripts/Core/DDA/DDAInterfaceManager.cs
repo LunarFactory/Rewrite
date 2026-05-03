@@ -1,18 +1,18 @@
+using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 using Log;
-using Unity.InferenceEngine;
+using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
 using UnityEngine;
 
 public class DDAInferenceManager : MonoBehaviour
 {
     public static DDAInferenceManager Instance { get; private set; }
 
-    [Header("Sentis Assets")]
-    [SerializeField]
-    private ModelAsset modelAsset; // 프로젝트창의 .onnx 파일 드래그
-    private Model _runtimeModel;
-    private Worker _worker;
+    // Sentis의 ModelAsset은 유니티 전용 포맷을 위한 것이므로 제거합니다.
+    // ONNX Runtime은 파일 경로나 Byte 배열에서 직접 모델을 로드합니다.
+    private InferenceSession _session;
 
     [Header("DDA Settings")]
     [Range(0.1f, 2.0f)]
@@ -21,21 +21,18 @@ public class DDAInferenceManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        // 1. 모델 로드 및 워커(엔진) 생성
-        _runtimeModel = ModelLoader.Load(modelAsset);
-        _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
+        LoadModelFromDisk();
     }
 
     public void ReloadModel(string newModelPath)
     {
         try
         {
-            // 기존 리소스 해제
-            _worker?.Dispose();
+            // 기존 세션 해제
+            CleanupSession();
 
-            // 새 모델 로드 및 워커 생성
-            _runtimeModel = ModelLoader.Load(newModelPath);
-            _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
+            // 새 모델 로드 및 세션 생성
+            _session = new InferenceSession(newModelPath);
 
             Debug.Log("<color=cyan>[AI]</color> 새로운 모델 엔진이 적용되었습니다.");
         }
@@ -47,17 +44,29 @@ public class DDAInferenceManager : MonoBehaviour
 
     public void LoadModelFromDisk()
     {
-        string path = Path.Combine(Application.persistentDataPath, "dda_model.onnx");
+        string path = Path.Combine(
+            Path.Combine(Application.persistentDataPath, "Model"),
+            "dda_model.onnx"
+        );
+
+        Debug.Log($"모델 로드 경로: {path}");
 
         if (File.Exists(path))
         {
-            // [중요] Sentis에서 외부 파일을 Model 객체로 변환
-            _runtimeModel = ModelLoader.Load(path);
-            Debug.Log("성공적으로 외부 모델을 로드했습니다.");
+            try
+            {
+                // [중요] ONNX Runtime에서 모델 파일 경로로 바로 세션 생성
+                _session = new InferenceSession(path);
+                Debug.Log("성공적으로 외부 모델을 로드했습니다.");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"ONNX 모델 로딩 실패: {e.Message}");
+            }
         }
         else
         {
-            // 파일이 없으면 기본 모델(Resources) 로드 로직
+            Debug.LogWarning("AI 모델 파일이 존재하지 않습니다.");
         }
     }
 
@@ -66,30 +75,50 @@ public class DDAInferenceManager : MonoBehaviour
     /// </summary>
     public (float s, float c, float alpha) InferDifficulty(WaveLogData logData)
     {
-        // 2. 입력 데이터 준비 (모델의 입력 피처 순서와 일치해야 함)
-        // 예: APM, Accuracy, HitsTaken, HP_Retention 4개의 피처를 사용한다고 가정
+        if (_session == null)
+        {
+            Debug.LogError("Inference Session이 초기화되지 않았습니다.");
+            return (0, 0, currentAlpha);
+        }
+
+        // 1. 입력 데이터 준비 (모델의 입력 피처 개수와 일치해야 함)
         float[] inputFeatures = new float[]
         {
-            logData.dashboard_summary.apm / 300f, // 정규화 (예: 최대 300)
-            logData.dashboard_summary.accuracy_rate, // 0~1
-            logData.dashboard_summary.hits_taken / 20f, // 정규화
-            logData.dashboard_summary.hp_retention_rate, // 0~1
+            logData.dashboard_summary.apm / 300f,
+            logData.dashboard_summary.accuracy_rate,
+            logData.dashboard_summary.hits_taken / 20f,
+            logData.dashboard_summary.hp_retention_rate,
         };
 
-        using Tensor inputTensor = new Tensor<float>(new TensorShape(1, 4), inputFeatures);
+        // 2. ONNX Runtime용 Tensor 생성 (Shape: [1, 4])
+        var inputTensor = new DenseTensor<float>(inputFeatures, new int[] { 1, 4 });
 
-        // 3. 추론 실행
-        _worker.SetInput("input", inputTensor);
+        // 3. 입력값 매핑
+        // "input" 부분은 실제 ONNX 모델의 인풋 레이어 이름과 정확히 일치해야 합니다.
+        // (이전 스크린샷의 모델이라면 "game_metrics_30s" 여야 합니다)
+        var inputs = new List<NamedOnnxValue>
+        {
+            NamedOnnxValue.CreateFromTensor("input", inputTensor),
+        };
 
-        // 4. 결과값 추출 (출력이 [1, 2] 형태라고 가정: [0]=s, [1]=c)
-        Tensor<float> outputTensor = _worker.PeekOutput() as Tensor<float>;
-        var results = outputTensor.ReadbackAndClone(); // GPU 데이터를 CPU로 읽어옴
+        // 4. 추론 실행 (using 블록을 통해 결과 사용 후 즉시 메모리 해제)
+        using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = _session.Run(
+            inputs
+        );
 
-        float s = outputTensor[0]; // Skill (숙련도)
-        float c = outputTensor[1]; // Churn (이탈 위험)
+        // 5. 결과 추출 (단일 출력 레이어에 [1, 2] 형태의 결과가 나온다고 가정한 로직)
+        var outputTensor = results.First().AsTensor<float>();
 
-        // 5. 알파 계산 로직 (예시 공식: s가 높으면 alpha 증가, c가 높으면 alpha 감소)
-        // 사용자님의 구체적인 공식에 따라 수정하세요.
+        float s = outputTensor.GetValue(0); // Skill (숙련도)
+        float c = outputTensor.GetValue(1); // Churn (이탈 위험)
+
+        /*
+        [참고] 만약 이전 스크린샷처럼 출력 레이어가 S_score, C_risk 2개로 나뉘어 있다면 아래 코드를 사용하세요.
+        float s = results.First(r => r.Name == "S_score").AsTensor<float>().GetValue(0);
+        float c = results.First(r => r.Name == "C_risk").AsTensor<float>().GetValue(0);
+        */
+
+        // 6. 알파 계산 로직
         float targetAlpha = CalculateAlpha(s, c);
         currentAlpha = targetAlpha;
 
@@ -98,16 +127,14 @@ public class DDAInferenceManager : MonoBehaviour
 
     private float CalculateAlpha(float s, float c)
     {
-        // 예시: 기본 1.0에서 숙련도가 높으면 난이도 업(+), 이탈위험이 높으면 난이도 다운(-)
         float alpha = 1.0f + (s * 0.5f) - (c * 0.5f);
-        return Mathf.Clamp(alpha, 0.5f, 2.0f); // 최소 0.5배 ~ 최대 2.0배 제한
+        return Mathf.Clamp(alpha, 0.5f, 2.0f);
     }
 
     private void OnDestroy()
     {
-        CleanupWorker();
+        CleanupSession();
 
-        // 싱글톤 참조를 명확히 해제
         if (Instance == this)
         {
             Instance = null;
@@ -116,17 +143,16 @@ public class DDAInferenceManager : MonoBehaviour
 
     private void OnDisable()
     {
-        // 워커를 여기서 미리 정리해주는 것이 안전합니다.
-        CleanupWorker();
+        CleanupSession();
     }
 
-    private void CleanupWorker()
+    private void CleanupSession()
     {
-        if (_worker != null)
+        if (_session != null)
         {
-            _worker.Dispose();
-            _worker = null;
-            Debug.Log("[DDA] Worker disposed successfully.");
+            _session.Dispose();
+            _session = null;
+            Debug.Log("[DDA] InferenceSession disposed successfully.");
         }
     }
 }

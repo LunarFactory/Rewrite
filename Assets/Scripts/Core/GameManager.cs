@@ -80,6 +80,7 @@ namespace Core
             var fdt = gameObject.AddComponent<FDTManager>();
             fdt.SetFDTPrefab(fdtPrefab, defaultDuration);
             gameObject.AddComponent<LogTracker>();
+            gameObject.AddComponent<DDAInferenceManager>();
 
             Instantiate(playerCrosshairPrefab);
             PlayerPrefs.SetInt("LobbyCredits", 10000);

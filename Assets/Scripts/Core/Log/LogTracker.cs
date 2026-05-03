@@ -382,16 +382,26 @@ namespace Log
             );
         }
 
-        private void SaveLogToFile(string jsonData, string prefix)
+        private void SaveLogToFile(string logData, string fileName)
         {
-            string fileName = $"{prefix}_{DateTime.Now:yyyyMMdd_HHmmss}.json";
-            string basePath = Path.Combine(Application.persistentDataPath, "logs");
-            string path = Path.Combine(basePath, fileName);
+            // 1. 전체 저장 경로 설정
+            string directoryPath = Path.Combine(Application.persistentDataPath, "Logs");
+            string fullPath = Path.Combine(directoryPath, fileName);
 
             try
             {
-                File.WriteAllText(path, jsonData);
-                Debug.Log($"<color=cyan>[Export]</color> {prefix} 저장 완료: {path}");
+                // 2. [핵심] 폴더가 없으면 생성 (Directory.CreateDirectory는 폴더가 이미 있으면 무시함)
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                    Debug.Log(
+                        $"<color=yellow>[Log]</color> 새로운 로그 폴더 생성됨: {directoryPath}"
+                    );
+                }
+
+                // 3. 파일 쓰기
+                File.WriteAllText(fullPath, logData);
+                Debug.Log($"<color=cyan>[Log]</color> 로그 저장 성공: {fullPath}");
             }
             catch (Exception e)
             {

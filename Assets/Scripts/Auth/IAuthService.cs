@@ -7,7 +7,7 @@ namespace Auth
     {
         Task<AuthResult> LoginAsync(string id, string password);
         Task<AuthResult> SignupAsync(string id, string password, string email);
-        Task<AuthResult> RecoverIDAsync(string email);// 인터페이스 파라미터를 백엔드 사양에 맞게 수정
+        Task<AuthResult> RecoverIDAsync(string email); // 인터페이스 파라미터를 백엔드 사양에 맞게 수정
         Task<AuthResult> RecoverPasswordAsync(string email, string id, string newPassword);
         void Logout();
         bool IsLoggedIn();
