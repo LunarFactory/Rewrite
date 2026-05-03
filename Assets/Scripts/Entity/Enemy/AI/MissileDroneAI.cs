@@ -33,8 +33,10 @@ namespace Enemy
 
         protected override void ExecuteBehavior()
         {
-            if (playerTarget == null)
-                return;
+            if (playerStat != null)
+            {
+                playerTarget = playerStat.isStealth() ? null : playerStat.transform;
+            }
 
             switch (_currentState)
             {

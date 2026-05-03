@@ -87,7 +87,6 @@ public class DDAInferenceManager : MonoBehaviour
             logData.dashboard_summary.apm / 300f,
             logData.dashboard_summary.accuracy_rate,
             logData.dashboard_summary.hits_taken / 20f,
-            logData.dashboard_summary.hp_retention_rate,
         };
 
         // 2. ONNX Runtime용 Tensor 생성 (Shape: [1, 4])

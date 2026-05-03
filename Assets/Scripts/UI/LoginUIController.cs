@@ -233,6 +233,12 @@ namespace UI
             {
                 SetStatus("로그인 성공!", Color.green);
                 yield return new WaitForSeconds(0.5f);
+                SetStatus("모델 업데이트 중...", Color.green);
+                // [추가] 모델 업데이트 확인
+                var modelUpdateTask = AuthManager.Instance.UpdateAIModelAsync();
+                while (!modelUpdateTask.IsCompleted)
+                    yield return null;
+                yield return new WaitForSeconds(0.5f);
                 SceneManager.LoadScene("TitleScene");
             }
             else

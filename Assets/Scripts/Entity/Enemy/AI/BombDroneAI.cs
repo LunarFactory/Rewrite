@@ -63,7 +63,7 @@ namespace Enemy
 
         protected override void ExecuteBehavior()
         {
-            if (playerStat != null)
+            if (playerStat != null && _currentState != State.Priming)
                 playerTarget = playerStat.isStealth() ? null : playerStat.transform;
 
             switch (_currentState)

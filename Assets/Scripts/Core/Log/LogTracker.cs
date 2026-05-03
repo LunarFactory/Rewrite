@@ -50,7 +50,7 @@ namespace Log
         private string _baseURL;
         private int _pendingUploads = 0;
 
-        private string _ip = "43.201.75.236";
+        private string _ip = "3.35.247.2";
 
         // 인터넷이 끊겼을 때 임시 보관할 큐
         private Queue<string> _localRunEndQueue = new Queue<string>();
@@ -116,17 +116,8 @@ namespace Log
 
                 var frame = new TimeSeriesFrame
                 {
-                    sec = Mathf.RoundToInt(Time.time - _startTime),
-                    atk_clicks_total = _totalAttackClicks, // 해당 초의 누적값 또는 증분값
-                    atk_clicks_hit = _totalHits,
-                    enemy_atk_spawned = _enemyShot,
-                    hitbox_collisions = _hitsTaken,
-                    base_dmg_expected = baseDamage,
-                    hp_lost = _startHp - currentHealth,
-                    max_hp = PlayerStats.LocalPlayer.maxHealth,
-                    enemy_shot_count = _enemyShot,
                     hp_retention_rate = (float)currentHealth / _startHp,
-                    apm = (minute > 0) ? _clicks / minute : _clicks,
+                    apm = _clicks,
                     accuracy =
                         (_totalAttackClicks > 0) ? (float)_totalHits / _totalAttackClicks : 0f,
                     inverse_hit_rate = (_enemyShot > 0) ? (float)_totalHitsTaken / _enemyShot : 0f,
@@ -211,14 +202,14 @@ namespace Log
             _currentLog.wave_meta.ai_inferred_C = inferredC;
             _currentLog.timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
+            int minute = (int)(clearTime / 60f);
             _currentLog.dashboard_summary = new DashboardSummary
             {
                 hits_taken = _totalHitsTaken,
-                apm = Mathf.RoundToInt(_totalClicks / (clearTime / 60f)),
+                apm = (minute > 0) ? _totalClicks / minute : _totalClicks,
                 dps = _totalDamageDealt / clearTime,
-                accuracy_rate = _totalHits > 0 ? _totalAttackClicks / (float)_totalHits : 0,
-                distance_moved = _totalDistance,
-                hp_retention_rate = PlayerStats.LocalPlayer.currentHealth / _startHp,
+                accuracy_rate =
+                    (_totalAttackClicks > 0) ? (float)_totalHits / _totalAttackClicks : 0f,
             };
 
             return _currentLog;

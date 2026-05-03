@@ -33,25 +33,14 @@ namespace Log
     public class DashboardSummary
     {
         public int hits_taken;
-        public int apm;
+        public float apm;
         public float dps;
         public float accuracy_rate;
-        public float distance_moved;
-        public float hp_retention_rate;
     }
 
     [Serializable]
     public class TimeSeriesFrame
     {
-        public int sec;
-        public int atk_clicks_total;
-        public int atk_clicks_hit;
-        public int enemy_atk_spawned;
-        public int hitbox_collisions;
-        public int base_dmg_expected;
-        public int hp_lost;
-        public int max_hp;
-        public int enemy_shot_count;
         public float inverse_hit_rate;
         public float hp_retention_rate;
         public float apm;

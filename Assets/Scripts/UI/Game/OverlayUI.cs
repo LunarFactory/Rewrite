@@ -1,5 +1,4 @@
 using Core;
-using Drone;
 using Player;
 using TMPro;
 using UnityEngine;
