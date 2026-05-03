@@ -49,7 +49,6 @@ namespace Weapon
             if (weaponData == null || Time.time < nextFireTime)
                 return;
             // 플레이어 스탯이 반영된 연사 속도
-            Log.LogTracker.Instance.RegisterAttackClick();
             finalFireRate = _playerStats.GetWeaponBaseAttackSpeed();
             nextFireTime = Time.time + (1f / Mathf.Max(finalFireRate, 0.1f)); //
 

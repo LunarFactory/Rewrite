@@ -174,6 +174,7 @@ namespace Core
             Random.InitState(CurrentSeed);
 
             LogTracker.Instance.GenerateRunId();
+            LogTracker.Instance.RunStartLogging();
 
             UI.UIManager.Instance.LoadScene("GameScene");
         }

@@ -21,6 +21,9 @@ namespace Log
         [Header("Tracking State")]
         private bool _isTracking = false;
         private float _startTime;
+
+        private float _runStartTime;
+
         private Vector2 _lastPosition;
         private float _totalDistance;
 
@@ -38,6 +41,11 @@ namespace Log
         private int _totalDamageDealt;
         private int _totalHitsTaken;
         private int _startHp;
+
+        private int _finalClicks = 0;
+
+        private int _finalHits = 0;
+        private int _finalAttacks = 0;
 
         private string _baseURL;
         private int _pendingUploads = 0;
@@ -60,6 +68,14 @@ namespace Log
         {
             user_id = PlayerPrefs.GetString("UserId", "Guest");
             Debug.Log($"[LogTracker] 유저 정보 갱신: {user_id}");
+        }
+
+        public void RunStartLogging()
+        {
+            _runStartTime = Time.time;
+            _finalAttacks = 0;
+            _finalHits = 0;
+            _finalClicks = 0;
         }
 
         // 웨이브 시작 시 호출
@@ -96,6 +112,7 @@ namespace Log
                 var currentHealth = PlayerStats.LocalPlayer.currentHealth;
                 var baseDamage = PlayerStats.LocalPlayer.GetWeaponBaseAttackDamage();
                 yield return new WaitForSeconds(1.0f);
+                int minute = (int)((Time.time - _startTime) / 60f);
 
                 var frame = new TimeSeriesFrame
                 {
@@ -109,7 +126,7 @@ namespace Log
                     max_hp = PlayerStats.LocalPlayer.maxHealth,
                     enemy_shot_count = _enemyShot,
                     hp_retention_rate = (float)currentHealth / _startHp,
-                    apm = _clicks / ((Time.time - _startTime) / 60f),
+                    apm = (minute > 0) ? _clicks / minute : _clicks,
                     accuracy =
                         (_totalAttackClicks > 0) ? (float)_totalHits / _totalAttackClicks : 0f,
                     inverse_hit_rate = (_enemyShot > 0) ? (float)_totalHitsTaken / _enemyShot : 0f,
@@ -135,16 +152,29 @@ namespace Log
         {
             _clicks++;
             _totalClicks++;
+            if (_isTracking)
+            {
+                _finalClicks++;
+            }
         }
 
         public void RegisterAttackClick()
         {
             _totalAttackClicks++;
+            if (_isTracking)
+            {
+                _finalAttacks++;
+            }
         }
 
         public void RegisterHit()
         {
             _totalHits++;
+
+            if (_isTracking)
+            {
+                _finalHits++;
+            }
         }
 
         public void RegisterDamageDealt(int damage)

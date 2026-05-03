@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core;
 using Enemy;
 using Entity;
+using Log;
 using Player;
 using UnityEngine;
 
@@ -66,6 +67,8 @@ namespace Weapon
 
         public bool isSpin = true;
 
+        private bool isFirstHit = true;
+
         private EntityStats stats;
 
         public void SetOriginPrefab(GameObject prefab) => _originPrefab = prefab;
@@ -93,6 +96,10 @@ namespace Weapon
             if (stats is EnemyStats enemy)
             {
                 Log.LogTracker.Instance.RegisterEnemyShot();
+            }
+            if (stats is PlayerStats player)
+            {
+                Log.LogTracker.Instance.RegisterAttackClick();
             }
 
             if (rb == null)
@@ -246,9 +253,21 @@ namespace Weapon
 
                 if (target is PlayerStats player && player.isStealth())
                     return;
-                if (target is EnemyStats enemy && enemy.isDead)
-                    return;
-
+                if (target is EnemyStats enemy)
+                {
+                    if (enemy.isDead)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (isFirstHit)
+                        {
+                            LogTracker.Instance.RegisterHit();
+                            isFirstHit = false;
+                        }
+                    }
+                }
                 _hitTargets.Add(targetID);
                 _target = null;
                 stats.NotifyAttackHit(stats, target, damage);

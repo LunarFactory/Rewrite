@@ -172,7 +172,6 @@ namespace Player
         {
             if (attacker is PlayerStats player)
             {
-                LogTracker.Instance.RegisterHit();
                 OnPlayerAttackHit?.Invoke(player, target, damage);
             }
         }

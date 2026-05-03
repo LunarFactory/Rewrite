@@ -130,22 +130,21 @@ namespace UI
                 try
                 {
                     var t = typeof(LogTracker);
-                    int actions = (int)
-                        t.GetField("currentActions", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(LogTracker.Instance);
-                    int shotsFired = (int)
-                        t.GetField("shotsFired", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(LogTracker.Instance);
-                    int shotsHit = (int)
-                        t.GetField("shotsHit", BindingFlags.NonPublic | BindingFlags.Instance)
-                            .GetValue(LogTracker.Instance);
                     float startTime = (float)
-                        t.GetField("waveStartTime", BindingFlags.NonPublic | BindingFlags.Instance)
+                        t.GetField("_runStartTime", BindingFlags.NonPublic | BindingFlags.Instance)
                             .GetValue(LogTracker.Instance);
-
-                    float duration = Mathf.Max(Time.time - startTime, 1f);
-                    apm = (actions / duration) * 60f;
-                    accuracy = shotsFired > 0 ? ((float)shotsHit / shotsFired) * 100f : 0f;
+                    float finalClicks = (int)
+                        t.GetField("_finalClicks", BindingFlags.NonPublic | BindingFlags.Instance)
+                            .GetValue(LogTracker.Instance);
+                    float finalAttacks = (int)
+                        t.GetField("_finalAttacks", BindingFlags.NonPublic | BindingFlags.Instance)
+                            .GetValue(LogTracker.Instance);
+                    float finalHits = (int)
+                        t.GetField("_finalHits", BindingFlags.NonPublic | BindingFlags.Instance)
+                            .GetValue(LogTracker.Instance);
+                    int minute = (int)((Time.time - startTime) / 60f);
+                    apm = (minute > 0) ? finalClicks / minute : finalClicks;
+                    accuracy = (finalAttacks > 0) ? (float)finalHits / finalAttacks * 100f : 0f;
                 }
                 catch { }
             }
