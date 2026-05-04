@@ -103,3 +103,6 @@ InitTestScene*.unity*
 Documents/
 
 /[Aa]ssets/_[Rr]ecovery/*
+ProjectSettings/EditorBuildSettings.asset
+ProjectSettings/EditorBuildSettings.asset
+ProjectSettings/ProjectVersion.txt
