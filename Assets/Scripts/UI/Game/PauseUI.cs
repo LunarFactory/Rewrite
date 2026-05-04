@@ -60,6 +60,18 @@ namespace UI
                 ReturnToLobby
             );
 
+            // --- DDA Analytics Dashboard 부착 ---
+            GameObject ddaPanelGo = CreateUIObject("DDA_Analytics", _pausePanel.transform);
+            var rt = ddaPanelGo.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(1, 0.5f);
+            rt.anchorMax = new Vector2(1, 0.5f);
+            rt.pivot = new Vector2(1, 0.5f);
+            // 화면 우측 여백을 둡니다
+            rt.anchoredPosition = new Vector2(-100, 0); 
+            rt.sizeDelta = new Vector2(450, 600); 
+
+            ddaPanelGo.AddComponent<UI.DDA.DDAAnalyticsPanel>();
+
             _pausePanel.SetActive(false);
         }
     }
