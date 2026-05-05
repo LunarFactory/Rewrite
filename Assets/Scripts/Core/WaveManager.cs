@@ -5,6 +5,7 @@ using Item;
 using Level;
 using Log;
 using UI;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Core
@@ -26,7 +27,16 @@ namespace Core
 
         public int BaseBudget { get; private set; }
         public int FinalBudget { get; private set; }
-        public static event System.Action<float, float, float, int, int, float, float, float> OnDDACalculated;
+        public static event System.Action<
+            float,
+            float,
+            float,
+            int,
+            int,
+            float,
+            float,
+            float
+        > OnDDACalculated;
 
         // [추가] WaveManager가 직접 관리할 적 프리팹
         [Header("Wave Resources")]
@@ -127,8 +137,14 @@ namespace Core
             {
                 case WaveType.Mob:
                     activeEnemyCount = 0;
-                    float currentAlpha = DDAInferenceManager.Instance != null ? DDAInferenceManager.Instance.currentAlpha : 1.0f;
-                    BaseBudget = baseWaveBudget + (waveNumber * budgetIncreasePerWave) + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
+                    float currentAlpha =
+                        DDAInferenceManager.Instance != null
+                            ? DDAInferenceManager.Instance.currentAlpha
+                            : 1.0f;
+                    BaseBudget =
+                        baseWaveBudget
+                        + (waveNumber * budgetIncreasePerWave)
+                        + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
                     FinalBudget = Mathf.RoundToInt(BaseBudget * currentAlpha);
                     SpawnEnemiesWithRules(FinalBudget); // budget 대신 FinalBudget 대입
                     break;
@@ -223,6 +239,25 @@ namespace Core
             Vector2 spawnPos = (zone != null) ? zone.GetRandomLocation() : Vector2.zero;
 
             var enemy = gameManager.ExecuteSpawn(data, isBoss, spawnPos);
+            var stats = enemy.GetComponent<EnemyStats>();
+            /*
+            stats.AttackDamage.AddModifier(
+                new StatModifier(
+                    "DDAAttackDamage",
+                    difficultyAlpha - 1f,
+                    ModifierType.Percent,
+                    this
+                )
+            );
+            stats.DamageTaken.AddModifier(
+                new StatModifier(
+                    "DDADamageTaken",
+                    1.5f - difficultyAlpha,
+                    ModifierType.Percent,
+                    this
+                )
+            );
+            */
             activeEnemyCount++;
         }
 
@@ -355,16 +390,30 @@ namespace Core
                         var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
                         ApplyDifficultyToGame(alpha);
                         LogTracker.Instance.EndWaveAndSend(alpha, s, c);
-                        
+
                         // UI 송출용 데이터 정규화
                         float rawApm = rawLog.dashboard_summary.apm;
                         float accuracy = Mathf.Clamp01(rawLog.dashboard_summary.accuracy_rate);
-                        float evasion = Mathf.Clamp01(1.0f - (rawLog.dashboard_summary.hits_taken / 20f));
+                        float evasion = Mathf.Clamp01(
+                            1.0f - (rawLog.dashboard_summary.hits_taken / 20f)
+                        );
 
-                        int nextBaseBudget = baseWaveBudget + ((CurrentWave + 1) * budgetIncreasePerWave) + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
+                        int nextBaseBudget =
+                            baseWaveBudget
+                            + ((CurrentWave + 1) * budgetIncreasePerWave)
+                            + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
                         int nextFinalBudget = Mathf.RoundToInt(nextBaseBudget * alpha);
 
-                        OnDDACalculated?.Invoke(s, c, alpha, nextBaseBudget, nextFinalBudget, rawApm, accuracy, evasion);
+                        OnDDACalculated?.Invoke(
+                            s,
+                            c,
+                            alpha,
+                            nextBaseBudget,
+                            nextFinalBudget,
+                            rawApm,
+                            accuracy,
+                            evasion
+                        );
                     }
                     else
                     {

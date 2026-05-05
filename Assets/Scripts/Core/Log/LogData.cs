@@ -23,8 +23,8 @@ namespace Log
         public int floor;
         public int wave;
         public float clear_time_sec;
-        public float ai_inferred_S;
-        public float ai_inferred_C;
+        public float ai_inferred_s;
+        public float ai_inferred_c;
         public float calculated_a;
         public bool fail_safe;
     }

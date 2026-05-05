@@ -198,8 +198,8 @@ namespace Log
             _currentLog.wave_meta.clear_time_sec = clearTime;
             _currentLog.wave_meta.version_id = "v1.2_live";
             _currentLog.wave_meta.calculated_a = alpha;
-            _currentLog.wave_meta.ai_inferred_S = inferredS;
-            _currentLog.wave_meta.ai_inferred_C = inferredC;
+            _currentLog.wave_meta.ai_inferred_s = inferredS;
+            _currentLog.wave_meta.ai_inferred_c = inferredC;
             _currentLog.timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
             int minute = (int)(clearTime / 60f);
