@@ -79,6 +79,11 @@ namespace UI
         private TextMeshProUGUI tooltipName;
         private TextMeshProUGUI tooltipDesc;
         private CanvasGroup tooltipCanvasGroup; // 페이드 효과용
+        
+        private Slider ddaGaugeSlider;
+        private TextMeshProUGUI ddaGaugeLabel;
+        private TextMeshProUGUI threatInfoText;
+        
         #region Unity Lifecycle
 
         private void Awake()
@@ -187,6 +192,8 @@ namespace UI
             // 즉시 한 번 동기화
             SyncDynamicInventory();
             BuildTooltip();
+            BuildDDAGauge();
+            BuildThreatInfoUI();
         }
 
         private void OnEnable()
@@ -274,6 +281,7 @@ namespace UI
             {
                 UpdateBossHP();
             }
+            RefreshDDAUI();
         }
 
         private void HandleInteractUIPosition()
@@ -1317,5 +1325,98 @@ namespace UI
         }
 
         #endregion
+
+        private void BuildDDAGauge()
+        {
+            GameObject panel = CreateUIObject("DDAGauge_Panel", hudCanvas.transform);
+            RectTransform panelRT = panel.GetComponent<RectTransform>();
+            panelRT.anchorMin = new Vector2(0.5f, 1f); panelRT.anchorMax = new Vector2(0.5f, 1f);
+            panelRT.pivot = new Vector2(0.5f, 1f); panelRT.anchoredPosition = new Vector2(0, -20);
+            panelRT.sizeDelta = new Vector2(400, 60);
+
+            ddaGaugeSlider = BuildSlider(
+                panel.transform, Vector2.zero, new Vector2(350, 20),
+                new Color(0.2f, 0.8f, 1.0f, 0.9f), new Color(0.2f, 0.2f, 0.2f, 0.8f)
+            );
+            ddaGaugeSlider.minValue = 0.0f; ddaGaugeSlider.maxValue = 2.0f; ddaGaugeSlider.value = 1.0f;
+            RectTransform sliderRT = ddaGaugeSlider.GetComponent<RectTransform>();
+            sliderRT.anchorMin = new Vector2(0.5f, 1); sliderRT.anchorMax = new Vector2(0.5f, 1);
+            sliderRT.pivot = new Vector2(0.5f, 1);
+            sliderRT.anchoredPosition = new Vector2(0, -35);
+
+            TextMeshProUGUI symbolLabel = CreateText(
+                "SymbolLabel", panel.transform, Vector2.zero, new Vector2(250, 25),
+                "α", 24, TextAlignmentOptions.Center, Color.cyan
+            );
+            symbolLabel.fontStyle = FontStyles.Bold;
+            RectTransform symbolRT = symbolLabel.GetComponent<RectTransform>();
+            symbolRT.anchorMin = new Vector2(0.5f, 1); symbolRT.anchorMax = new Vector2(0.5f, 1);
+            symbolRT.pivot = new Vector2(0.5f, 1);
+            symbolRT.anchoredPosition = new Vector2(0, -5);
+
+            ddaGaugeLabel = CreateText(
+                "ValueLabel", panel.transform, Vector2.zero, new Vector2(350, 20),
+                "1.00", 18, TextAlignmentOptions.Center, Color.white
+            );
+            ddaGaugeLabel.fontStyle = FontStyles.Bold;
+            RectTransform valueRT = ddaGaugeLabel.GetComponent<RectTransform>();
+            valueRT.anchorMin = new Vector2(0.5f, 1); valueRT.anchorMax = new Vector2(0.5f, 1);
+            valueRT.pivot = new Vector2(0.5f, 1);
+            valueRT.anchoredPosition = new Vector2(0, -35);
+
+            TMP_FontAsset korFont = Resources.Load<TMP_FontAsset>("Fonts/Galmuri11");
+            if (korFont != null) 
+            {
+                symbolLabel.font = korFont;
+                ddaGaugeLabel.font = korFont;
+            }
+        }
+
+        private void BuildThreatInfoUI()
+        {
+            GameObject panel = CreateUIObject("ThreatInfo_Panel", hudCanvas.transform);
+            RectTransform panelRT = panel.GetComponent<RectTransform>();
+            panelRT.anchorMin = new Vector2(0f, 1f); panelRT.anchorMax = new Vector2(0f, 1f);
+            panelRT.pivot = new Vector2(0f, 1f); panelRT.anchoredPosition = new Vector2(20, -150);
+            panelRT.sizeDelta = new Vector2(300, 60);
+
+            threatInfoText = panel.AddComponent<TextMeshProUGUI>();
+            TMP_FontAsset korFont = Resources.Load<TMP_FontAsset>("Fonts/Galmuri11");
+            if (korFont != null) threatInfoText.font = korFont;
+            threatInfoText.fontSize = 16; threatInfoText.alignment = TextAlignmentOptions.TopLeft;
+            threatInfoText.color = Color.white;
+            threatInfoText.text = "웨이브 위협도: 대기 중...\n남은 몬스터 수: 0";
+        }
+
+        private void RefreshDDAUI()
+        {
+            if (ddaGaugeSlider != null && DDAInferenceManager.Instance != null)
+            {
+                float alpha = DDAInferenceManager.Instance.currentAlpha;
+                ddaGaugeSlider.value = alpha;
+                
+                if (ddaGaugeLabel != null)
+                {
+                    ddaGaugeLabel.text = $"{alpha:F2}";
+                }
+                
+                Image fill = ddaGaugeSlider.fillRect.GetComponent<Image>();
+                if (fill != null)
+                {
+                    if (alpha <= 1.0f)
+                        fill.color = Color.Lerp(Color.blue, new Color(0.2f, 0.8f, 1.0f), alpha / 1.0f);
+                    else
+                        fill.color = Color.Lerp(new Color(0.2f, 0.8f, 1.0f), Color.red, (alpha - 1.0f) / 1.0f);
+                }
+            }
+            if (threatInfoText != null && Core.WaveManager.Instance != null)
+            {
+                int baseB = Core.WaveManager.Instance.BaseBudget;
+                int finalB = Core.WaveManager.Instance.FinalBudget;
+                float alpha = DDAInferenceManager.Instance != null ? DDAInferenceManager.Instance.currentAlpha : 1.0f;
+                int count = Core.WaveManager.Instance.activeEnemyCount;
+                threatInfoText.text = $"웨이브 예산: {baseB} ▶ <color=red>{finalB}</color> (α 보정 x{alpha:F1})\n남은 몬스터 수: {count}";
+            }
+        }
     }
 }

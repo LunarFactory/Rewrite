@@ -17,11 +17,6 @@ MonoBehaviour:
   m_Subtarget: 2
   m_PlatformId: 4e3c793746204150860bf175a9a41a05
   m_PlatformBuildProfile:
-<<<<<<< Updated upstream
-    rid: 1036255125896167499
-  m_OverrideGlobalSceneList: 0
-  m_Scenes: []
-=======
     rid: 675394308177657930
   m_OverrideGlobalSceneList: 1
   m_Scenes:
@@ -37,7 +32,6 @@ MonoBehaviour:
   - m_enabled: 1
     m_path: Assets/Scenes/GameScene.unity
     m_guid: 8c9cfa26abfee488c85f1582747f6a02
->>>>>>> Stashed changes
   m_HasScriptingDefines: 0
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
@@ -45,11 +39,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-<<<<<<< Updated upstream
-    - rid: 1036255125896167499
-=======
     - rid: 675394308177657930
->>>>>>> Stashed changes
       type: {class: WindowsPlatformSettings, ns: UnityEditor.WindowsStandalone, asm: UnityEditor.WindowsStandalone.Extensions}
       data:
         m_Development: 0
