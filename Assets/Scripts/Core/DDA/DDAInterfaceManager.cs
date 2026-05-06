@@ -82,22 +82,17 @@ public class DDAInferenceManager : MonoBehaviour
         }
 
         // 1. 입력 데이터 준비 (모델의 입력 피처 개수와 일치해야 함)
-        float[] inputFeatures = new float[]
-        {
-            logData.dashboard_summary.apm / 300f,
-            logData.dashboard_summary.accuracy_rate,
-            logData.dashboard_summary.hits_taken / 20f,
-        };
+        float[] inputFeatures = PrepareInputTensor(logData);
 
         // 2. ONNX Runtime용 Tensor 생성 (Shape: [1, 4])
-        var inputTensor = new DenseTensor<float>(inputFeatures, new int[] { 1, 4 });
+        var inputTensor = new DenseTensor<float>(inputFeatures, new int[] { 1, 5, 5 });
 
         // 3. 입력값 매핑
         // "input" 부분은 실제 ONNX 모델의 인풋 레이어 이름과 정확히 일치해야 합니다.
         // (이전 스크린샷의 모델이라면 "game_metrics_30s" 여야 합니다)
         var inputs = new List<NamedOnnxValue>
         {
-            NamedOnnxValue.CreateFromTensor("input", inputTensor),
+            NamedOnnxValue.CreateFromTensor("game_metrics_30s", inputTensor),
         };
 
         // 4. 추론 실행 (using 블록을 통해 결과 사용 후 즉시 메모리 해제)
@@ -107,15 +102,8 @@ public class DDAInferenceManager : MonoBehaviour
 
         // 5. 결과 추출 (단일 출력 레이어에 [1, 2] 형태의 결과가 나온다고 가정한 로직)
         var outputTensor = results.First().AsTensor<float>();
-
-        float s = outputTensor.GetValue(0); // Skill (숙련도)
-        float c = outputTensor.GetValue(1); // Churn (이탈 위험)
-
-        /*
-        [참고] 만약 이전 스크린샷처럼 출력 레이어가 S_score, C_risk 2개로 나뉘어 있다면 아래 코드를 사용하세요.
         float s = results.First(r => r.Name == "S_score").AsTensor<float>().GetValue(0);
         float c = results.First(r => r.Name == "C_risk").AsTensor<float>().GetValue(0);
-        */
 
         // 6. 알파 계산 로직
         float targetAlpha = CalculateAlpha(s, c);
@@ -153,5 +141,38 @@ public class DDAInferenceManager : MonoBehaviour
             _session = null;
             Debug.Log("[DDA] InferenceSession disposed successfully.");
         }
+    }
+
+    public float[] PrepareInputTensor(WaveLogData logData)
+    {
+        const int sequenceLength = 5;
+        const int featureCount = 5;
+        float[] tensorData = new float[sequenceLength * featureCount]; // 총 50개
+
+        var frames = logData.time_series_frames;
+        int frameCount = frames != null ? frames.Count : 0;
+
+        // 최근 10개만 가져오되, 데이터가 부족하면 있는 만큼만 가져옴
+        int itemsToCopy = Mathf.Min(frameCount, sequenceLength);
+        int startIdx = frameCount - itemsToCopy;
+
+        for (int i = 0; i < itemsToCopy; i++)
+        {
+            var frame = frames[startIdx + i];
+
+            // 텐서의 행(Row) 위치 계산: (10개 중 뒤쪽부터 채우기 위해 오프셋 계산)
+            // 데이터가 3개라면 인덱스 7, 8, 9 행에 배치됨 (앞은 0.0f 패딩)
+            int targetRow = (sequenceLength - itemsToCopy) + i;
+            int rowOffset = targetRow * featureCount;
+
+            // 사용자님이 요청하신 순서대로 피쳐 맵핑
+            tensorData[rowOffset + 0] = frame.apm; // apm (정규화 포함)
+            tensorData[rowOffset + 1] = frame.inverse_hit_rate; // inverse_hit_rate
+            tensorData[rowOffset + 2] = frame.hp_retention_rate; // hp_retention_rate
+            tensorData[rowOffset + 3] = frame.accuracy; // accuracy
+            tensorData[rowOffset + 4] = frame.attack_item_efficiency; // attack_time_efficiency
+        }
+
+        return tensorData;
     }
 }
