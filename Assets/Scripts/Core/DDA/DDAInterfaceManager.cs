@@ -92,7 +92,7 @@ public class DDAInferenceManager : MonoBehaviour
         // (이전 스크린샷의 모델이라면 "game_metrics_30s" 여야 합니다)
         var inputs = new List<NamedOnnxValue>
         {
-            NamedOnnxValue.CreateFromTensor("game_metrics_30s", inputTensor),
+            NamedOnnxValue.CreateFromTensor("game_metrics_5s", inputTensor),
         };
 
         // 4. 추론 실행 (using 블록을 통해 결과 사용 후 즉시 메모리 해제)
