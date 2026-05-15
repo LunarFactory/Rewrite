@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DefenseDrone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: "\uC218\uBE44 \uB4DC\uB860"
+  enemySubtitle: 
   maxHealth: 100
   baseMoveSpeed: 2
   baseAttackDamage: 0
@@ -36,9 +37,10 @@ MonoBehaviour:
   directionalSprites: []
   defaultFPS: 10
   isInvincible: 0
-  tier: 0
+  tier: 1
   cost: 5
   minFloor: 2
+  maxFloor: 5
   maxCountInWave: 2
   ComponentName: DefenseDroneAI
   colliderOffset: {x: 0, y: 0}

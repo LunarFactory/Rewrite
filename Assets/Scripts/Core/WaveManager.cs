@@ -5,7 +5,6 @@ using Item;
 using Level;
 using Log;
 using UI;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Core
@@ -51,15 +50,12 @@ namespace Core
 
         private Dictionary<EnemyData, int> _spawnTracker = new Dictionary<EnemyData, int>();
 
-        [SerializeField]
-        private int baseWaveBudget = 10; // 1층 1웨이브 기본 예산
+        private int baseWaveBudget = 30; // 1층 1웨이브 기본 예산
 
         private float difficultyAlpha;
 
-        [SerializeField]
         private int budgetIncreasePerWave = 2; // 웨이브당 증가치
 
-        [SerializeField]
         private int budgetIncreasePerFloor = 20; // 층당 증가치
 
         [Header("Special Prefabs")]
@@ -167,16 +163,42 @@ namespace Core
 
         private void SpawnEnemiesWithRules(int totalBudget)
         {
+            // 1. 현재 DDA alpha 값 가져오기 (기본값 1.0f)
+            float alpha =
+                DDAInferenceManager.Instance != null
+                    ? DDAInferenceManager.Instance.currentAlpha
+                    : 1.0f;
+
             UnityEngine.Random.InitState(
                 RunManager.Instance.GetCalculatedSeed("ItemSet_" + CurrentWave, true, 0.5f)
             );
-            Debug.Log($"Total Budget: {totalBudget}, Pool Count: {enemyPool.Count}");
+
             _spawnTracker.Clear();
 
-            // [규칙 1] 황금 비율 분배
-            int specialBudget = Mathf.FloorToInt(totalBudget * 0.15f);
-            int eliteBudget = Mathf.FloorToInt(totalBudget * 0.35f);
+            // [규칙 1] alpha에 의한 동적 비율 계산
+            // alpha가 높을수록 Elite와 Special의 가중치가 증폭됨
+            float baseSpecialWeight = 0.15f;
+            float baseEliteWeight = 0.35f;
+
+            // 가중치 보정 (alpha가 1.5라면 Special 비중은 약 22%까지 상승)
+            float dynamicSpecialRatio = Mathf.Clamp(baseSpecialWeight * alpha, 0.05f, 0.4f);
+            float dynamicEliteRatio = Mathf.Clamp(
+                baseEliteWeight * Mathf.Pow(alpha, 1.2f),
+                0.1f,
+                0.5f
+            );
+            float dynamicNormalRatio = 1f - dynamicSpecialRatio - dynamicEliteRatio;
+
+            // 2. 예산 할당
+            int specialBudget = Mathf.FloorToInt(totalBudget * dynamicSpecialRatio);
+            int eliteBudget = Mathf.FloorToInt(totalBudget * dynamicEliteRatio);
             int normalBudget = totalBudget - specialBudget - eliteBudget;
+
+            // 가시성을 위한 디버그 로그 (이 수치를 UI에 연결하면 좋습니다)
+            Debug.Log(
+                $"<color=red>[DDA AI]</color> Alpha: {alpha:F2} | "
+                    + $"Ratio: (S){dynamicSpecialRatio:P} (E){dynamicEliteRatio:P} (N){dynamicNormalRatio:P}"
+            );
 
             // 상위 티어에서 남은 예산(leftover)을 하위 티어로 넘겨주는 구조
             int leftover = 0;
@@ -338,8 +360,7 @@ namespace Core
 
                     // 가격 책정 로직...
                     fieldItem.price =
-                        GetPriceByRarity(itemsToSpawn[i].tier)
-                        * (int)Math.Pow(2, RunManager.Instance.CurrentFloor - 1);
+                        GetPriceByRarity(itemsToSpawn[i].tier) * RunManager.Instance.CurrentFloor;
                 }
             }
             SpawnExitPortal();

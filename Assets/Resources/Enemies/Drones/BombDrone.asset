@@ -38,7 +38,7 @@ MonoBehaviour:
   defaultFPS: 10
   isInvincible: 0
   tier: 2
-  cost: 2
+  cost: 20
   minFloor: 1
   maxFloor: 5
   maxCountInWave: 2

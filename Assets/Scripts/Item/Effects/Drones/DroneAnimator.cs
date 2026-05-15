@@ -16,10 +16,12 @@ namespace Drone
 
         public void Update(float deltaTime, Sprite[] frames, float fps)
         {
-            if (frames == null || frames.Length == 0 || _sr == null) return;
+            if (frames == null || frames.Length == 0 || _sr == null)
+                return;
 
             // FPS가 0이면 멈춤 상태
-            if (fps <= 0) return;
+            if (fps <= 0)
+                return;
 
             _frameTimer += deltaTime;
 
@@ -31,6 +33,16 @@ namespace Drone
                 _currentFrame = (_currentFrame + 1) % frames.Length;
                 _sr.sprite = frames[_currentFrame];
             }
+        }
+
+        public void setColor(Color c)
+        {
+            _sr.color = c;
+        }
+
+        public Color getColor()
+        {
+            return _sr.color;
         }
     }
 }

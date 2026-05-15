@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item.HalucinationCompensator
   itemName: "\uD658\uAC01 \uBCF4\uC815\uAE30"
   description: "\uD50C\uB808\uC774\uC5B4\uAC00 \uBC1C\uC0AC\uD55C \uD0C4\uD658\uC774
-    \uBCBD\uC5D0 \uBD80\uB52A\uD790 \uACBD\uC6B0 3\uCD08\uAC04 \uD53C\uD574\uB7C9\uC774
+    \uBCBD\uC5D0 \uBD80\uB52A\uD790 \uACBD\uC6B0 3\uCD08\uAC04 \uACF5\uACA9\uB825\uC774
     \uC99D\uAC00\uD569\uB2C8\uB2E4."
   icon: {fileID: 8427203471666680303, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 0
