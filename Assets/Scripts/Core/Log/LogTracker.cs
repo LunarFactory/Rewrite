@@ -196,7 +196,7 @@ namespace Log
 
             // 요약 데이터 계산
             _currentLog.wave_meta.clear_time_sec = clearTime;
-            _currentLog.wave_meta.version_id = "v1.2_live";
+            _currentLog.wave_meta.version_id = PlayerPrefs.GetString("LocalModelVersion", "");
             _currentLog.wave_meta.calculated_a = alpha;
             _currentLog.wave_meta.ai_inferred_s = inferredS;
             _currentLog.wave_meta.ai_inferred_c = inferredC;
