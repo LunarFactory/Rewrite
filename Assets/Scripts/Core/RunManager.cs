@@ -191,7 +191,6 @@ namespace Core
             }
             else
             {
-                LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
                 LogTracker.Instance.OnRunEnded("CLEAR");
             }
         }

@@ -1,9 +1,9 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
@@ -11,7 +11,8 @@ namespace Item
     public class ShootingAssistantItem : PassiveItemData // 부모를 상속받음
     {
         [Header("Assisted Settings")]
-        [SerializeField] private AssistedEffect buffData;
+        [SerializeField]
+        private AssistedEffect buffData;
         public float bonusAttackSpeed = 0.04f;
         public float bonusDamageIncreased = 0.5f;
         public int maxStack = 25;
@@ -22,7 +23,13 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<ShootingAssistantTracker>();
-                tracker.Initialize(player, buffData, bonusAttackSpeed, bonusDamageIncreased, maxStack);
+                tracker.Initialize(
+                    player,
+                    buffData,
+                    bonusAttackSpeed,
+                    bonusDamageIncreased,
+                    maxStack
+                );
             }
         }
     }
@@ -32,7 +39,13 @@ namespace Item
         private PlayerStats _player;
         private AssistedEffect _buffData;
 
-        public void Initialize(PlayerStats player, AssistedEffect buffData, float bonusAttackSpeed, float bonusDamageIncreased, int maxStack)
+        public void Initialize(
+            PlayerStats player,
+            AssistedEffect buffData,
+            float bonusAttackSpeed,
+            float bonusDamageIncreased,
+            int maxStack
+        )
         {
             _player = player;
             _buffData = buffData;
@@ -49,11 +62,14 @@ namespace Item
             {
                 if (_buffData != null)
                 {
-                    _buffData.setCurrentStack(Mathf.Min(_buffData.getCurrentStack() + 1, _buffData.maxStack));
+                    _buffData.setCurrentStack(
+                        Mathf.Min(_buffData.getCurrentStack() + 1, _buffData.maxStack)
+                    );
                     buffManager.ApplyEffect(_buffData, 3, attacker);
                 }
             }
         }
+
         private void OnDestroy()
         {
             if (_player != null)

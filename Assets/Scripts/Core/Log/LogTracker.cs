@@ -188,7 +188,8 @@ namespace Log
         public WaveLogData CompleteLogging(
             float alpha = 0.5f,
             float inferredS = 0.5f,
-            float inferredC = 0.5f
+            float inferredC = 0.5f,
+            bool fail = false
         )
         {
             _isTracking = false;
@@ -200,6 +201,7 @@ namespace Log
             _currentLog.wave_meta.calculated_a = alpha;
             _currentLog.wave_meta.ai_inferred_s = inferredS;
             _currentLog.wave_meta.ai_inferred_c = inferredC;
+            _currentLog.wave_meta.fail_safe = fail;
             _currentLog.timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
             int minute = (int)(clearTime / 60f);
@@ -386,10 +388,10 @@ namespace Log
             _isRetrying = false;
         }
 
-        public void EndWaveAndSend(float alpha, float s, float c)
+        public void EndWaveAndSend(float alpha, float s, float c, bool fail)
         {
             // 1. 데이터 조립 (기존 CompleteLogging 호출)
-            WaveLogData waveData = CompleteLogging(alpha, s, c);
+            WaveLogData waveData = CompleteLogging(alpha, s, c, fail);
 
             // 2. [추가] 로컬 파일로 저장 (눈으로 확인용)
             string jsonData = JsonUtility.ToJson(waveData, true);

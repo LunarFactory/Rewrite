@@ -163,8 +163,8 @@ namespace Player
         {
             if (source is EnemyStats enemy)
             {
-                var (s, c, alpha) = WaveManager.Instance.GetDDA();
-                LogTracker.Instance.EndWaveAndSend(alpha, s, c);
+                var (s, c, alpha, fail) = WaveManager.Instance.GetDDA();
+                LogTracker.Instance.EndWaveAndSend(alpha, s, c, fail);
                 LogTracker.Instance.OnRunEnded("GAME_OVER", enemy.data.enemyName);
             }
             UIManager.Instance.RequestStateChange(UIState.GameOver);

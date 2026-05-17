@@ -54,7 +54,7 @@ namespace Core
 
         private float currentS;
         private float currentC;
-        private float currentAlpha;
+        private float currentAlpha = 1.0f;
 
         private int budgetIncreasePerWave = 2; // 웨이브당 증가치
 
@@ -135,10 +135,6 @@ namespace Core
             {
                 case WaveType.Mob:
                     activeEnemyCount = 0;
-                    float currentAlpha =
-                        DDAInferenceManager.Instance != null
-                            ? DDAInferenceManager.Instance.currentAlpha
-                            : 1.0f;
                     BaseBudget =
                         baseWaveBudget
                         + (waveNumber * budgetIncreasePerWave)
@@ -395,8 +391,19 @@ namespace Core
                     {
                         WaveLogData rawLog = LogTracker.Instance.CompleteLogging();
                         var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
+                        bool fail = false;
+                        if (s < 0 || s > 1)
+                        {
+                            s = 0.5f;
+                            fail = true;
+                        }
+                        if (c < 0 || c > 1)
+                        {
+                            c = 0.5f;
+                            fail = true;
+                        }
                         ApplyDifficultyToGame(s, c, alpha);
-                        LogTracker.Instance.EndWaveAndSend(alpha, s, c);
+                        LogTracker.Instance.EndWaveAndSend(alpha, s, c, fail);
 
                         // UI 송출용 데이터 정규화
                         float rawApm = rawLog.dashboard_summary.apm;
@@ -409,12 +416,12 @@ namespace Core
                             baseWaveBudget
                             + ((CurrentWave + 1) * budgetIncreasePerWave)
                             + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
-                        int nextFinalBudget = Mathf.RoundToInt(nextBaseBudget * alpha);
+                        int nextFinalBudget = Mathf.RoundToInt(nextBaseBudget * currentAlpha);
 
                         OnDDACalculated?.Invoke(
-                            s,
-                            c,
-                            alpha,
+                            currentS,
+                            currentC,
+                            currentAlpha,
                             nextBaseBudget,
                             nextFinalBudget,
                             rawApm,
@@ -424,7 +431,7 @@ namespace Core
                     }
                     else
                     {
-                        LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
+                        LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f, true);
                     }
                     break;
                 case WaveType.Rest:
@@ -451,9 +458,14 @@ namespace Core
             currentAlpha = alpha;
         }
 
-        public (float, float, float) GetDDA()
+        public (float, float, float, bool) GetDDA()
         {
-            return (currentS, currentC, currentAlpha);
+            return (
+                currentS,
+                currentC,
+                currentAlpha,
+                (currentS > 0 && currentS < 1 && currentC > 0 && currentC < 1) ? false : true
+            );
         }
 
         private void SpawnBossRewards()
