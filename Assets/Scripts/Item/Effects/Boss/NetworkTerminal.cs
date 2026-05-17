@@ -12,7 +12,7 @@ namespace Item
     [CreateAssetMenu(fileName = "NetworkTerminal", menuName = "Items/Boss/Network Terminal")]
     public class NetworkTerminalItem : PassiveItemData
     {
-        public float cooldown = 30f;
+        public float cooldown = 10f;
         public float damageMultiplier = 1.0f;
         public float damageValue = 0.2f;
 

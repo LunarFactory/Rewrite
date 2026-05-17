@@ -87,7 +87,7 @@ namespace Log
             _hitsTaken = 0;
             _enemyShot = 0;
             _totalDistance = 0;
-            _totalClicks = _totalHits = _totalHitsTaken = 0;
+            _totalClicks = _totalHits = _totalHitsTaken = _totalAttackClicks = 0;
             _totalDamageDealt = 0;
             _startHp = PlayerStats.LocalPlayer.currentHealth;
 
@@ -425,7 +425,7 @@ namespace Log
                 File.WriteAllText(fullPath, logData);
                 Debug.Log($"<color=cyan>[Log]</color> 로그 저장 성공: {fullPath}");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogError($"파일 저장 실패: {e.Message}");
             }

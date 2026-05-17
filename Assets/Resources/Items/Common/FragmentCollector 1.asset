@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: FragmentCollector 1
   m_EditorClassIdentifier: Assembly-CSharp::Item.FragmentCollectorItem
   itemName: "\uD30C\uD3B8 \uC218\uC9D1\uAE30"
-  description: "\uC801 \uCC98\uCE58 \uC2DC \uCD5C\uB300 \uCCB4\uB825\uC758 5%\uB9CC\uD07C
-    \uCCB4\uB825\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  description: "3\uCD08\uB9C8\uB2E4 \uC801 \uCC98\uCE58 \uC2DC \uCD5C\uB300 \uCCB4\uB825\uC758
+    10%\uB9CC\uD07C \uCCB4\uB825\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
   icon: {fileID: 596238918372449588, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 0
-  healPercent: 0.05
+  healPercent: 0.1
+  cooldown: 3

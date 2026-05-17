@@ -45,7 +45,7 @@ MonoBehaviour:
   cost: 5
   minFloor: 1
   maxFloor: 3
-  maxCountInWave: 3
+  maxCountInWave: 2
   ComponentName: TurretAI
   colliderOffset: {x: 0, y: 0.25}
   colliderSize: {x: 1, y: 0.5}

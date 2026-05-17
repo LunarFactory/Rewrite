@@ -24,6 +24,9 @@ namespace Enemy
         private float patternInterval = 0.5f; // 패턴 사이 대기 시간
         private State _currentState = State.Idle;
 
+        // [추가] 플레이어가 숨었을 때 마지막으로 포착된 방향을 저장하는 징검다리 변수
+        private Vector2 _lastKnownDir = Vector2.down;
+
         protected override void Awake()
         {
             base.Awake();
@@ -37,9 +40,9 @@ namespace Enemy
         protected override void ExecuteBehavior()
         {
             UpdateTargetByStealth();
-            if (playerTarget == null)
-                return;
 
+            // [수정] 상단에 있던 'if (playerTarget == null) return;' 유무를 하단 타이머 조건문으로 이관합니다.
+            // 그래야 타겟이 없어도 Idle 상태에서 타이머가 정상적으로 깎여 다음 행동을 취합니다.
             if (_currentState == State.Idle)
             {
                 _stateTimer -= Time.deltaTime;
@@ -77,7 +80,7 @@ namespace Enemy
             }
         }
 
-        // 패턴 1: 자폭 드론 5마리 소환
+        // 패턴 1: 자폭 드론 5마리 소환 (타겟 위치 정보 불필요하므로 무관)
         private IEnumerator SummonSuicideDrones()
         {
             for (int i = 0; i < 5; i++)
@@ -101,7 +104,7 @@ namespace Enemy
             EndPattern();
         }
 
-        // 패턴 3: 원형 탄환 10개 (3회 반복)
+        // 패턴 3: 원형 탄환 10개 (3회 반복 / 타겟 불필요)
         private IEnumerator CircularBurst()
         {
             var bulletPrefab = stats.GetBulletPrefab("Normal");
@@ -159,7 +162,7 @@ namespace Enemy
                     {
                         damage = (int)stats.AttackDamage.GetValue(),
                         speed = isHoming ? stats.ProjectileSpeed.GetValue() : 10f,
-                        ricochetCount = isHoming ? (int)stats.Ricochet.GetValue() : 0,
+                        ricochetCount = isHoming ? (int)stats.Ricochet.GetValue() : 1,
                         decelerationRate = isHoming ? stats.DecelerationRate.GetValue() : 0,
                         homingRange = isHoming ? stats.HomingRange.GetValue() : 0,
                         homingStrength = isHoming ? stats.HomingStrength.GetValue() : 0,
@@ -176,6 +179,14 @@ namespace Enemy
             _stateTimer = patternInterval;
         }
 
-        private Vector2 GetDirToPlayer() => (playerTarget.position - transform.position).normalized;
+        // [수정] 플레이어가 은신해도 크래시가 나지 않고 마지막 조준 방향을 리턴하는 예외 안전 기법
+        private Vector2 GetDirToPlayer()
+        {
+            if (playerTarget != null)
+            {
+                _lastKnownDir = (playerTarget.position - transform.position).normalized;
+            }
+            return _lastKnownDir;
+        }
     }
 }

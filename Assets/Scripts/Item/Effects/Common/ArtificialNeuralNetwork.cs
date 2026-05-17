@@ -83,7 +83,7 @@ namespace Item
                 // A. 데미지 적용 (플레이어 기본 공격력의 일정 비율)
                 int chainDamage = Mathf.RoundToInt(
                     player.DamageIncreased.GetValue(
-                        player.AttackDamage.GetValue() * _synapticDamageMult
+                        player.GetWeaponBaseAttackDamage() * _synapticDamageMult
                     )
                 );
                 currentTarget.TakeDamage(player, chainDamage, Color.cyan);
