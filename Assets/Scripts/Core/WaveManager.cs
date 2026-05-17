@@ -52,7 +52,9 @@ namespace Core
 
         private int baseWaveBudget = 10; // 1층 1웨이브 기본 예산
 
-        private float difficultyAlpha;
+        private float currentS;
+        private float currentC;
+        private float currentAlpha;
 
         private int budgetIncreasePerWave = 2; // 웨이브당 증가치
 
@@ -393,7 +395,7 @@ namespace Core
                     {
                         WaveLogData rawLog = LogTracker.Instance.CompleteLogging();
                         var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
-                        ApplyDifficultyToGame(alpha);
+                        ApplyDifficultyToGame(s, c, alpha);
                         LogTracker.Instance.EndWaveAndSend(alpha, s, c);
 
                         // UI 송출용 데이터 정규화
@@ -442,9 +444,16 @@ namespace Core
             }
         }
 
-        private void ApplyDifficultyToGame(float alpha)
+        private void ApplyDifficultyToGame(float s, float c, float alpha)
         {
-            difficultyAlpha = alpha;
+            currentS = s;
+            currentC = c;
+            currentAlpha = alpha;
+        }
+
+        public (float, float, float) GetDDA()
+        {
+            return (currentS, currentC, currentAlpha);
         }
 
         private void SpawnBossRewards()

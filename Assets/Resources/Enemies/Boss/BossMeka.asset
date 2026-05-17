@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: M3-K4
   enemySubtitle: "\uACF5\uC5C5 \uC2DC\uC124 \uAD00\uB9AC"
-  maxHealth: 500
+  maxHealth: 750
   baseMoveSpeed: 0
   baseAttackDamage: 20
   baseRicochet: 1

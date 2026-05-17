@@ -1,4 +1,5 @@
 using System;
+using Core;
 using Enemy;
 using Entity;
 using Log;
@@ -162,7 +163,8 @@ namespace Player
         {
             if (source is EnemyStats enemy)
             {
-                LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
+                var (s, c, alpha) = WaveManager.Instance.GetDDA();
+                LogTracker.Instance.EndWaveAndSend(alpha, s, c);
                 LogTracker.Instance.OnRunEnded("GAME_OVER", enemy.data.enemyName);
             }
             UIManager.Instance.RequestStateChange(UIState.GameOver);
