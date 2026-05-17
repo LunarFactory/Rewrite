@@ -281,7 +281,7 @@ namespace Log
                     clear_status = status,
                     final_floor = RunManager.Instance.CurrentFloor, // GameManager.Instance.CurrentFloor 등으로 변경
                     final_wave = WaveManager.Instance.CurrentWave, // GameManager.Instance.CurrentWave 등으로 변경
-                    total_play_time_sec = Mathf.RoundToInt(Time.time - _startTime), // 게임 한 판 전체 플레이 시간
+                    total_play_time_sec = Mathf.RoundToInt(Time.time - _runStartTime), // 게임 한 판 전체 플레이 시간
                     cause_of_death = killerName,
                 },
 
