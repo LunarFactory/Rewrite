@@ -189,7 +189,7 @@ namespace Auth
             return await tcs.Task;
         }
 
-        public async Task<bool> UpdateAIModelAsync()
+        public async Task<bool> UpdateAIModelAsync(System.Action onDownloadStarted = null)
         {
             var tcs = new TaskCompletionSource<bool>();
 
@@ -222,6 +222,7 @@ namespace Auth
                         }
 
                         // 다운로드 진행
+                        onDownloadStarted?.Invoke();
                         StartCoroutine(
                             AuthWebClient.Instance.DownloadModelFile(
                                 info.downloadUrl,

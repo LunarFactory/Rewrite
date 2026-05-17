@@ -227,7 +227,7 @@ namespace UI.DDA
                     $"[ {floor}층 - {wave}웨이브 종료 ]\n"
                     + $"- APM: {rawApm:F0}, 명중률: {accuracy:P0}, 회피율: {evasion:P0}\n"
                     + $"- 숙련도: {s:F2}, 이탈도: {c:F2} => 보정치: {alpha:F2}\n"
-                    + $"- 다음 웨이브 예산 보정: {baseBudget} ▶ {finalBudget}\n\n";
+                    + $"- 다음 웨이브 예산 보정: {baseBudget} => {finalBudget}\n\n";
 
                 logText.text = logText.text + newLog;
                 if (logText.text.Length > 2500)

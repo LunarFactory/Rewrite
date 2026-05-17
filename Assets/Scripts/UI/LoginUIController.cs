@@ -282,11 +282,28 @@ namespace UI
             {
                 SetStatus("로그인 성공!", Color.green);
                 yield return new WaitForSeconds(0.5f);
-                SetStatus("모델 업데이트 중...", Color.green);
-                // [추가] 모델 업데이트 확인
-                var modelUpdateTask = AuthManager.Instance.UpdateAIModelAsync();
+                
+                SetStatus("모델 확인 중...", Color.green);
+                
+                bool isDownloaded = false;
+                var modelUpdateTask = AuthManager.Instance.UpdateAIModelAsync(() =>
+                {
+                    SetStatus("모델 업데이트 중...", Color.green);
+                    isDownloaded = true;
+                });
+                
                 while (!modelUpdateTask.IsCompleted)
                     yield return null;
+
+                if (modelUpdateTask.Result)
+                {
+                    SetStatus(isDownloaded ? "모델 업데이트 완료!" : "모델 확인 완료!", Color.green);
+                }
+                else
+                {
+                    SetStatus("모델 확인/업데이트 실패", Color.red);
+                }
+
                 yield return new WaitForSeconds(0.5f);
                 SceneManager.LoadScene("TitleScene");
             }

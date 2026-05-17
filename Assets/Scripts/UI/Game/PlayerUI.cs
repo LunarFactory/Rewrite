@@ -1548,7 +1548,7 @@ namespace UI
                         : 1.0f;
                 int count = Core.WaveManager.Instance.activeEnemyCount;
                 threatInfoText.text =
-                    $"웨이브 예산: {baseB} ▶ <color=red>{finalB}</color> (α 보정 x{alpha:F1})\n남은 몬스터 수: {count}";
+                    $"웨이브 예산: {baseB} => <color=red>{finalB}</color> (alpha 보정 x{alpha:F1})\n남은 몬스터 수: {count}";
             }
         }
     }
