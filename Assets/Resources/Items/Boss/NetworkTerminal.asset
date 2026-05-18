@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: NetworkTerminal
   m_EditorClassIdentifier: Assembly-CSharp::Item.NetworkTerminalItem
   itemName: "\uB124\uD2B8\uC6CC\uD06C \uB2E8\uC790"
-  description: "\uBCF4\uC2A4\uB97C \uB300\uC0C1\uC73C\uB85C \uD55C \uCD94\uAC00 \uD53C\uD574
-    100%\uB97C \uC5BB\uC2B5\uB2C8\uB2E4. \uBCF4\uC2A4\uC804 \uC2DC\uC791 30\uCD08
-    \uB4A4 \uBCF4\uC2A4 \uCD5C\uB300 \uCCB4\uB825\uC758 20% \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
+  description: "\uBCF4\uC2A4 \uACF5\uACA9 \uC2DC \uACF5\uACA9\uB825\uC758 100%\uB9CC\uD07C
+    \uCD94\uAC00 \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4. \uBCF4\uC2A4\uC804
+    \uC2DC\uC791 10\uCD08 \uB4A4 \uBCF4\uC2A4 \uCD5C\uB300 \uCCB4\uB825\uC758 20%\uB9CC\uD07C
+    \uCD94\uAC00 \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
   icon: {fileID: 1079715153, guid: 6deb8c1f706b17c47bb4453529f26619, type: 3}
   tier: 3
-  cooldown: 30
+  cooldown: 10
   damageMultiplier: 1
   damageValue: 0.2

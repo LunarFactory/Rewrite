@@ -87,7 +87,7 @@ namespace Log
             _hitsTaken = 0;
             _enemyShot = 0;
             _totalDistance = 0;
-            _totalClicks = _totalHits = _totalHitsTaken = 0;
+            _totalClicks = _totalHits = _totalHitsTaken = _totalAttackClicks = 0;
             _totalDamageDealt = 0;
             _startHp = PlayerStats.LocalPlayer.currentHealth;
 
@@ -188,7 +188,8 @@ namespace Log
         public WaveLogData CompleteLogging(
             float alpha = 0.5f,
             float inferredS = 0.5f,
-            float inferredC = 0.5f
+            float inferredC = 0.5f,
+            bool fail = false
         )
         {
             _isTracking = false;
@@ -196,10 +197,11 @@ namespace Log
 
             // 요약 데이터 계산
             _currentLog.wave_meta.clear_time_sec = clearTime;
-            _currentLog.wave_meta.version_id = "v1.2_live";
+            _currentLog.wave_meta.version_id = PlayerPrefs.GetString("LocalModelVersion", "");
             _currentLog.wave_meta.calculated_a = alpha;
-            _currentLog.wave_meta.ai_inferred_S = inferredS;
-            _currentLog.wave_meta.ai_inferred_C = inferredC;
+            _currentLog.wave_meta.ai_inferred_s = inferredS;
+            _currentLog.wave_meta.ai_inferred_c = inferredC;
+            _currentLog.wave_meta.fail_safe = fail;
             _currentLog.timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
             int minute = (int)(clearTime / 60f);
@@ -281,7 +283,7 @@ namespace Log
                     clear_status = status,
                     final_floor = RunManager.Instance.CurrentFloor, // GameManager.Instance.CurrentFloor 등으로 변경
                     final_wave = WaveManager.Instance.CurrentWave, // GameManager.Instance.CurrentWave 등으로 변경
-                    total_play_time_sec = Mathf.RoundToInt(Time.time - _startTime), // 게임 한 판 전체 플레이 시간
+                    total_play_time_sec = Mathf.RoundToInt(Time.time - _runStartTime), // 게임 한 판 전체 플레이 시간
                     cause_of_death = killerName,
                 },
 
@@ -386,10 +388,10 @@ namespace Log
             _isRetrying = false;
         }
 
-        public void EndWaveAndSend(float alpha, float s, float c)
+        public void EndWaveAndSend(float alpha, float s, float c, bool fail)
         {
             // 1. 데이터 조립 (기존 CompleteLogging 호출)
-            WaveLogData waveData = CompleteLogging(alpha, s, c);
+            WaveLogData waveData = CompleteLogging(alpha, s, c, fail);
 
             // 2. [추가] 로컬 파일로 저장 (눈으로 확인용)
             string jsonData = JsonUtility.ToJson(waveData, true);
@@ -425,7 +427,7 @@ namespace Log
                 File.WriteAllText(fullPath, logData);
                 Debug.Log($"<color=cyan>[Log]</color> 로그 저장 성공: {fullPath}");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogError($"파일 저장 실패: {e.Message}");
             }

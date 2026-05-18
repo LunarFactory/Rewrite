@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Drone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: "\uB4DC\uB860"
+  enemySubtitle: 
   maxHealth: 30
   baseMoveSpeed: 2
   baseAttackDamage: 10
@@ -39,6 +40,7 @@ MonoBehaviour:
   tier: 0
   cost: 1
   minFloor: 1
+  maxFloor: 5
   maxCountInWave: 300
   ComponentName: DroneAI
   colliderOffset: {x: 0, y: 0}

@@ -24,6 +24,19 @@ namespace Core
         [field: SerializeField]
         public int CurrentWave { get; private set; } = 1;
 
+        public int BaseBudget { get; private set; }
+        public int FinalBudget { get; private set; }
+        public static event System.Action<
+            float,
+            float,
+            float,
+            int,
+            int,
+            float,
+            float,
+            float
+        > OnDDACalculated;
+
         // [추가] WaveManager가 직접 관리할 적 프리팹
         [Header("Wave Resources")]
         [SerializeField]
@@ -37,15 +50,14 @@ namespace Core
 
         private Dictionary<EnemyData, int> _spawnTracker = new Dictionary<EnemyData, int>();
 
-        [SerializeField]
         private int baseWaveBudget = 10; // 1층 1웨이브 기본 예산
 
-        private float difficultyAlpha;
+        private float currentS;
+        private float currentC;
+        private float currentAlpha = 1.0f;
 
-        [SerializeField]
         private int budgetIncreasePerWave = 2; // 웨이브당 증가치
 
-        [SerializeField]
         private int budgetIncreasePerFloor = 20; // 층당 증가치
 
         [Header("Special Prefabs")]
@@ -123,12 +135,12 @@ namespace Core
             {
                 case WaveType.Mob:
                     activeEnemyCount = 0;
-                    // 웨이브 예산 계산: (기본) + (웨이브 보너스) + (층 보너스)
-                    int budget =
+                    BaseBudget =
                         baseWaveBudget
                         + (waveNumber * budgetIncreasePerWave)
-                        + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor); // 여기에 알파를 곱하기
-                    SpawnEnemiesWithRules(budget);
+                        + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
+                    FinalBudget = Mathf.RoundToInt(BaseBudget * currentAlpha);
+                    SpawnEnemiesWithRules(FinalBudget); // budget 대신 FinalBudget 대입
                     break;
                 case WaveType.Shop:
                     SpawnShop();
@@ -152,18 +164,27 @@ namespace Core
             UnityEngine.Random.InitState(
                 RunManager.Instance.GetCalculatedSeed("ItemSet_" + CurrentWave, true, 0.5f)
             );
+
             Debug.Log($"Total Budget: {totalBudget}, Pool Count: {enemyPool.Count}");
+
             _spawnTracker.Clear();
 
             // [규칙 1] 황금 비율 분배
+
             int specialBudget = Mathf.FloorToInt(totalBudget * 0.15f);
+
             int eliteBudget = Mathf.FloorToInt(totalBudget * 0.35f);
+
             int normalBudget = totalBudget - specialBudget - eliteBudget;
 
             // 상위 티어에서 남은 예산(leftover)을 하위 티어로 넘겨주는 구조
+
             int leftover = 0;
+
             leftover += SpawnTier(EnemyTier.Special, specialBudget);
+
             leftover += SpawnTier(EnemyTier.Elite, eliteBudget + leftover);
+
             SpawnTier(EnemyTier.Normal, normalBudget + leftover);
         }
 
@@ -221,6 +242,25 @@ namespace Core
             Vector2 spawnPos = (zone != null) ? zone.GetRandomLocation() : Vector2.zero;
 
             var enemy = gameManager.ExecuteSpawn(data, isBoss, spawnPos);
+            var stats = enemy.GetComponent<EnemyStats>();
+            /*
+            stats.AttackDamage.AddModifier(
+                new StatModifier(
+                    "DDAAttackDamage",
+                    difficultyAlpha - 1f,
+                    ModifierType.Percent,
+                    this
+                )
+            );
+            stats.DamageTaken.AddModifier(
+                new StatModifier(
+                    "DDADamageTaken",
+                    1.5f - difficultyAlpha,
+                    ModifierType.Percent,
+                    this
+                )
+            );
+            */
             activeEnemyCount++;
         }
 
@@ -276,6 +316,7 @@ namespace Core
                 {
                     if (UIManager.Instance != null)
                     {
+                        CompleteCurrentWave();
                         UIManager.Instance.RequestStateChange(UIState.GameClear);
                     }
                 }
@@ -301,8 +342,7 @@ namespace Core
 
                     // 가격 책정 로직...
                     fieldItem.price =
-                        GetPriceByRarity(itemsToSpawn[i].tier)
-                        * (int)Math.Pow(2, RunManager.Instance.CurrentFloor - 1);
+                        GetPriceByRarity(itemsToSpawn[i].tier) * RunManager.Instance.CurrentFloor;
                 }
             }
             SpawnExitPortal();
@@ -347,24 +387,52 @@ namespace Core
             {
                 case WaveType.Boss:
                 case WaveType.Mob:
-                    // 1. 현재 웨이브의 날것(Raw) 데이터를 수집 (아직 s, c, a는 반영 전)
-                    //WaveLogData rawLog = LogTracker.Instance.CompleteLogging();
+                    if (DDAInferenceManager.Instance != null)
+                    {
+                        WaveLogData rawLog = LogTracker.Instance.CompleteLogging();
+                        var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
+                        bool fail = false;
+                        if (s < 0 || s > 1)
+                        {
+                            s = 0.5f;
+                            fail = true;
+                        }
+                        if (c < 0 || c > 1)
+                        {
+                            c = 0.5f;
+                            fail = true;
+                        }
+                        ApplyDifficultyToGame(s, c, alpha);
+                        LogTracker.Instance.EndWaveAndSend(alpha, s, c, fail);
 
-                    // 2. DDA 추론 시작 (AI 모델 가동)
-                    // 인스턴스를 통해 추론 메서드를 호출하고 튜플 결과를 받습니다.
-                    //var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
+                        // UI 송출용 데이터 정규화
+                        float rawApm = rawLog.dashboard_summary.apm;
+                        float accuracy = Mathf.Clamp01(rawLog.dashboard_summary.accuracy_rate);
+                        float evasion = Mathf.Clamp01(
+                            1.0f - (rawLog.dashboard_summary.hits_taken / 20f)
+                        );
 
-                    // 3. 실시간 게임 세션에 저장 (메모리 저장)
-                    // DDAInferenceManager.Instance.currentAlpha에 이미 저장되어 있을 것이므로
-                    // 이를 참조해서 다음 웨이브의 적 스펙을 조정합니다.
-                    //ApplyDifficultyToGame(alpha);
+                        int nextBaseBudget =
+                            baseWaveBudget
+                            + ((CurrentWave + 1) * budgetIncreasePerWave)
+                            + ((RunManager.Instance.CurrentFloor - 1) * budgetIncreasePerFloor);
+                        int nextFinalBudget = Mathf.RoundToInt(nextBaseBudget * currentAlpha);
 
-                    // 4. 최종 결과 전송 (서버 및 파일 저장)
-                    // 여기서 s, c, alpha를 넘겨주면 LogTracker가 최종 JSON을 완성해서 보냅니다.
-                    //LogTracker.Instance.EndWaveAndSend(alpha, s, c);
-
-                    //Debug.Log($"[WaveManager] DDA 분석 완료: Skill({s}), Churn({c}) -> Alpha({alpha})");
-                    LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f);
+                        OnDDACalculated?.Invoke(
+                            currentS,
+                            currentC,
+                            currentAlpha,
+                            nextBaseBudget,
+                            nextFinalBudget,
+                            rawApm,
+                            accuracy,
+                            evasion
+                        );
+                    }
+                    else
+                    {
+                        LogTracker.Instance.EndWaveAndSend(0.5f, 0.5f, 0.5f, true);
+                    }
                     break;
                 case WaveType.Rest:
                 case WaveType.Shop:
@@ -383,9 +451,21 @@ namespace Core
             }
         }
 
-        private void ApplyDifficultyToGame(float alpha)
+        private void ApplyDifficultyToGame(float s, float c, float alpha)
         {
-            difficultyAlpha = alpha;
+            currentS = s;
+            currentC = c;
+            currentAlpha = alpha;
+        }
+
+        public (float, float, float, bool) GetDDA()
+        {
+            return (
+                currentS,
+                currentC,
+                currentAlpha,
+                (currentS > 0 && currentS < 1 && currentC > 0 && currentC < 1) ? false : true
+            );
         }
 
         private void SpawnBossRewards()

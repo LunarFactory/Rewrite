@@ -55,7 +55,56 @@ namespace UI
         private void Start()
         {
             BindButtons();
+            ConfigureInputFields();
             ShowLogin();
+        }
+
+        private void ConfigureInputFields()
+        {
+            // 비밀번호 필드 마스킹 (***) — contentType은 ForceLabelUpdate 전에 설정
+            if (loginPwInput != null) loginPwInput.contentType = TMP_InputField.ContentType.Password;
+            if (signupPwInput != null) signupPwInput.contentType = TMP_InputField.ContentType.Password;
+            if (recoverPasswordNewPasswordInput != null) recoverPasswordNewPasswordInput.contentType = TMP_InputField.ContentType.Password;
+
+            TMP_InputField[] allInputs = {
+                loginIdInput, loginPwInput,
+                signupIdInput, signupPwInput, signupEmailInput,
+                recoverIDEmailInput,
+                recoverPasswordIDInput, recoverPasswordEmailInput, recoverPasswordNewPasswordInput
+            };
+
+            foreach (var input in allInputs)
+            {
+                if (input == null) continue;
+
+                // 캐럿(커서) 활성화 및 설정
+                input.customCaretColor = true;
+                input.caretColor = Color.white;
+                input.caretWidth = 3;
+                input.caretBlinkRate = 0.85f;
+
+                // 텍스트 선택(드래그) 시 하이라이트 색상
+                input.selectionColor = new Color(0.2f, 0.6f, 1f, 0.4f);
+
+                // 배경 Image 가져오기 (없으면 건너뜀)
+                Image bgImg = input.GetComponent<Image>();
+                if (bgImg != null)
+                {
+                    Color originalColor = bgImg.color;
+                    Color selectedColor = new Color(
+                        Mathf.Min(originalColor.r + 0.15f, 1f),
+                        Mathf.Min(originalColor.g + 0.15f, 1f),
+                        Mathf.Min(originalColor.b + 0.15f, 1f),
+                        Mathf.Max(originalColor.a, 0.6f)
+                    );
+
+                    // 선택 시 밝아지고, 해제 시 원래로 복귀
+                    input.onSelect.AddListener((_) => { if (bgImg != null) bgImg.color = selectedColor; });
+                    input.onDeselect.AddListener((_) => { if (bgImg != null) bgImg.color = originalColor; });
+                }
+
+                input.ForceLabelUpdate();
+            }
         }
 
         private void SafeFixClearBackground(Button btn)
@@ -233,11 +282,28 @@ namespace UI
             {
                 SetStatus("로그인 성공!", Color.green);
                 yield return new WaitForSeconds(0.5f);
-                SetStatus("모델 업데이트 중...", Color.green);
-                // [추가] 모델 업데이트 확인
-                var modelUpdateTask = AuthManager.Instance.UpdateAIModelAsync();
+                
+                SetStatus("모델 확인 중...", Color.green);
+                
+                bool isDownloaded = false;
+                var modelUpdateTask = AuthManager.Instance.UpdateAIModelAsync(() =>
+                {
+                    SetStatus("모델 업데이트 중...", Color.green);
+                    isDownloaded = true;
+                });
+                
                 while (!modelUpdateTask.IsCompleted)
                     yield return null;
+
+                if (modelUpdateTask.Result)
+                {
+                    SetStatus(isDownloaded ? "모델 업데이트 완료!" : "모델 확인 완료!", Color.green);
+                }
+                else
+                {
+                    SetStatus("모델 확인/업데이트 실패", Color.red);
+                }
+
                 yield return new WaitForSeconds(0.5f);
                 SceneManager.LoadScene("TitleScene");
             }

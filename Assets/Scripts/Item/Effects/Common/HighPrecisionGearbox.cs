@@ -1,20 +1,21 @@
-using UnityEngine;
 using System.Collections.Generic;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
-
-    [CreateAssetMenu(fileName = "HighPrecisionGearbox", menuName = "Items/Common/High Precision Gearbox")]
+    [CreateAssetMenu(
+        fileName = "HighPrecisionGearbox",
+        menuName = "Items/Common/High Precision Gearbox"
+    )]
     public class HighPrecisionGearboxItem : PassiveItemData
     {
         [Header("Gearbox Settings")]
         public EngagedEffect engagedEffect;
         public float engagedDuration = 3f;
         public float engagedDamageMultiplier = 0.5f;
-
 
         public override void OnApply(PlayerStats player)
         {
@@ -26,6 +27,7 @@ namespace Item
             }
         }
     }
+
     public class HighPrecisionGearboxTracker : MonoBehaviour
     {
         private PlayerStats _player;
@@ -34,7 +36,12 @@ namespace Item
         private float _damageMultiplier;
         private readonly HashSet<EntityId> _hitTargets = new HashSet<EntityId>();
 
-        public void Initialize(PlayerStats player, EngagedEffect engagedEffect, float engagedDuration, float engagedDamageMultiplier)
+        public void Initialize(
+            PlayerStats player,
+            EngagedEffect engagedEffect,
+            float engagedDuration,
+            float engagedDamageMultiplier
+        )
         {
             _player = player;
             _engagedEffect = engagedEffect;
@@ -46,7 +53,8 @@ namespace Item
 
         private void HandleItemEffect(PlayerStats player, EntityStats target, int damage)
         {
-            if (target == null || target.isDead) return;
+            if (target == null || target.isDead)
+                return;
 
             EntityId targetID = target.gameObject.GetEntityId();
 
@@ -59,11 +67,16 @@ namespace Item
                 if (buffManager != null && _engagedEffect != null)
                 {
                     _engagedEffect.duration = _duration;
-                    _engagedEffect.damage = Mathf.RoundToInt(_player.DamageIncreased.GetValue(_player.AttackDamage.GetValue() * _damageMultiplier));
+                    _engagedEffect.damage = Mathf.RoundToInt(
+                        _player.DamageIncreased.GetValue(
+                            _player.AttackDamage.GetValue() * _damageMultiplier
+                        )
+                    );
                     buffManager.ApplyEffect(_engagedEffect, _engagedEffect.duration, player);
                 }
             }
         }
+
         private void OnDestroy()
         {
             if (_player != null)

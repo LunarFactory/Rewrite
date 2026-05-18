@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SuperMissileDrone
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: "\uAC15\uD654 \uBBF8\uC0AC\uC77C \uB4DC\uB860"
+  enemySubtitle: 
   maxHealth: 50
   baseMoveSpeed: 3
   baseAttackDamage: 15
@@ -37,8 +38,9 @@ MonoBehaviour:
   defaultFPS: 10
   isInvincible: 0
   tier: 1
-  cost: 10
+  cost: 20
   minFloor: 3
+  maxFloor: 5
   maxCountInWave: 2
   ComponentName: SuperMissileDroneAI
   colliderOffset: {x: 0, y: 0}

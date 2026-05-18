@@ -18,7 +18,7 @@ namespace Enemy
         private float triggerRange = 2f; // 자폭 시퀀스 시작 거리
 
         [SerializeField]
-        private float explosionRadius = 4f; // 실제 폭발 데미지 범위
+        private float explosionRadius = 3f; // 실제 폭발 데미지 범위
 
         [SerializeField]
         private float fuseDuration = 1f; // 자폭 대기 시간 (2초)

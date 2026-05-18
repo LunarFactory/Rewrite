@@ -1,17 +1,17 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+using Enemy;
 using Entity;
 using Player;
-using Enemy;
+using UnityEngine;
 
 namespace Item
 {
-    [CreateAssetMenu(fileName = "OverchargedBattery", menuName = "Items/Uncommon/Overcharged Battery")]
+    [CreateAssetMenu(
+        fileName = "OverchargedBattery",
+        menuName = "Items/Uncommon/Overcharged Battery"
+    )]
     public class OverchargedBatteryItem : PassiveItemData // 부모를 상속받음
     {
-        [Header("Heal Settings")]
-        public float damageMultiplier = 3f;
+        public float moveSpeedMultiplier = 0.5f;
 
         public override void OnApply(PlayerStats player)
         {
@@ -19,7 +19,7 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<OverchargedBatteryTracker>();
-                tracker.Initialize(player, damageMultiplier);
+                tracker.Initialize(player, moveSpeedMultiplier);
             }
         }
     }
@@ -27,29 +27,26 @@ namespace Item
     public class OverchargedBatteryTracker : MonoBehaviour
     {
         private PlayerStats _player;
-        private float _damageMultiplier;
+        private StatModifier _moveSpeedMod;
 
         public void Initialize(PlayerStats player, float damageMultiplier)
         {
             _player = player;
-            _damageMultiplier = damageMultiplier;
+            _moveSpeedMod = new StatModifier(
+                "OverchargedBatteryMoveSpeed",
+                damageMultiplier,
+                ModifierType.Percent,
+                this
+            );
 
-            _player.OnPlayerApplyHardCC += HandleItemEffect;
-        }
-
-        private void HandleItemEffect(PlayerStats attacker, EntityStats target)
-        {
-            if (target is EnemyStats enemy)
-            {
-                enemy.TakeDamage(attacker, Mathf.RoundToInt(attacker.DamageIncreased.GetValue(attacker.baseAttackDamage * _damageMultiplier)), Color.gold);
-            }
+            _player.MoveSpeed.AddModifier(_moveSpeedMod);
         }
 
         private void OnDestroy()
         {
             if (_player != null)
             {
-                _player.OnPlayerApplyHardCC -= HandleItemEffect;
+                _player.MoveSpeed.RemoveModifiersFromSource(this);
             }
         }
     }

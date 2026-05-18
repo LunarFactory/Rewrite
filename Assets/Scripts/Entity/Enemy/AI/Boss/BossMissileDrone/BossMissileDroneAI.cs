@@ -96,7 +96,7 @@ namespace Enemy
             _shotsFiredCount++;
             int shotCount = (_shotsFiredCount >= 3) ? 10 : 1;
 
-            var bulletPrefab = stats.GetBulletPrefab("Missile");
+            var bulletPrefab = stats.GetBulletPrefab("Normal");
             if (bulletPrefab == null)
                 return;
 

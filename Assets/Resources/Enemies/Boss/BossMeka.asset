@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.EnemyData
   enemyName: M3-K4
   enemySubtitle: "\uACF5\uC5C5 \uC2DC\uC124 \uAD00\uB9AC"
-  maxHealth: 1000
+  maxHealth: 750
   baseMoveSpeed: 0
   baseAttackDamage: 20
   baseRicochet: 1
@@ -44,6 +44,7 @@ MonoBehaviour:
   tier: 2
   cost: 0
   minFloor: 1
+  maxFloor: 5
   maxCountInWave: 1
   ComponentName: MekaAI
   colliderOffset: {x: 0, y: 0}

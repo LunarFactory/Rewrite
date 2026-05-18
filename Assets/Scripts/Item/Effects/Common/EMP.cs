@@ -9,8 +9,8 @@ namespace Item
     public class EMPItem : PassiveItemData // PassiveItemData를 상속
     {
         [Header("EMP Settings")]
-        public int maxStack = 10;
-        public float duration = 0.5f;
+        public float moveSpeed = -0.2f;
+        public float duration = 2f;
 
         // BuffManager에 전달할 EMP 트리거용 SO (EMPEffectSO)
         [SerializeField]
@@ -22,7 +22,7 @@ namespace Item
             if (tracker == null)
             {
                 tracker = player.gameObject.AddComponent<EMPTracker>();
-                tracker.Initialize(player, empTriggerData, maxStack, duration);
+                tracker.Initialize(player, empTriggerData, moveSpeed, duration);
             }
         }
     }
@@ -35,13 +35,13 @@ namespace Item
         public void Initialize(
             PlayerStats player,
             StatusEffectData empTriggerData,
-            int maxStack,
+            float moveSpeed,
             float duration
         )
         {
             _player = player;
             _empTriggerData = (EMPEffect)empTriggerData;
-            _empTriggerData.maxStack = maxStack;
+            _empTriggerData.moveSpeed = moveSpeed;
             _empTriggerData.duration = duration;
 
             _player.OnPlayerAttackHit += HandleItemEffect;
@@ -55,12 +55,7 @@ namespace Item
             // 2. 적에게 BuffManager가 있는지 확인
             if (target.TryGetComponent(out BuffManager buffManager))
             {
-                // 3. 인스펙터에서 할당한 EMP 트리거 데이터로 스택 1 추가
-                // 이 스택이 10개가 되면 EMPEffectSO에 등록된 실제 기절 효과가 발동됩니다.
-                if (!target.isStunned)
-                {
-                    buffManager.AddStack(_empTriggerData, 1, _player);
-                }
+                buffManager.ApplyEffect(_empTriggerData, _empTriggerData.duration, _player);
             }
         }
 

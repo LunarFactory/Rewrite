@@ -13,6 +13,7 @@ public class MeltedEffect : StatusEffectData
     {
         return stack;
     }
+
     public void setCurrentStack(int amount)
     {
         stack = amount;

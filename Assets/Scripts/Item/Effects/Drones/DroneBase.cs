@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Drone
@@ -9,8 +11,12 @@ namespace Drone
         public float animFPS = 10f;
         private DroneAnimator _animator = new DroneAnimator();
         private Transform _player;
-        private float _targetOffset;  // 내가 가야 할 목표 간격
+        private float _targetOffset; // 내가 가야 할 목표 간격
         private float _currentOffset; // 현재 내가 유지 중인 간격
+
+        [Header("Defense Settings")]
+        private float cooldownDuration = 3f; // 재사용 대기 시간
+        private bool _isCoolingDown = false;
 
         public void SetCenter(Transform player, float unused) // startAngle은 이제 필요 없음
         {
@@ -22,6 +28,7 @@ namespace Drone
         {
             _targetOffset = angle;
         }
+
         private void Awake()
         {
             // 자식에 있는 SpriteRenderer를 찾아서 초기화
@@ -32,13 +39,15 @@ namespace Drone
         private void Start()
         {
             // 태어나자마자 매니저에 등록
-            if (DroneManager.Instance != null) DroneManager.Instance.RegisterDrone(this);
+            if (DroneManager.Instance != null)
+                DroneManager.Instance.RegisterDrone(this);
             DontDestroyOnLoad(this);
         }
 
         private void Update()
         {
-            if (_player == null || DroneManager.Instance == null) return;
+            if (_player == null || DroneManager.Instance == null)
+                return;
 
             // 1. 매니저의 마스터 각도를 가져옴
             float masterRot = DroneManager.Instance.GetMasterRotation();
@@ -55,23 +64,47 @@ namespace Drone
             transform.position = _player.position + offset;
             _animator.Update(Time.deltaTime, droneSprites, animFPS);
         }
+
         private void OnTriggerEnter2D(Collider2D collision)
         {
             // 적 탄환과 충돌 시 (레이어나 태그 활용)
             if (collision.CompareTag("EnemyProjectile"))
             {
-                Destroy(collision.gameObject);
+                if (!_isCoolingDown)
+                {
+                    Destroy(collision.gameObject);
+                    StartCoroutine(CooldownRoutine());
+                }
             }
         }
 
-        public void AddAbility<T>() where T : Component
+        private IEnumerator CooldownRoutine()
         {
-            if (GetComponent<T>() == null) gameObject.AddComponent<T>();
+            _isCoolingDown = true;
+
+            // 투명화 적용 (Alpha 0.5)
+            Color originalColor = _animator.getColor();
+            _animator.setColor(new Color(originalColor.r, originalColor.g, originalColor.b, 0.5f));
+
+            // 대기 시간만큼 대기
+            yield return new WaitForSeconds(cooldownDuration);
+
+            // 원래 상태로 복구
+            _animator.setColor(originalColor);
+            _isCoolingDown = false;
+        }
+
+        public void AddAbility<T>()
+            where T : Component
+        {
+            if (GetComponent<T>() == null)
+                gameObject.AddComponent<T>();
         }
 
         private void OnDestroy()
         {
-            if (DroneManager.Instance != null) DroneManager.Instance.UnregisterDrone(this);
+            if (DroneManager.Instance != null)
+                DroneManager.Instance.UnregisterDrone(this);
         }
     }
 }

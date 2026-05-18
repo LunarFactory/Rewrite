@@ -38,8 +38,9 @@ MonoBehaviour:
   defaultFPS: 10
   isInvincible: 0
   tier: 0
-  cost: 3
+  cost: 5
   minFloor: 4
+  maxFloor: 5
   maxCountInWave: 40
   ComponentName: SuperDroneAI
   colliderOffset: {x: 0, y: 0}
