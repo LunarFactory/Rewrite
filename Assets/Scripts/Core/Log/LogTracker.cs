@@ -120,7 +120,7 @@ namespace Log
                     apm = _clicks,
                     accuracy =
                         (_totalAttackClicks > 0) ? (float)_totalHits / _totalAttackClicks : 0f,
-                    inverse_hit_rate = (_enemyShot > 0) ? (float)_totalHitsTaken / _enemyShot : 0f,
+                    inverse_hit_rate = (_enemyShot > 0) ? (1f - _totalHitsTaken / _enemyShot) : 0f,
                     attack_item_efficiency =
                         (_totalDamageDealt > 0)
                             ? (1f - baseDamage * (float)_totalHits / _totalDamageDealt)
