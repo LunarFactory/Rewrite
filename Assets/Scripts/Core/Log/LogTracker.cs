@@ -186,7 +186,7 @@ namespace Log
 
         // 웨이브 종료 시 최종 로그 반환
         public WaveLogData CompleteLogging(
-            float alpha = 0.5f,
+            float alpha = 1.0f,
             float inferredS = 0.5f,
             float inferredC = 0.5f,
             bool fail = false

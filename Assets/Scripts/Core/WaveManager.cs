@@ -52,8 +52,8 @@ namespace Core
 
         private int baseWaveBudget = 10; // 1층 1웨이브 기본 예산
 
-        private float currentS;
-        private float currentC;
+        private float currentS = 0.5f;
+        private float currentC = 0.5f;
         private float currentAlpha = 1.0f;
 
         private int budgetIncreasePerWave = 2; // 웨이브당 증가치
@@ -392,12 +392,12 @@ namespace Core
                         WaveLogData rawLog = LogTracker.Instance.CompleteLogging();
                         var (s, c, alpha) = DDAInferenceManager.Instance.InferDifficulty(rawLog);
                         bool fail = false;
-                        if (s < 0 || s > 1)
+                        if (s < 0f || s > 1f)
                         {
                             s = 0.5f;
                             fail = true;
                         }
-                        if (c < 0 || c > 1)
+                        if (c < 0f || c > 1f)
                         {
                             c = 0.5f;
                             fail = true;

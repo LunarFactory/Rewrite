@@ -78,7 +78,7 @@ public class DDAInferenceManager : MonoBehaviour
         if (_session == null)
         {
             Debug.LogError("Inference Session이 초기화되지 않았습니다.");
-            return (0, 0, currentAlpha);
+            return (0.5f, 0.5f, currentAlpha);
         }
 
         // 1. 입력 데이터 준비 (모델의 입력 피처 개수와 일치해야 함)
@@ -114,7 +114,7 @@ public class DDAInferenceManager : MonoBehaviour
 
     private float CalculateAlpha(float s, float c)
     {
-        float alpha = 1.0f + (s * 0.5f) - (c * 0.5f);
+        float alpha = 0.5f + s - c;
         return Mathf.Clamp(alpha, 0.5f, 2.0f);
     }
 
