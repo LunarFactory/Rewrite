@@ -22,10 +22,10 @@ MonoBehaviour:
   m_Scenes:
   - m_enabled: 1
     m_path: Assets/Scenes/LoginScene.unity
-    m_guid: a3cc91a272e5d2445be4b53465c587fe
+    m_guid: f31010fb5e55b42439991757b2f8994d
   - m_enabled: 1
     m_path: Assets/Scenes/TitleScene.unity
-    m_guid: f31010fb5e55b42439991757b2f8994d
+    m_guid: a3cc91a272e5d2445be4b53465c587fe
   - m_enabled: 1
     m_path: Assets/Scenes/LobbyScene.unity
     m_guid: 3510fffd55c0ae448a9a66648f40b411

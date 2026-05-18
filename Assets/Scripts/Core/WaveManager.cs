@@ -176,6 +176,7 @@ namespace Core
             int eliteBudget = Mathf.Clamp(Mathf.FloorToInt(totalBudget * 0.35f * currentAlpha), Mathf.FloorToInt(totalBudget * 0.1f), Mathf.FloorToInt(totalBudget * 0.5f));
 
             int normalBudget = totalBudget - specialBudget - eliteBudget;
+            Debug.LogError($"일반 몹 생성 가능 비용 : {normalBudget}, 엘리트 몹 생성 가능 비용 : {eliteBudget}, 특수 몹 생성 가능 비용 : {specialBudget}");
 
             // 상위 티어에서 남은 예산(leftover)을 하위 티어로 넘겨주는 구조
 

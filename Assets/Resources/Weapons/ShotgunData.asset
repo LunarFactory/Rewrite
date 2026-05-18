@@ -19,7 +19,7 @@ MonoBehaviour:
   damageMultiplier: 0.8
   fireRate: 1
   projectileSpeed: 20
-  decelerationRate: 0.08
+  decelerationRate: 0.06
   numberOfPellets: 8
   spreadAngle: 45
   pierceCount: 0
