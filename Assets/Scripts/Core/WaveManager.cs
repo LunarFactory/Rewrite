@@ -171,9 +171,9 @@ namespace Core
 
             // [규칙 1] 황금 비율 분배
 
-            int specialBudget = Mathf.FloorToInt(totalBudget * 0.15f);
+            int specialBudget = Mathf.Clamp(Mathf.FloorToInt(totalBudget * 0.15f * currentAlpha), Mathf.FloorToInt(totalBudget * 0.1f), Mathf.FloorToInt(totalBudget * 0.25f));
 
-            int eliteBudget = Mathf.FloorToInt(totalBudget * 0.35f);
+            int eliteBudget = Mathf.Clamp(Mathf.FloorToInt(totalBudget * 0.35f * currentAlpha), Mathf.FloorToInt(totalBudget * 0.1f), Mathf.FloorToInt(totalBudget * 0.5f));
 
             int normalBudget = totalBudget - specialBudget - eliteBudget;
 

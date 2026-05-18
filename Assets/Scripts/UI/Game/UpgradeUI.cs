@@ -167,6 +167,7 @@ namespace UI
             {
                 BuildUpgradeCard(data, _cardsContainer);
             }
+            
         }
 
         private void BuildUpgradeCard(PlayerUpgradeData data, Transform parent)
